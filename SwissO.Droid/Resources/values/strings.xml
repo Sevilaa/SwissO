@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">SwissO</string>
+
+    <string name="overview">Übersicht</string>
+
+	<string name="cancel">Abbrechen</string>
+
+	<!-- Profil -->
+	<string name="profil">Profil</string>
+	<string name="vorname">Vorname</string>
+	<string name="name">Name</string>
+	<string name="nachname">Nachname</string>
+	<string name="namen_eingeben">Namen eingeben</string>
+	<string name="si_number">SI-Nummer</string>
+	<string name="category">Kategorie</string>
+	<string name="add_friend">Neuer Freund</string>
+	<string name="add_club">Neuer Club</string>
+
+	<string name="friends">Freunde</string>
+	<string name="club">Club</string>
+	<string name="alle">Alle</string>
+
+	<string name="ausschreibung">Ausschreibung</string>
+	<string name="weisungen">Weisungen</string>
+	<string name="anmeldung">Anmeldung</string>
+	<string name="mutation">Mutation</string>
+	<string name="wkz">WKZ</string>
+	<string name="startlist">Startliste</string>
+	<string name="liveresult">Live Resultate</string>
+	<string name="rangliste">Rangliste</string>
+
+	<string name="refresh">Refresh</string>
+	<string name="openinbrowser">In Browser öffnen</string>
+
+	<string name="noeventselected">Kein Event ausgewählt</string>
+
+
+</resources>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<swisso.droid.OverviewLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        card_view:cardCornerRadius="4dp">
+
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:id="@+id/linearLayout1">
+
+            <TextView
+                android:id="@+id/overview_item_title"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                card_view:layout_constraintEnd_toStartOf="@id/overview_item_expand"
+                card_view:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:src="@drawable/ic_arrow_expand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription=""
+                card_view:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/overview_item_expand" />
+
+            <TextView
+                android:id="@+id/overview_item_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/ic_date"
+                card_view:layout_constraintTop_toBottomOf="@+id/overview_item_title"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/overview_item_map"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/ic_map"
+                card_view:layout_constraintTop_toBottomOf="@+id/overview_item_date"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/overview_item_club"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/ic_club"
+                card_view:layout_constraintTop_toBottomOf="@+id/overview_item_map"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/overview_item_deadline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/ic_deadline"
+                card_view:layout_constraintTop_toBottomOf="@+id/overview_item_club"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/overview_item_region"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/ic_region"
+                android:visibility="gone"
+                card_view:layout_constraintTop_toBottomOf="@+id/overview_item_deadline"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintEnd_toEndOf="parent" />
+
+            <swisso.droid.OverviewButton
+                android:id="@+id/overview_item_button1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                card_view:layout_constraintEnd_toStartOf="@+id/overview_item_button2"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/overview_item_region"/>
+
+            <swisso.droid.OverviewButton
+                android:id="@+id/overview_item_button2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintStart_toEndOf="@id/overview_item_button1"
+                card_view:layout_constraintTop_toTopOf="@id/overview_item_button1" />
+
+            <swisso.droid.OverviewButton
+                android:id="@+id/overview_item_button3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                card_view:layout_constraintEnd_toStartOf="@id/overview_item_button4"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@id/overview_item_button1" />
+
+            <swisso.droid.OverviewButton
+                android:id="@+id/overview_item_button4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintStart_toEndOf="@id/overview_item_button3"
+                card_view:layout_constraintTop_toTopOf="@id/overview_item_button3"/>
+
+            <swisso.droid.OverviewButton
+                android:id="@+id/overview_item_button5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                card_view:layout_constraintEnd_toStartOf="@id/overview_item_button6"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@id/overview_item_button3" />
+
+            <swisso.droid.OverviewButton
+                android:id="@+id/overview_item_button6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintStart_toEndOf="@id/overview_item_button5"
+                card_view:layout_constraintTop_toTopOf="@id/overview_item_button5"/>
+
+            <swisso.droid.OverviewButton
+                android:id="@+id/overview_item_button7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                card_view:layout_constraintEnd_toStartOf="@id/overview_item_button8"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@id/overview_item_button5" />
+
+            <swisso.droid.OverviewButton
+                android:id="@+id/overview_item_button8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintStart_toEndOf="@id/overview_item_button7"
+                card_view:layout_constraintTop_toTopOf="@id/overview_item_button7"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</swisso.droid.OverviewLayout>
+    

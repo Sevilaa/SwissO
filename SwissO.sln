@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SwissO", "SwissO\SwissO.shproj", "{ED2FD46D-DD71-4F11-9F10-9E9D25F00054}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwissO.Droid", "SwissO.Droid\SwissO.Droid.csproj", "{4C100544-6349-4736-9DA1-50BEA9BC2E59}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SwissO\SwissO.projitems*{4c100544-6349-4736-9da1-50bea9bc2e59}*SharedItemsImports = 4
+		SwissO\SwissO.projitems*{ed2fd46d-dd71-4f11-9f10-9e9d25f00054}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4C100544-6349-4736-9DA1-50BEA9BC2E59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C100544-6349-4736-9DA1-50BEA9BC2E59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C100544-6349-4736-9DA1-50BEA9BC2E59}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{4C100544-6349-4736-9DA1-50BEA9BC2E59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C100544-6349-4736-9DA1-50BEA9BC2E59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C100544-6349-4736-9DA1-50BEA9BC2E59}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1C49C5D1-68FD-44A8-A3C9-24D51A41ECEC}
+	EndGlobalSection
+EndGlobal
