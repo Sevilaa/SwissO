@@ -13,7 +13,7 @@ namespace SwissO.Parser {
         }
 
         public void LoadStartliste(string html) {
-            if (manager is ListManager slmanager) {
+            if (manager is ListManager slmanager && slmanager.GetListType() == ListManager.ListType.Startliste) {
                 List<Laeufer> startliste = new List<Laeufer>();
                 HtmlDocument htmlDoc = new HtmlDocument();
                 htmlDoc.LoadHtml(html);
@@ -56,6 +56,20 @@ namespace SwissO.Parser {
             manager.OnFinished(requestCode);
         }
 
+        private void StartLiveResultateRequest(Event e) {
+            httpClient.SendStringRequest(this, "https://n.ethz.ch/~laaschs/ALL.htm", MyHttpClient.RequestCodes.Rangliste, e.Id);
+        }
+
+        private void LoadLiveResultate(string html) {
+            if (manager is ListManager rgmanager && rgmanager.GetListType() == ListManager.ListType.Rangliste) {
+                List<Laeufer> rangliste = new List<Laeufer>();
+                HtmlDocument htmlDoc = new HtmlDocument();
+                htmlDoc.LoadHtml(html);
+                HtmlNodeCollection trs = htmlDoc.DocumentNode.SelectNodes("/html/body/div/table/tr");
+
+            }
+        }
+
         private static string GetLink(HtmlNode td) {
             HtmlNodeCollection children = td.ChildNodes;
             if (children.Count > 1) {
@@ -71,6 +85,9 @@ namespace SwissO.Parser {
                     break;
                 case MyHttpClient.RequestCodes.Startliste:
                     LoadStartliste(html);
+                    break;
+                case MyHttpClient.RequestCodes.Rangliste:
+                    LoadLiveResultate(html);
                     break;
                 default:
                     throw new NotImplementedException();

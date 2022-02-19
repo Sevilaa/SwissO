@@ -29,8 +29,10 @@
 	<string name="liveresult">Live Resultate</string>
 	<string name="rangliste">Rangliste</string>
 
+	<!--Menu-->
 	<string name="refresh">Refresh</string>
 	<string name="openinbrowser">In Browser öffnen</string>
+	<string name="settings">Einstellungen</string>
 
 	<string name="noeventselected">Kein Event ausgewählt</string>
 

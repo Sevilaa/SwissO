@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.OS;
+using Android.Views;
 using AndroidX.AppCompat.App;
 using AndroidX.Fragment.App;
 using Google.Android.Material.BottomNavigation;
@@ -31,6 +32,11 @@ namespace SwissO.Droid {
             };
 
             SupportFragmentManager.BeginTransaction().Add(Resource.Id.host_fragment_activity_main, GetNavigatedFragment(navigation.SelectedItemId)).Commit();
+        }
+
+        public override bool OnCreateOptionsMenu(IMenu menu) {
+            MenuInflater.Inflate(Resource.Menu.main, menu);
+            return base.OnCreateOptionsMenu(menu);
         }
 
         private MyFragment GetNavigatedFragment(int item_id) {

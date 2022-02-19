@@ -1,11 +1,12 @@
 ﻿using Android.App;
 using SwissO.Parser;
+using System.Collections.Generic;
 using Volley;
 using Volley.Toolbox;
 
 namespace SwissO.Droid {
 
-    class MyResponseListener : Java.Lang.Object, Response.IListener, Response.IErrorListener {
+    internal class MyResponseListener : Java.Lang.Object, Response.IListener, Response.IErrorListener {
 
         private MyHttpClient.RequestCodes requestCode;
         private Parser.Parser parser;
@@ -26,6 +27,18 @@ namespace SwissO.Droid {
             
         }
     }
+
+    //For POST method
+    internal class MyStringRequest : StringRequest {
+
+        private IDictionary<string, string> parameter;
+        public MyStringRequest(int method, string url, Response.IListener listener, Response.IErrorListener errorListener, IDictionary<string, string> parameter) : base(method, url, listener, errorListener) {
+            this.parameter = parameter;
+        }
+
+        protected override IDictionary<string, string> Params => parameter;
+    }
+
     public class MyHttpClient_A : MyHttpClient {
 
         private RequestQueue queue;
