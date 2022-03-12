@@ -75,6 +75,10 @@ namespace SwissO.Droid {
             return cursor.GetFloat(index);
         }
 
+        public override double GetDouble(int index) {
+            return cursor.GetDouble(index);
+        }
+
         public override int GetInt(int index) {
             return cursor.GetInt(index);
         }
@@ -153,8 +157,11 @@ namespace SwissO.Droid {
                     case TypeCode.Int32:
                         daten.Put(column, Convert.ToInt32(value));
                         break;
+                    case TypeCode.Single:
+                        daten.Put(column, Convert.ToSingle(value));
+                        break;
                     case TypeCode.Double:
-                        daten.Put(column, (float)Convert.ToDouble(value));
+                        daten.Put(column, Convert.ToDouble(value));
                         break;
                     case TypeCode.String:
                         daten.Put(column, Convert.ToString(value));

@@ -27,8 +27,8 @@
         public const string COLUMN_Date = "date";
         public const string COLUMN_Deadline = "deadline";
         public const string COLUMN_Region = "region";
-        public const string COLUMN_SKoordN = "skoordn";
-        public const string COLUMN_SKoordE = "skoorde";
+        public const string COLUMN_IntKoordN = "skoordn";
+        public const string COLUMN_IntKoordE = "skoorde";
         public const string COLUMN_Club = "club";
         public const string COLUMN_Map = "map";
         public const string COLUMN_LAusschreibung = "ausschreibung";
@@ -67,8 +67,8 @@
                 COLUMN_Club + " VARCHAR(31)," +
                 COLUMN_Map + " VARCHAR(31)," +
                 COLUMN_Deadline + " INTEGER," +
-                COLUMN_SKoordN + " INTEGER NOT NULL," +
-                COLUMN_SKoordE + " INTEGER NOT NULL," +
+                COLUMN_IntKoordN + " DOUBLE NOT NULL," +
+                COLUMN_IntKoordE + " DOUBLE NOT NULL," +
                 COLUMN_LAusschreibung + " VARCHAR(255)," +
                 COLUMN_LWeisungen + " VARCHAR(255)," +
                 COLUMN_LRangliste + " VARCHAR(255)," +

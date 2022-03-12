@@ -5,6 +5,8 @@
 
 	<string name="cancel">Abbrechen</string>
 
+	<string name="no_list">Nicht verfügbar</string>
+
 	<!-- Profil -->
 	<string name="profil">Profil</string>
 	<string name="vorname">Vorname</string>

@@ -8,11 +8,12 @@ namespace SwissO.Droid {
     public class ListFragment : MyFragment, IListPage, TabLayoutMediator.ITabConfigurationStrategy {
 
         private ListManager manager;
+        private ListManager.ListType listType;
 
         private ListFragmentPagerAdapter adapter;
 
         public ListFragment(MainActivity activity, ListManager.ListType listType) : base(activity, listType == ListManager.ListType.Startliste ? Resource.String.startlist : Resource.String.rangliste) {
-            manager = new ListManager(this, act.GetAppManager(), listType);
+            this.listType = listType;
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -22,11 +23,15 @@ namespace SwissO.Droid {
 
         public override void OnViewCreated(View view, Bundle savedInstanceState) {
             base.OnViewCreated(view, savedInstanceState);
+            manager = new ListManager(this, act.GetAppManager(), listType);
             adapter = new ListFragmentPagerAdapter(this, manager);
             ViewPager2 viewPager = (ViewPager2)view.FindViewById(Resource.Id.viewPager);
             viewPager.Adapter = adapter;
             TabLayout tabLayout = (TabLayout)view.FindViewById(Resource.Id.tabLayout);
             new TabLayoutMediator(tabLayout, viewPager, this).Attach();
+            View.FindViewById<Button>(Resource.Id.openWebBrowser).Click += (sender, e) => {
+                OpenInWebBrowser();
+            };
         }
 
         public void OnConfigureTab(TabLayout.Tab tab, int position) {
@@ -57,7 +62,9 @@ namespace SwissO.Droid {
                 spinner.ItemSelected += (sender, e) => {
                     Event newSelected = adapter[e.Position];
                     if (newSelected != act.GetAppManager().GetSelected()) {
-                        act.GetAppManager().UpdateSelected(adapter[e.Position]);
+                        act.GetAppManager().SetEvent(adapter[e.Position]);
+                        act.InvalidateOptionsMenu();
+                        manager.InitEvent();
                     }
                 };
             }
@@ -67,22 +74,63 @@ namespace SwissO.Droid {
             switch (item.ItemId) {
                 case Resource.Id.internet:
                     if (act.GetAppManager().GetSelected() != null) {
-                        act.OpenWebBrowser(act.GetAppManager().GetSelected().Startliste);
+                        OpenInWebBrowser();
                     }
                     return true;
             }
             return base.OnOptionsItemSelected(item);
         }
 
-        public void UpdateList() {
-            adapter.UpdateList();
+        private void OpenInWebBrowser() {
+            act.OpenWebBrowser(act.GetAppManager().GetSelected().Startliste);
         }
 
-        public override void Update() {
+        public void UpdateList() {
+            adapter.UpdateList();
+            ShowList();
+        }
+
+        public void UpdateEvent() {
             act.InvalidateOptionsMenu();
             if (act.GetAppManager().GetSelected().Startliste != null) {
-                manager.SendStartlisteRequest();//TODO if Startliste == null
+                manager.SendStartlisteRequest();
             }
+            else {
+                ShowNotAvailable();
+            }
+        }
+
+        public void ShowNotAvailable() {
+            View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Visible;
+            View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Gone;
+        }
+
+        public void ShowProgressBar() {
+            View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Visible;
+            View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Gone;
+        }
+
+        public void ShowList() {
+            View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Visible;
+            View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Visible;
+            View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Gone;
+        }
+
+        public void ShowOnlyInWebBrowser() {
+            View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
+            View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Visible;
+            OpenInWebBrowser();
         }
     }
 }

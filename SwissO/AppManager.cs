@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SwissO {
 
@@ -11,7 +10,6 @@ namespace SwissO {
         void OpenRangliste();
         void OpenStartliste();
         void OpenWebBrowser(Uri uri);
-        void UpdatePage();
     }
     public class AppManager {
 
@@ -57,9 +55,8 @@ namespace SwissO {
             }
         }
 
-        public void UpdateSelected(Event e) {
+        public void SetEvent(Event e) {
             selected = e;
-            app.UpdatePage();
         }
 
         public Event[] GetEventSelectionables() {

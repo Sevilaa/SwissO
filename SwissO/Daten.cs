@@ -54,6 +54,8 @@ namespace SwissO {
 
         public abstract float GetFloat(int index);
 
+        public abstract double GetDouble(int index);
+
         public abstract bool Read();
 
         public abstract void Close();
@@ -175,8 +177,8 @@ namespace SwissO {
             daten.Put(SQLiteHelper.COLUMN_Club, e.Club);
             daten.Put(SQLiteHelper.COLUMN_Map, e.Map);
             daten.Put(SQLiteHelper.COLUMN_Deadline, e.Deadline.Ticks);
-            daten.Put(SQLiteHelper.COLUMN_SKoordN, e.Koordn);
-            daten.Put(SQLiteHelper.COLUMN_SKoordE, e.Koorde);
+            daten.Put(SQLiteHelper.COLUMN_IntKoordN, e.Koordn);
+            daten.Put(SQLiteHelper.COLUMN_IntKoordE, e.Koorde);
             daten.Put(SQLiteHelper.COLUMN_LAusschreibung, UriString(e.Ausschreibung));
             daten.Put(SQLiteHelper.COLUMN_LWeisungen, UriString(e.Weisungen));
             daten.Put(SQLiteHelper.COLUMN_LRangliste, UriString(e.Rangliste));
@@ -196,8 +198,8 @@ namespace SwissO {
             daten.Put(SQLiteHelper.COLUMN_Club, e.Club);
             daten.Put(SQLiteHelper.COLUMN_Map, e.Map);
             daten.Put(SQLiteHelper.COLUMN_Deadline, e.Deadline.Ticks);
-            daten.Put(SQLiteHelper.COLUMN_SKoordN, e.Koordn);
-            daten.Put(SQLiteHelper.COLUMN_SKoordE, e.Koorde);
+            daten.Put(SQLiteHelper.COLUMN_IntKoordN, e.Koordn);
+            daten.Put(SQLiteHelper.COLUMN_IntKoordE, e.Koorde);
             daten.Put(SQLiteHelper.COLUMN_LAusschreibung, UriString(e.Ausschreibung));
             daten.Put(SQLiteHelper.COLUMN_LWeisungen, UriString(e.Weisungen));
             daten.Put(SQLiteHelper.COLUMN_LRangliste, UriString(e.Rangliste));

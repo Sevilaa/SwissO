@@ -3,7 +3,6 @@ using Android.Content;
 using Android.OS;
 using Android.Views;
 using AndroidX.AppCompat.App;
-using AndroidX.Fragment.App;
 using Google.Android.Material.BottomNavigation;
 using System;
 
@@ -72,10 +71,6 @@ namespace SwissO.Droid {
             Intent intent = new Intent(Intent.ActionView);
             intent.SetData(Android.Net.Uri.Parse(uri.ToString()));
             StartActivity(intent);
-        }
-
-        public void UpdatePage() {
-            fragment.Update();
         }
 
         public AppManager GetAppManager() {

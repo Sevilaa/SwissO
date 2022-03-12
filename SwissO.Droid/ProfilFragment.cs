@@ -99,8 +99,5 @@ namespace SwissO.Droid {
             }
             return false;
         }
-
-        public override void Update() {
-        }
     }
 }

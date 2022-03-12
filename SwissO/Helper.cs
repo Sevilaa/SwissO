@@ -14,7 +14,7 @@ namespace SwissO {
             public const int OLEvents = 5;
         }
 
-        public enum Maps { Google, GoogleSat, Search, OSM, Swisstopo }
+        //public enum Maps { Google, GoogleSat, Search, OSM, Swisstopo }
 
         public static (double, double) CalcSwiss(double swissnord, double swisseast) {
             double y = (swisseast - 600000) / 1000000;
@@ -35,17 +35,17 @@ namespace SwissO {
             return (intnord, inteast);
         }
 
-        public static Uri GetMapsUrl(Maps maps, double swissn, double swisse) {
-            if (swissn != intnull && swisse != intnull) {
-                (double intn, double inte) = CalcSwiss(swissn, swisse);
-                return maps switch {
-                    Maps.Google => new Uri("https://maps.google.com/maps?q=" + intn + "," + inte),
-                    Maps.GoogleSat => new Uri(GetMapsUrl(Maps.Google, swissn, swisse) + "&t=h"),
-                    Maps.Swisstopo => new Uri("http://map.geo.admin.ch/?Y=" + swisse + "&X=" + swissn + "&crosshair=circle&zoom=6"),
-                    Maps.OSM => new Uri("http://www.openstreetmap.org/?mlat=" + intn + "&mlon=" + inte + "#map=12/" + intn + "/" + inte),
-                    Maps.Search => new Uri("http://map.search.ch/" + swisse + "," + swissn),
-                    _ => null,
-                };
+        public static Uri GetMapsUrl(double intn, double inte) {
+            if (intn != intnull && inte != intnull) {
+                return new Uri("geo:" + intn + ","+ inte +"?q=" + intn + "," + inte + "(WKZ)");
+                //return maps switch {
+                //    Maps.Google => new Uri("https://maps.google.com/maps?q=" + intn + "," + inte),
+                //    Maps.GoogleSat => new Uri(GetMapsUrl(Maps.Google, swissn, swisse) + "&t=h"),
+                //    Maps.Swisstopo => new Uri("http://map.geo.admin.ch/?Y=" + swisse + "&X=" + swissn + "&crosshair=circle&zoom=6"),
+                //    Maps.OSM => new Uri("http://www.openstreetmap.org/?mlat=" + intn + "&mlon=" + inte + "#map=12/" + intn + "/" + inte),
+                //    Maps.Search => new Uri("http://map.search.ch/" + swisse + "," + swissn),
+                //    _ => null,
+                //};
             }
             return null;
         }

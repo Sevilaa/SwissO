@@ -86,6 +86,7 @@ namespace SwissO.Parser {
             DateTime deadline = Helper.GetDate(e.fields[Array.IndexOf(e.titles, COLUMN_Deadline)]);
             int skoordn = GetInt(e.fields[Array.IndexOf(e.titles, COLUMN_SKoordN)]);
             int skoorde = GetInt(e.fields[Array.IndexOf(e.titles, COLUMN_SKoordE)]);
+            (double intn, double inte) = Helper.CalcSwiss(skoordn, skoorde);
             string lausschreibung = e.fields[Array.IndexOf(e.titles, COLUMN_LAusschreibung)];
             string club = e.fields[Array.IndexOf(e.titles, COLUMN_Club)].Trim();
             int portal = GetInt(e.fields[Array.IndexOf(e.titles, COLUMN_EntryPortal)]);
@@ -108,7 +109,7 @@ namespace SwissO.Parser {
                 }
             }
             if (manager is OverviewManager ovmanager) {
-                ovmanager.Add(new Event(title, date, club, map, region, skoordn, skoorde, deadline, lausschreibung, null, null, null, startliste, liveresultate, rangliste, portal));
+                ovmanager.Add(new Event(title, date, club, map, region, intn, inte, deadline, lausschreibung, null, null, null, startliste, liveresultate, rangliste, portal));
             }
             if (idsUnfinished.Count == 0) {
                 manager.OnFinished(requestCode);
@@ -125,9 +126,7 @@ namespace SwissO.Parser {
         }
 
         public void StartRanglisteRequest(Event e) {
-            if (e.Rangliste != null) {
-                httpClient.SendStringRequest(this, e.Rangliste.ToString() + "&kind=all", MyHttpClient.RequestCodes.Rangliste, e.Id);
-            }
+            httpClient.SendStringRequest(this, e.Rangliste.ToString() + "&kind=all", MyHttpClient.RequestCodes.Rangliste, e.Id);
         }
 
         private void LoadRangliste(string html) {

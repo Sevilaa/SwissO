@@ -73,8 +73,5 @@ namespace SwissO.Droid {
         public void StopRefreshing() {
             refreshLayout.Refreshing = false;
         }
-
-        public override void Update() {
-        }
     }
 }

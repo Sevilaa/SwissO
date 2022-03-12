@@ -11,8 +11,8 @@ namespace SwissO {
         public string Club { get; private set; }
         public string Map { get; private set; }
         public string Region { get; private set; }
-        public int Koordn { get; private set; }
-        public int Koorde { get; private set; }
+        public double Koordn { get; private set; }
+        public double Koorde { get; private set; }
         public DateTime Deadline { get; private set; }
         public Uri Ausschreibung { get; private set; }
         public Uri Weisungen { get; private set; }
@@ -23,7 +23,7 @@ namespace SwissO {
         public Uri Rangliste { get; private set; }
         public int Eventportal { get; private set; }
 
-        public Event(string title, DateTime date, string club, string map, string region, int koordn, int koorde, DateTime deadline,
+        public Event(string title, DateTime date, string club, string map, string region, double koordn, double koorde, DateTime deadline,
             string ausschreibung, string weisungen, string anmeldung, string mutation, string startliste, string liveresultate, string rangliste, int portal) {
             Title = title;
             Date = date;
@@ -51,8 +51,8 @@ namespace SwissO {
             Club = cursor.GetString(4);
             Map = cursor.GetString(5);
             Deadline = cursor.GetDate(6);
-            Koordn = cursor.GetInt(7);
-            Koorde = cursor.GetInt(8);
+            Koordn = cursor.GetDouble(7);
+            Koorde = cursor.GetDouble(8);
             Ausschreibung = cursor.GetUri(9);
             Weisungen = cursor.GetUri(10);
             Rangliste = cursor.GetUri(11);
@@ -125,7 +125,7 @@ namespace SwissO {
                 case UriArt.Rangliste:
                     return Rangliste;
                 case UriArt.WKZ:
-                    return Helper.GetMapsUrl(Helper.Maps.Google, Koordn, Koorde);
+                    return Helper.GetMapsUrl(Koordn, Koorde);
                 case UriArt.Liveresultate:
                     return Liveresultate;
                 default:

@@ -17,7 +17,5 @@ namespace SwissO.Droid {
             base.OnViewCreated(view, savedInstanceState);
             Activity.Title = Resources.GetString(title_id);
         }
-
-        public abstract void Update();
     }
 }
