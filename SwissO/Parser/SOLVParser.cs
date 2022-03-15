@@ -137,26 +137,39 @@ namespace SwissO.Parser {
                 htmlDoc.LoadHtml(html);
                 HtmlNode body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/table[2]/tr/td[2]");
                 HtmlNodeCollection kategories = body.SelectNodes("./b");
-                HtmlNodeCollection data = body.SelectNodes("./pre");
-                for (int i = 0; i < kategories.Count && i < data.Count; i++) {
-                    string kat = kategories[i].InnerText.Trim();
-                    string resultate = data[i].InnerText;
-                    string[] rows = resultate.Split("\n");
-                    for (int j = 2; j < rows.Length - 1; j++) {
-                        string akt = rows[j];
-                        string rang = akt.Substring(0, 3).Trim();
-                        string name = akt.Substring(5, 23).Trim();
-                        string vorname = name.Split(" ")[0];
-                        string nachname = name.Split(" ")[1];
-                        string jahrgang = akt.Substring(28, 2).Trim();
-                        string ort = akt.Substring(32, 19).Trim();
-                        string club = akt.Substring(51, 19).Trim();
-                        string zeit = akt.Substring(70, 8).Trim();
-                        laeufer.Add(new Laeufer(e, vorname, nachname, jahrgang, club, kat, null, null, rang, zeit));
+                //HtmlNodeCollection data = body.SelectNodes("./pre");
+                for (int i = 0; i < kategories.Count; i++) {
+                    HtmlNode data = NextNodeWithName(kategories[i], "pre");
+                    if (data != null) {
+                        string kat = kategories[i].InnerText.Trim();
+                        string resultate = data.InnerText;
+                        string[] rows = resultate.Split("\n");
+                        for (int j = 2; j < rows.Length - 1; j++) {
+                            string akt = rows[j];
+                            string rang = akt.Substring(0, 3).Trim();
+                            string name = akt.Substring(5, 23).Trim();
+                            string vorname = name.Split(" ")[0];
+                            string nachname = name.Split(" ")[1];
+                            string jahrgang = akt.Substring(28, 2).Trim();
+                            string ort = akt.Substring(32, 19).Trim();
+                            string club = akt.Substring(51, 19).Trim();
+                            string zeit = akt.Substring(70, 8).Trim();
+                            laeufer.Add(new Laeufer(e, vorname, nachname, jahrgang, club, kat, null, null, rang, zeit));
+                        }
                     }
                 }
                 rgmanager.LoadList(laeufer);
             }
+        }
+
+        private static HtmlNode NextNodeWithName(HtmlNode node, string name) {
+            while(node != null) {
+                if(node.Name == name) {
+                    return node;
+                }
+                node = node.NextSibling;
+            }
+            return null;
         }
 
         public override void onResult(MyHttpClient.RequestCodes requestCode, int id, string html) {
