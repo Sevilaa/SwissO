@@ -3,14 +3,6 @@ using System.Collections.Generic;
 
 namespace SwissO {
 
-    public struct Friend {
-        public Friend(string vorname, string nachname) {
-            this.vorname = vorname;
-            this.nachname = nachname;
-        }
-        public string vorname { get; }
-        public string nachname { get; }
-    }
     public class Profil {
 
         private readonly int id;
@@ -19,7 +11,7 @@ namespace SwissO {
         private int siCard;
         private string category;
         private List<string> clubs = new List<string>();
-        private List<Friend> freunde = new List<Friend>();
+        private List<string> freunde = new List<string>();
 
         public Profil(MyCursor cursor, Daten daten) {
             id = cursor.GetInt(0);
@@ -30,7 +22,7 @@ namespace SwissO {
             cursor.Close();
             cursor = daten.GetFreundeByProfil(id);
             while (cursor.Read()) {
-                freunde.Add(new Friend(cursor.GetString(1), cursor.GetString(2)));
+                freunde.Add(cursor.GetString(1));
             }
             cursor.Close();
             cursor = daten.GetClubsByProfil(id);
@@ -71,7 +63,7 @@ namespace SwissO {
             return clubs;
         }
         
-        public List<Friend> GetFriends() {
+        public List<string> GetFriends() {
             return freunde;
         }
     }

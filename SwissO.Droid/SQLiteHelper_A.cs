@@ -12,6 +12,7 @@ namespace SwissO.Droid {
             db.ExecSQL(SQLiteHelper.SQL_Freunde);
             db.ExecSQL(SQLiteHelper.SQL_Clubs);
             db.ExecSQL(SQLiteHelper.SQL_Events);
+            db.ExecSQL(SQLiteHelper.SQL_Laeufer);
         }
 
         public override void OnUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

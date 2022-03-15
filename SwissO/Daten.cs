@@ -62,6 +62,8 @@ namespace SwissO {
 
         public abstract bool IsNull(int index);
 
+        public abstract int Length();
+
         public DateTime GetDate(int index) {
             if (IsNull(index)) {
                 return DateTime.MinValue;
@@ -148,6 +150,63 @@ namespace SwissO {
 
         public void DeleteFreundById(int id) {
             Delete(SQLiteHelper.TABLE_Freunde, SameID(id));
+        }
+
+        //Table Laeufer
+
+        public int InsertLaeufer(string name, string jahrgang, string club, string cat,
+            string startnummer, string startzeit, string zielzeit, string rang, Event e) {
+            MyContentValues daten = new MyContentValues();
+            int jahr;
+            bool success = int.TryParse(jahrgang, out jahr);
+            if (success) {
+                daten.Put(SQLiteHelper.COLUMN_Jahrgang, jahr);
+            }
+            daten.Put(SQLiteHelper.COLUMN_Name, name);
+            daten.Put(SQLiteHelper.COLUMN_Club, club);
+            daten.Put(SQLiteHelper.COLUMN_Category, cat);
+            daten.Put(SQLiteHelper.COLUMN_Startnummer, startnummer);
+            daten.Put(SQLiteHelper.COLUMN_Startzeit, startzeit);
+            daten.Put(SQLiteHelper.COLUMN_Zielzeit, zielzeit);
+            daten.Put(SQLiteHelper.COLUMN_Rang, rang);
+            daten.Put(SQLiteHelper.COLUMN_Event, e.Id);
+            return Insert(SQLiteHelper.TABLE_Laeufer, daten);
+        }
+
+        public MyCursor GetAllLaeuferByEvent(Event e) {
+            return Query(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Event + " = " + e.Id, null, null);
+        }
+
+        public MyCursor GetClubLaeuferByEvent(Event e, List<string> clubs) {
+            if(clubs.Count == 0) {
+                return Query(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Club + " = 'lkaasdfsjdf'", null, null);
+            }
+            string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" + SQLiteHelper.COLUMN_Club + " LIKE '%" + clubs[0] + "%'";
+            for(int i = 1; i<clubs.Count; i++) {
+                where += " OR " + SQLiteHelper.COLUMN_Club + "LIKE '%" + clubs[i] + "%'";
+            }
+            where += ")";
+            return Query(SQLiteHelper.TABLE_Laeufer, where, null, null);
+        }
+
+        public MyCursor GetFriendLaeuferByEvent(Event e, List<string> freunde) {
+            if (freunde.Count == 0) {
+                return Query(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Club + " = 'lkaasdfsjdf'", null, null);
+            }
+            string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" + SQLiteHelper.COLUMN_Name + "LIKE '%" + freunde[0] + "%'";
+            for (int i = 1; i < freunde.Count; i++) {
+                where += " OR " + SQLiteHelper.COLUMN_Club + "LIKE '%" + freunde[i] + "%'";
+            }
+            where += ")";
+            return Query(SQLiteHelper.TABLE_Laeufer, where, null, null);
+        }
+
+        public int GetLaeuferCountByEvent(Event e) {
+            return GetAllLaeuferByEvent(e).Length();
+        }
+
+        public void DeleteAllLaeuferByEvent(Event e) {
+            Delete(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Event + " = " + e.Id);
         }
 
         //Table Clubs

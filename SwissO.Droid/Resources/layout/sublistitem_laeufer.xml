@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <TextView
-        android:text="Text"
+        android:text=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="25px"
@@ -15,18 +15,25 @@
         app:layout_constraintEnd_toStartOf="@id/tv_name"
         android:id="@+id/tv_starttime" />
     <TextView
-        android:text="Text"
+        android:text=""
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/tv_goaltime"
+        app:layout_constraintEnd_toStartOf="@id/tv_kat"
         app:layout_constraintStart_toEndOf="@id/tv_starttime"
         android:id="@+id/tv_name" />
     <TextView
-        android:text="Text"
+        android:text=""
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/tv_goaltime"
+        app:layout_constraintStart_toEndOf="@id/tv_name"
+        android:id="@+id/tv_kat" />
+    <TextView
+        android:text=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_name"
+        app:layout_constraintStart_toEndOf="@id/tv_kat"
         android:id="@+id/tv_goaltime" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

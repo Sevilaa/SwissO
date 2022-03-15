@@ -14,7 +14,9 @@ namespace SwissO.Parser {
 
         public void LoadStartliste(string html) {
             if (manager is ListManager slmanager && slmanager.GetListType() == ListManager.ListType.Startliste) {
-                List<Laeufer> startliste = new List<Laeufer>();
+                Event e = slmanager.GetAppManager().GetSelected();
+                Daten daten = slmanager.GetAppManager().GetDaten();
+                daten.DeleteAllLaeuferByEvent(e);
                 HtmlDocument htmlDoc = new HtmlDocument();
                 htmlDoc.LoadHtml(html);
                 HtmlNode body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/div/font/div/p/body");
@@ -24,11 +26,11 @@ namespace SwissO.Parser {
                     HtmlNodeCollection trs = body.SelectNodes("./table/tr");
                     foreach (HtmlNode tr in trs) {
                         HtmlNodeCollection td = tr.SelectNodes("./td");
-                        startliste.Add(new Laeufer(slmanager.GetAppManager().GetSelected(), td[1].InnerText, td[0].InnerText, null, td[4].InnerText, cat, null, td[5].InnerText, null, null));
+                        daten.InsertLaeufer(td[1].InnerText + " " + td[0].InnerText, null, td[4].InnerText, cat, null, td[5].InnerText, null, null, e);
                     }
                     body = body.SelectSingleNode("./body");
                 }
-                slmanager.LoadList(startliste);
+                slmanager.LoadList();
             }
         }
 
@@ -62,7 +64,7 @@ namespace SwissO.Parser {
 
         private void LoadLiveResultate(string html) {
             if (manager is ListManager rgmanager && rgmanager.GetListType() == ListManager.ListType.Rangliste) {
-                List<Laeufer> rangliste = new List<Laeufer>();
+                //List<Laeufer> rangliste = new List<Laeufer>();
                 HtmlDocument htmlDoc = new HtmlDocument();
                 htmlDoc.LoadHtml(html);
                 HtmlNodeCollection trs = htmlDoc.DocumentNode.SelectNodes("/html/body/div/table/tr");

@@ -23,9 +23,9 @@ namespace SwissO {
         private IListPage page;
         private Profil profil;
 
-        private List<Laeufer> alleLaeufer;
-        private List<Laeufer> friendsLaeufer;
-        private List<Laeufer> clubLaeufer;
+        //private List<Laeufer> alleLaeufer;
+        //private List<Laeufer> friendsLaeufer;
+        //private List<Laeufer> clubLaeufer;
 
         public ListManager(IListPage page, AppManager appManager, ListType listType) : base(appManager) {
             this.page = page;
@@ -74,25 +74,21 @@ namespace SwissO {
             }
         }
 
-        public void LoadList(List<Laeufer> list) {
-            if (list.Count > 0) {
-                alleLaeufer = list;
-                clubLaeufer = new List<Laeufer>();
-                friendsLaeufer = new List<Laeufer>();
-                List<string> clubs = profil.GetClubs();
-                List<Friend> freunde = profil.GetFriends();
-                foreach (Laeufer laeufer in list) {
-                    foreach (string club in clubs) {
-                        if (laeufer.CompareClub(club)) {
-                            clubLaeufer.Add(laeufer);
-                        }
-                    }
-                    foreach (Friend friend in freunde) {
-                        if (laeufer.CompareFriend(friend)) {
-                            friendsLaeufer.Add(laeufer);
-                        }
-                    }
-                }
+        public MyCursor GetAlleLaeufer() {
+            return appManager.GetDaten().GetAllLaeuferByEvent(appManager.GetSelected());
+        }
+
+        public MyCursor GetClubLaeufer() {
+            return appManager.GetDaten().GetClubLaeuferByEvent(appManager.GetSelected(), profil.GetClubs());
+        }
+
+        public MyCursor GetFriendsLaeufer() {
+            return appManager.GetDaten().GetFriendLaeuferByEvent(appManager.GetSelected(), profil.GetFriends());
+        }
+
+        public void LoadList() {
+            int count = appManager.GetDaten().GetLaeuferCountByEvent(appManager.GetSelected());
+            if (count > 0) {
                 page.UpdateList();
             }
             else {
@@ -102,18 +98,6 @@ namespace SwissO {
 
         public ListType GetListType() {
             return listType;
-        }
-
-        public List<Laeufer> GetAlleLaeufer() {
-            return alleLaeufer;
-        }
-        
-        public List<Laeufer> GetClubLaeufer() {
-            return clubLaeufer;
-        }
-        
-        public List<Laeufer> GetFriendsLaeufer() {
-            return friendsLaeufer;
         }
 
         public override void OnFinished(Parser.Parser.RequestCodes requestCode) {

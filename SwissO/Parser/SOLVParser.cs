@@ -132,12 +132,12 @@ namespace SwissO.Parser {
         private void LoadRangliste(string html) {
             if (manager is ListManager rgmanager) {
                 Event e = rgmanager.GetAppManager().GetSelected();
-                List<Laeufer> laeufer = new List<Laeufer>();
+                Daten daten = rgmanager.GetAppManager().GetDaten();
+                daten.DeleteAllLaeuferByEvent(e);
                 HtmlDocument htmlDoc = new HtmlDocument();
                 htmlDoc.LoadHtml(html);
                 HtmlNode body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/table[2]/tr/td[2]");
                 HtmlNodeCollection kategories = body.SelectNodes("./b");
-                //HtmlNodeCollection data = body.SelectNodes("./pre");
                 for (int i = 0; i < kategories.Count; i++) {
                     HtmlNode data = NextNodeWithName(kategories[i], "pre");
                     if (data != null) {
@@ -148,17 +148,15 @@ namespace SwissO.Parser {
                             string akt = rows[j];
                             string rang = akt.Substring(0, 3).Trim();
                             string name = akt.Substring(5, 23).Trim();
-                            string vorname = name.Split(" ")[0];
-                            string nachname = name.Split(" ")[1];
                             string jahrgang = akt.Substring(28, 2).Trim();
                             string ort = akt.Substring(32, 19).Trim();
                             string club = akt.Substring(51, 19).Trim();
                             string zeit = akt.Substring(70, 8).Trim();
-                            laeufer.Add(new Laeufer(e, vorname, nachname, jahrgang, club, kat, null, null, rang, zeit));
+                            daten.InsertLaeufer(name, jahrgang, club, kat, null, null, zeit, rang, e);
                         }
                     }
                 }
-                rgmanager.LoadList(laeufer);
+                rgmanager.LoadList();
             }
         }
 

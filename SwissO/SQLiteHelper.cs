@@ -4,7 +4,8 @@
 
         //Tables
         public const string TABLE_Profil = "Profil";
-        public const string TABLE_Freunde = "Friends";
+        public const string TABLE_Freunde = "Freunde";
+        public const string TABLE_Laeufer = "Laeufer";
         public const string TABLE_Clubs = "Clubs";
         public const string TABLE_Events = "Events";
 
@@ -13,6 +14,7 @@
 
         //Fremdschlüssel
         public const string COLUMN_Profil = "profil";
+        public const string COLUMN_Event = "event";
 
         //Table Profil
         public const string COLUMN_Vorname = "first_name";
@@ -40,6 +42,13 @@
         public const string COLUMN_LMutation = "mutation";
         public const string COLUMN_EntryPortal = "entryportal";
 
+        //Table Laeufer
+        public const string COLUMN_Jahrgang = "jahrgang";
+        public const string COLUMN_Startnummer = "startnummer";
+        public const string COLUMN_Startzeit = "startzeit";
+        public const string COLUMN_Zielzeit = "zielzeit";
+        public const string COLUMN_Rang = "rang";
+
 
         protected const string SQL_Profil = "CREATE TABLE IF NOT EXISTS " + TABLE_Profil + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -48,10 +57,21 @@
                 COLUMN_SI + " INTEGER NOT NULL," +
                 COLUMN_Category + " VARCHAR(15) NOT NULL)";
 
+        protected const string SQL_Laeufer = "CREATE TABLE IF NOT EXISTS " + TABLE_Laeufer + "(" +
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUMN_Name + " VARCHAR(31) NOT NULL," +
+                COLUMN_Jahrgang + " INTEGER," +
+                COLUMN_Club + " VARCHAR(31)," +
+                COLUMN_Category + " VARCHAR(15) NOT NULL," +
+                COLUMN_Startnummer + " VARCHAR(15)," +
+                COLUMN_Startzeit + " VARCHAR(15)," +
+                COLUMN_Zielzeit + " VARCHAR(15)," +
+                COLUMN_Rang + " VARCHAR(7)," +
+                COLUMN_Event + " INTEGER NOT NULL)";
+
         protected const string SQL_Freunde = "CREATE TABLE IF NOT EXISTS " + TABLE_Freunde + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                COLUMN_Vorname + " VARCHAR(15) NOT NULL," +
-                COLUMN_Nachname + " VARCHAR(15) NOT NULL," +
+                COLUMN_Name + " VARCHAR(31) NOT NULL," +
                 COLUMN_Profil + " INTEGER NOT NULL)";
 
         protected const string SQL_Clubs = "CREATE TABLE IF NOT EXISTS " + TABLE_Clubs + "(" +

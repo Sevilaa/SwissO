@@ -37,7 +37,7 @@ namespace SwissO.Droid {
 
         public void UpdateList() {
             foreach (SubListFragment fragment in subListFragments) {
-                fragment.UpdateList();
+                fragment.LoadList();
             }
 
         }

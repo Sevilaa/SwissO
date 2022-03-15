@@ -1,16 +1,10 @@
-﻿using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
+﻿using Android.Views;
 using Android.Widget;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SwissO.Droid {
-    class SubListAdapter : BaseExpandableListAdapter {
+    /*class SubListAdapter : BaseExpandableListAdapter {
 
         private List<string> categories = new List<string>();
         private Dictionary<string, List<Laeufer>> laeufer = new Dictionary<string, List<Laeufer>>();
@@ -42,8 +36,7 @@ namespace SwissO.Droid {
         public override Java.Lang.Object GetChild(int groupPosition, int childPosition) {
             string cat = categories[groupPosition];
             Laeufer l = laeufer[cat][childPosition];
-            string name = l.vorname + " " + l.nachname;
-            Java.Lang.String name2 = (Java.Lang.String)name;
+            Java.Lang.String name2 = (Java.Lang.String)l.name;
             return name2;
         }
 
@@ -69,12 +62,12 @@ namespace SwissO.Droid {
                 case ListManager.ListType.Startliste:
                     goaltime.Visibility = ViewStates.Gone;
                     starttime.Text = l.starttime;
-                    name.Text = l.vorname + " " + l.nachname;
+                    name.Text = l.name;
                     break;
                 case ListManager.ListType.Rangliste:
                     starttime.Visibility = ViewStates.Gone;
                     goaltime.Text = l.zielzeit;
-                    name.Text = l.vorname + " " + l.nachname;
+                    name.Text = l.name;
                     break;
             }
             return convertView;
@@ -102,5 +95,5 @@ namespace SwissO.Droid {
         public override bool IsChildSelectable(int groupPosition, int childPosition) {
             return false;
         }
-    }
+    }*/
 }

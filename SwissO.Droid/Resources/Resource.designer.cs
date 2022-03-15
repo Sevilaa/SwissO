@@ -6394,196 +6394,196 @@ namespace SwissO.Droid
 			public const int exitUntilCollapsed = 2131230907;
 			
 			// aapt resource value: 0x7F0800BD
-			public const int expandableListView = 2131230909;
-			
-			// aapt resource value: 0x7F0800BE
-			public const int expanded_menu = 2131230910;
+			public const int expanded_menu = 2131230909;
 			
 			// aapt resource value: 0x7F0800BC
 			public const int expand_activities_button = 2131230908;
 			
+			// aapt resource value: 0x7F0800BE
+			public const int fade = 2131230910;
+			
 			// aapt resource value: 0x7F0800BF
-			public const int fade = 2131230911;
-			
-			// aapt resource value: 0x7F0800C0
-			public const int fill = 2131230912;
-			
-			// aapt resource value: 0x7F0800C3
-			public const int filled = 2131230915;
-			
-			// aapt resource value: 0x7F0800C1
-			public const int fill_horizontal = 2131230913;
+			public const int fill = 2131230911;
 			
 			// aapt resource value: 0x7F0800C2
-			public const int fill_vertical = 2131230914;
+			public const int filled = 2131230914;
+			
+			// aapt resource value: 0x7F0800C0
+			public const int fill_horizontal = 2131230912;
+			
+			// aapt resource value: 0x7F0800C1
+			public const int fill_vertical = 2131230913;
+			
+			// aapt resource value: 0x7F0800C3
+			public const int fitToContents = 2131230915;
 			
 			// aapt resource value: 0x7F0800C4
-			public const int fitToContents = 2131230916;
+			public const int @fixed = 2131230916;
 			
 			// aapt resource value: 0x7F0800C5
-			public const int @fixed = 2131230917;
+			public const int flip = 2131230917;
 			
 			// aapt resource value: 0x7F0800C6
-			public const int flip = 2131230918;
+			public const int floating = 2131230918;
 			
 			// aapt resource value: 0x7F0800C7
-			public const int floating = 2131230919;
+			public const int forever = 2131230919;
 			
 			// aapt resource value: 0x7F0800C8
-			public const int forever = 2131230920;
+			public const int fragment_container_view_tag = 2131230920;
 			
 			// aapt resource value: 0x7F0800C9
-			public const int fragment_container_view_tag = 2131230921;
-			
-			// aapt resource value: 0x7F0800CA
-			public const int frost = 2131230922;
+			public const int frost = 2131230921;
 			
 			// aapt resource value: 0x7F080004
 			public const int FUNCTION = 2131230724;
 			
+			// aapt resource value: 0x7F0800CA
+			public const int ghost_view = 2131230922;
+			
 			// aapt resource value: 0x7F0800CB
-			public const int ghost_view = 2131230923;
+			public const int ghost_view_holder = 2131230923;
 			
 			// aapt resource value: 0x7F0800CC
-			public const int ghost_view_holder = 2131230924;
+			public const int gone = 2131230924;
 			
 			// aapt resource value: 0x7F0800CD
-			public const int gone = 2131230925;
+			public const int graph = 2131230925;
 			
 			// aapt resource value: 0x7F0800CE
-			public const int graph = 2131230926;
-			
-			// aapt resource value: 0x7F0800CF
-			public const int graph_wrap = 2131230927;
-			
-			// aapt resource value: 0x7F0800D1
-			public const int grouping = 2131230929;
-			
-			// aapt resource value: 0x7F0800D2
-			public const int groups = 2131230930;
+			public const int graph_wrap = 2131230926;
 			
 			// aapt resource value: 0x7F0800D0
-			public const int group_divider = 2131230928;
+			public const int grouping = 2131230928;
+			
+			// aapt resource value: 0x7F0800D1
+			public const int groups = 2131230929;
+			
+			// aapt resource value: 0x7F0800CF
+			public const int group_divider = 2131230927;
+			
+			// aapt resource value: 0x7F0800D2
+			public const int guideline = 2131230930;
 			
 			// aapt resource value: 0x7F0800D3
-			public const int guideline = 2131230931;
+			public const int header_title = 2131230931;
 			
 			// aapt resource value: 0x7F0800D4
-			public const int header_title = 2131230932;
+			public const int hideable = 2131230932;
 			
 			// aapt resource value: 0x7F0800D5
-			public const int hideable = 2131230933;
+			public const int home = 2131230933;
 			
 			// aapt resource value: 0x7F0800D6
-			public const int home = 2131230934;
+			public const int homeAsUp = 2131230934;
 			
 			// aapt resource value: 0x7F0800D7
-			public const int homeAsUp = 2131230935;
+			public const int honorRequest = 2131230935;
 			
 			// aapt resource value: 0x7F0800D8
-			public const int honorRequest = 2131230936;
+			public const int horizontal_only = 2131230936;
 			
 			// aapt resource value: 0x7F0800D9
-			public const int horizontal_only = 2131230937;
+			public const int host_fragment_activity_main = 2131230937;
 			
 			// aapt resource value: 0x7F0800DA
-			public const int host_fragment_activity_main = 2131230938;
+			public const int icon = 2131230938;
 			
 			// aapt resource value: 0x7F0800DB
-			public const int icon = 2131230939;
+			public const int icon_group = 2131230939;
 			
 			// aapt resource value: 0x7F0800DC
-			public const int icon_group = 2131230940;
+			public const int ifRoom = 2131230940;
 			
 			// aapt resource value: 0x7F0800DD
-			public const int ifRoom = 2131230941;
+			public const int ignore = 2131230941;
 			
 			// aapt resource value: 0x7F0800DE
-			public const int ignore = 2131230942;
+			public const int ignoreRequest = 2131230942;
 			
 			// aapt resource value: 0x7F0800DF
-			public const int ignoreRequest = 2131230943;
+			public const int image = 2131230943;
 			
 			// aapt resource value: 0x7F0800E0
-			public const int image = 2131230944;
+			public const int immediateStop = 2131230944;
 			
 			// aapt resource value: 0x7F0800E1
-			public const int immediateStop = 2131230945;
+			public const int included = 2131230945;
 			
 			// aapt resource value: 0x7F0800E2
-			public const int included = 2131230946;
+			public const int info = 2131230946;
 			
 			// aapt resource value: 0x7F0800E3
-			public const int info = 2131230947;
+			public const int internet = 2131230947;
 			
 			// aapt resource value: 0x7F0800E4
-			public const int internet = 2131230948;
+			public const int invisible = 2131230948;
 			
 			// aapt resource value: 0x7F0800E5
-			public const int invisible = 2131230949;
+			public const int inward = 2131230949;
 			
 			// aapt resource value: 0x7F0800E6
-			public const int inward = 2131230950;
+			public const int italic = 2131230950;
 			
 			// aapt resource value: 0x7F0800E7
-			public const int italic = 2131230951;
+			public const int item_touch_helper_previous_elevation = 2131230951;
 			
 			// aapt resource value: 0x7F0800E8
-			public const int item_touch_helper_previous_elevation = 2131230952;
+			public const int jumpToEnd = 2131230952;
 			
 			// aapt resource value: 0x7F0800E9
-			public const int jumpToEnd = 2131230953;
+			public const int jumpToStart = 2131230953;
 			
 			// aapt resource value: 0x7F0800EA
-			public const int jumpToStart = 2131230954;
+			public const int labeled = 2131230954;
 			
 			// aapt resource value: 0x7F0800EB
-			public const int labeled = 2131230955;
+			public const int layout = 2131230955;
 			
 			// aapt resource value: 0x7F0800EC
-			public const int layout = 2131230956;
+			public const int left = 2131230956;
 			
 			// aapt resource value: 0x7F0800ED
-			public const int left = 2131230957;
+			public const int leftToRight = 2131230957;
 			
 			// aapt resource value: 0x7F0800EE
-			public const int leftToRight = 2131230958;
+			public const int legacy = 2131230958;
 			
 			// aapt resource value: 0x7F0800EF
-			public const int legacy = 2131230959;
+			public const int line1 = 2131230959;
 			
 			// aapt resource value: 0x7F0800F0
-			public const int line1 = 2131230960;
+			public const int line3 = 2131230960;
 			
 			// aapt resource value: 0x7F0800F1
-			public const int line3 = 2131230961;
+			public const int linear = 2131230961;
 			
 			// aapt resource value: 0x7F0800F2
-			public const int linear = 2131230962;
-			
-			// aapt resource value: 0x7F0800F3
-			public const int linearLayout1 = 2131230963;
-			
-			// aapt resource value: 0x7F0800F8
-			public const int listitem_nachname = 2131230968;
-			
-			// aapt resource value: 0x7F0800F9
-			public const int listitem_name = 2131230969;
-			
-			// aapt resource value: 0x7F0800FA
-			public const int listitem_vorname = 2131230970;
-			
-			// aapt resource value: 0x7F0800F4
-			public const int listMode = 2131230964;
-			
-			// aapt resource value: 0x7F0800F5
-			public const int listView_overview = 2131230965;
-			
-			// aapt resource value: 0x7F0800F6
-			public const int list_item = 2131230966;
+			public const int linearLayout1 = 2131230962;
 			
 			// aapt resource value: 0x7F0800F7
-			public const int list_progressBar = 2131230967;
+			public const int listitem_nachname = 2131230967;
+			
+			// aapt resource value: 0x7F0800F8
+			public const int listitem_name = 2131230968;
+			
+			// aapt resource value: 0x7F0800F9
+			public const int listitem_vorname = 2131230969;
+			
+			// aapt resource value: 0x7F0800F3
+			public const int listMode = 2131230963;
+			
+			// aapt resource value: 0x7F0800FA
+			public const int listview_laeufer = 2131230970;
+			
+			// aapt resource value: 0x7F0800F4
+			public const int listView_overview = 2131230964;
+			
+			// aapt resource value: 0x7F0800F5
+			public const int list_item = 2131230965;
+			
+			// aapt resource value: 0x7F0800F6
+			public const int list_progressBar = 2131230966;
 			
 			// aapt resource value: 0x7F0800FB
 			public const int masked = 2131230971;
@@ -7363,79 +7363,82 @@ namespace SwissO.Droid
 			public const int tv_group = 2131231220;
 			
 			// aapt resource value: 0x7F0801F5
-			public const int tv_name = 2131231221;
+			public const int tv_kat = 2131231221;
 			
 			// aapt resource value: 0x7F0801F6
-			public const int tv_starttime = 2131231222;
+			public const int tv_name = 2131231222;
 			
 			// aapt resource value: 0x7F0801F7
-			public const int @unchecked = 2131231223;
+			public const int tv_starttime = 2131231223;
 			
 			// aapt resource value: 0x7F0801F8
-			public const int uniform = 2131231224;
+			public const int @unchecked = 2131231224;
 			
 			// aapt resource value: 0x7F0801F9
-			public const int unlabeled = 2131231225;
+			public const int uniform = 2131231225;
 			
 			// aapt resource value: 0x7F0801FA
-			public const int up = 2131231226;
+			public const int unlabeled = 2131231226;
 			
 			// aapt resource value: 0x7F0801FB
-			public const int useLogo = 2131231227;
+			public const int up = 2131231227;
 			
 			// aapt resource value: 0x7F0801FC
-			public const int vertical_only = 2131231228;
+			public const int useLogo = 2131231228;
 			
 			// aapt resource value: 0x7F0801FD
-			public const int viewPager = 2131231229;
+			public const int vertical_only = 2131231229;
 			
 			// aapt resource value: 0x7F0801FE
-			public const int view_offset_helper = 2131231230;
+			public const int viewPager = 2131231230;
 			
 			// aapt resource value: 0x7F0801FF
-			public const int view_transition = 2131231231;
+			public const int view_offset_helper = 2131231231;
 			
 			// aapt resource value: 0x7F080200
-			public const int view_tree_lifecycle_owner = 2131231232;
+			public const int view_transition = 2131231232;
 			
 			// aapt resource value: 0x7F080201
-			public const int view_tree_saved_state_registry_owner = 2131231233;
+			public const int view_tree_lifecycle_owner = 2131231233;
 			
 			// aapt resource value: 0x7F080202
-			public const int view_tree_view_model_store_owner = 2131231234;
+			public const int view_tree_saved_state_registry_owner = 2131231234;
 			
 			// aapt resource value: 0x7F080203
-			public const int visible = 2131231235;
+			public const int view_tree_view_model_store_owner = 2131231235;
 			
 			// aapt resource value: 0x7F080204
-			public const int visible_removing_fragment_view_tag = 2131231236;
+			public const int visible = 2131231236;
 			
 			// aapt resource value: 0x7F080205
-			public const int west = 2131231237;
-			
-			// aapt resource value: 0x7F080207
-			public const int withinBounds = 2131231239;
+			public const int visible_removing_fragment_view_tag = 2131231237;
 			
 			// aapt resource value: 0x7F080206
-			public const int withText = 2131231238;
+			public const int west = 2131231238;
 			
 			// aapt resource value: 0x7F080208
-			public const int wrap = 2131231240;
+			public const int withinBounds = 2131231240;
+			
+			// aapt resource value: 0x7F080207
+			public const int withText = 2131231239;
 			
 			// aapt resource value: 0x7F080209
-			public const int wrap_content = 2131231241;
+			public const int wrap = 2131231241;
 			
 			// aapt resource value: 0x7F08020A
-			public const int wrap_content_constrained = 2131231242;
+			public const int wrap_content = 2131231242;
 			
 			// aapt resource value: 0x7F08020B
-			public const int x_left = 2131231243;
+			public const int wrap_content_constrained = 2131231243;
 			
 			// aapt resource value: 0x7F08020C
-			public const int x_right = 2131231244;
+			public const int x_left = 2131231244;
 			
 			// aapt resource value: 0x7F08020D
-			public const int zero_corner_chip = 2131231245;
+			public const int x_right = 2131231245;
+			
+			// aapt resource value: 0x7F08020E
+			public const int zero_corner_chip = 2131231246;
 			
 			static Id()
 			{

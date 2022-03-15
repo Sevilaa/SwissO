@@ -95,6 +95,10 @@ namespace SwissO.Droid {
             return cursor.GetType(index) == FieldType.Null;
         }
 
+        public override int Length() {
+            return cursor.Count;
+        }
+
         public override bool Read() {
             if (firstRowRead) {
                 cursor.MoveToNext();
