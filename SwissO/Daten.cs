@@ -172,15 +172,15 @@ namespace SwissO {
             return Insert(SQLiteHelper.TABLE_Laeufer, daten);
         }
 
-        public MyCursor GetAllLaeuferByEvent(Event e, string filter) {
+        public MyCursor GetAllLaeuferByEvent(Event e, string filter, string order) {
             string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" +
                 SQLiteHelper.COLUMN_Name + " LIKE '%" + filter + "%' OR " + 
                 SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " + 
                 SQLiteHelper.COLUMN_Club + " LIKE '%" + filter + "%')";
-            return Query(SQLiteHelper.TABLE_Laeufer, where, null, null);
+            return Query(SQLiteHelper.TABLE_Laeufer, where, null, order);
         }
 
-        public MyCursor GetClubLaeuferByEvent(Event e, List<string> clubs, string filter) {
+        public MyCursor GetClubLaeuferByEvent(Event e, List<string> clubs, string filter, string order) {
             if(clubs.Count == 0) {
                 return Query(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Club + " = 'lkaasdfsjdf'", null, null);
             }
@@ -193,10 +193,10 @@ namespace SwissO {
                 where += " OR " + SQLiteHelper.COLUMN_Club + "LIKE '%" + clubs[i] + "%'";
             }
             where += ")";
-            return Query(SQLiteHelper.TABLE_Laeufer, where, null, null);
+            return Query(SQLiteHelper.TABLE_Laeufer, where, null, order);
         }
 
-        public MyCursor GetFriendLaeuferByEvent(Event e, List<string> freunde, string filter) {
+        public MyCursor GetFriendLaeuferByEvent(Event e, List<string> freunde, string filter, string order) {
             if (freunde.Count == 0) {
                 return Query(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Club + " = 'lkaasdfsjdf'", null, null);
             }
@@ -209,11 +209,11 @@ namespace SwissO {
                 where += " OR " + SQLiteHelper.COLUMN_Name + " LIKE '%" + freunde[i] + "%'";
             }
             where += ")";
-            return Query(SQLiteHelper.TABLE_Laeufer, where, null, null);
+            return Query(SQLiteHelper.TABLE_Laeufer, where, null, order);
         }
 
         public int GetLaeuferCountByEvent(Event e) {
-            return GetAllLaeuferByEvent(e, "").Length();
+            return GetAllLaeuferByEvent(e, "", null).Length();
         }
 
         public void DeleteAllLaeuferByEvent(Event e) {

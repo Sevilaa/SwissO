@@ -49,5 +49,19 @@
     <item>zielzeit</item>
     <item>kategorie</item>
   </string-array>
+
+  <string-array name="sorting_startlist_entires">
+    <item>Startnummer</item>
+    <item>Name</item>
+    <item>Kategorie</item>
+    <item>Startzeit</item>
+  </string-array>
+
+  <string-array name="sorting_ranglist_entires">
+    <item>Rang</item>
+    <item>Name</item>
+    <item>Kategorie</item>
+    <item>Zielzeit</item>
+  </string-array>
   
 </resources>

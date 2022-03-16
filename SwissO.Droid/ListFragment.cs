@@ -1,4 +1,5 @@
-﻿using Android.OS;
+﻿using Android.Content;
+using Android.OS;
 using Android.Views;
 using Android.Widget;
 using AndroidX.ViewPager2.Widget;
@@ -80,6 +81,10 @@ namespace SwissO.Droid {
                         OpenInWebBrowser();
                     }
                     return true;
+                case Resource.Id.sorting:
+                    SortingDialog dialog = new SortingDialog(manager);
+                    dialog.Show(act.SupportFragmentManager, "sorting");
+                    return true;
             }
             return base.OnOptionsItemSelected(item);
         }
@@ -130,6 +135,16 @@ namespace SwissO.Droid {
             showOpenInBrowserInMenu = true;
             act.InvalidateOptionsMenu();
             OpenInWebBrowser();
+        }
+
+        public bool GetBoolPref(string key, bool def) {
+            ISharedPreferences pref = Context.GetSharedPreferences(Helper.pref_file, FileCreationMode.Private);
+            return pref.GetBoolean(key, def);
+        }
+
+        public string GetStringPref(string key, string def) {
+            ISharedPreferences pref = Context.GetSharedPreferences(Helper.pref_file, FileCreationMode.Private);
+            return pref.GetString(key, def);
         }
     }
 }

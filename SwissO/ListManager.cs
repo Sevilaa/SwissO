@@ -11,6 +11,8 @@ namespace SwissO {
         void ShowProgressBar();
         void ShowList();
         void ShowOnlyInWebBrowser();
+        bool GetBoolPref(string key, bool def);
+        string GetStringPref(string key, string def);
 
     }
 
@@ -75,15 +77,26 @@ namespace SwissO {
         }
 
         public MyCursor GetAlleLaeufer(string filter) {
-            return appManager.GetDaten().GetAllLaeuferByEvent(appManager.GetSelected(), filter);
+            return appManager.GetDaten().GetAllLaeuferByEvent(appManager.GetSelected(), filter, OrderString());
         }
 
         public MyCursor GetClubLaeufer(string filter) {
-            return appManager.GetDaten().GetClubLaeuferByEvent(appManager.GetSelected(), profil.GetClubs(), filter);
+            return appManager.GetDaten().GetClubLaeuferByEvent(appManager.GetSelected(), profil.GetClubs(), filter, OrderString());
         }
 
         public MyCursor GetFriendsLaeufer(string filter) {
-            return appManager.GetDaten().GetFriendLaeuferByEvent(appManager.GetSelected(), profil.GetFriends(), filter);
+            return appManager.GetDaten().GetFriendLaeuferByEvent(appManager.GetSelected(), profil.GetFriends(), filter, OrderString());
+        }
+
+        private string OrderString() {
+            if(listType == ListType.Startliste) {
+                return page.GetStringPref(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column) +
+                (page.GetBoolPref(Helper.Keys.sorting_startlist_ascending, Helper.Defaults.sorting_startlist_ascending) ? " ASC;" : " DESC;");
+            }
+            else {
+                return page.GetStringPref(Helper.Keys.sorting_ranglist_column, Helper.Defaults.sorting_ranglist_column) +
+                (page.GetBoolPref(Helper.Keys.sorting_ranglist_ascending, Helper.Defaults.sorting_ranglist_ascending) ? " ASC;" : " DESC;");
+            }
         }
 
         public void LoadList() {

@@ -83,6 +83,7 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsActivity.cs" />
+    <Compile Include="SortingDialog.cs" />
     <Compile Include="SQLiteHelper_A.cs" />
     <Compile Include="ListFragment.cs" />
     <Compile Include="SubListAdapter.cs" />

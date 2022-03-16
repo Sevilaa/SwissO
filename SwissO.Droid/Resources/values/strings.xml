@@ -41,6 +41,11 @@
 
 	<string name="noeventselected">Kein Event ausgewählt</string>
 
+  <string name="sortierung">Sortierung</string>
+  <string name="absteigend">Absteigend</string>
+  <string name="aufsteigend">Aufsteigend</string>
+
+
   <!--Settings-->
   <string name="display_header">Anzeige</string>
 

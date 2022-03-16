@@ -68,15 +68,8 @@ namespace SwissO {
         }
 
         private static Uri newUri(string s) {
-            if (string.IsNullOrWhiteSpace(s)) {
-                return null;
-            }
-            try {
-                return new Uri(s);
-            }
-            catch {
-                return null;
-            }
+            Uri.TryCreate(s, UriKind.RelativeOrAbsolute, out Uri uri);
+            return uri;
         }
 
         public bool equals(Event e) {
@@ -125,7 +118,10 @@ namespace SwissO {
                 case UriArt.Rangliste:
                     return Rangliste;
                 case UriArt.WKZ:
-                    return Helper.GetMapsUrl(Koordn, Koorde);
+                    if (Koordn != Helper.intnull && Koorde != Helper.intnull) {
+                        return new Uri("geo:" + Koordn + "," + Koorde + "?q=" + Koordn + "," + Koorde + "(WKZ)");
+                    }
+                    return null;
                 case UriArt.Liveresultate:
                     return Liveresultate;
                 default:

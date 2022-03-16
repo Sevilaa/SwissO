@@ -2,15 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<item
+  <item
 		android:id="@+id/spinner"
 		app:showAsAction="always"
 		app:actionViewClass="android.widget.Spinner" />
 
-	<item 
+  <item
 		android:id="@+id/internet"
 		android:icon="@drawable/ic_internet"
 		app:showAsAction="ifRoom"
 		android:title="@string/openinbrowser"/>
+
+  <item
+    android:id="@+id/sorting"
+    app:showAsAction="never"
+    android:title="@string/sortierung"/>
 
 </menu>
