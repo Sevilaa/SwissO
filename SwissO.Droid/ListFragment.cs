@@ -12,6 +12,8 @@ namespace SwissO.Droid {
 
         private ListFragmentPagerAdapter adapter;
 
+        private bool showOpenInBrowserInMenu = true;
+
         public ListFragment(MainActivity activity, ListManager.ListType listType) : base(activity, listType == ListManager.ListType.Startliste ? Resource.String.startlist : Resource.String.rangliste) {
             this.listType = listType;
         }
@@ -68,6 +70,7 @@ namespace SwissO.Droid {
                     }
                 };
             }
+            menu.FindItem(Resource.Id.internet).SetVisible(showOpenInBrowserInMenu);
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item) {
@@ -82,7 +85,7 @@ namespace SwissO.Droid {
         }
 
         private void OpenInWebBrowser() {
-            act.OpenWebBrowser(act.GetAppManager().GetSelected().Startliste);
+            act.OpenWebBrowser(manager.GetListType() == ListManager.ListType.Startliste ? act.GetAppManager().GetSelected().Startliste : act.GetAppManager().GetSelected().Rangliste);
         }
 
         public void UpdateList() {
@@ -96,6 +99,8 @@ namespace SwissO.Droid {
             View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Gone;
             View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
             View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Gone;
+            showOpenInBrowserInMenu = false;
+            act.InvalidateOptionsMenu();
         }
 
         public void ShowProgressBar() {
@@ -112,6 +117,8 @@ namespace SwissO.Droid {
             View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Visible;
             View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
             View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Gone;
+            showOpenInBrowserInMenu = true;
+            act.InvalidateOptionsMenu();
         }
 
         public void ShowOnlyInWebBrowser() {
@@ -120,6 +127,8 @@ namespace SwissO.Droid {
             View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Gone;
             View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
             View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Visible;
+            showOpenInBrowserInMenu = true;
+            act.InvalidateOptionsMenu();
             OpenInWebBrowser();
         }
     }

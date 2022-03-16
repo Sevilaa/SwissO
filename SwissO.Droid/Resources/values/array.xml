@@ -1,0 +1,53 @@
+<resources>
+  <!--Settings-->
+  <string-array name="startlist_pref_entries">
+    <item>Startnummer</item>
+    <item>Name</item>
+    <item>Startzeit</item>
+    <item>Kategorie</item>
+    <item>Jahrgang</item>
+    <item>Club</item>
+  </string-array>
+
+  <string-array name="startlist_pref_values">
+    <item>startnummer</item>
+    <item>name</item>
+    <item>startzeit</item>
+    <item>kategorie</item>
+    <item>jahrgang</item>
+    <item>club</item>
+  </string-array>
+
+  <string-array name="startlist_pref_default">
+    <item>startnummer</item>
+    <item>name</item>
+    <item>startzeit</item>
+    <item>kategorie</item>
+  </string-array>
+
+  <string-array name="ranglist_pref_entries">
+    <item>Rang</item>
+    <item>Name</item>
+    <item>Zielzeit</item>
+    <item>Kategorie</item>
+    <item>Jahrgang</item>
+    <item>Club</item>
+  </string-array>
+
+  <string-array name="ranglist_pref_values">
+    <item>rang</item>
+    <item>name</item>
+    <item>zielzeit</item>
+    <item>kategorie</item>
+    <item>jahrgang</item>
+    <item>club</item>
+  </string-array>
+
+  <string-array name="ranglist_pref_default">
+    <item>rang</item>
+    <item>name</item>
+    <item>zielzeit</item>
+    <item>kategorie</item>
+  </string-array>
+  
+</resources>

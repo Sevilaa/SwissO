@@ -38,5 +38,27 @@
 
 	<string name="noeventselected">Kein Event ausgewählt</string>
 
+  <!--Settings-->
+  <string name="display_header">Anzeige</string>
 
+  <string name="startlist_title">Startlisten Infos</string>
+  <string name="startlist_summary">Sichtbare Spalten in der Startliste</string>
+
+  <string name="ranglist_title">Ranglisten Infos</string>
+  <string name="ranglist_summary">Sichtbare Spalten in der Rangliste</string>
+
+
+  <!--<string name="sync_header">Sync</string>
+
+  --><!-- Messages Preferences --><!--
+  <string name="signature_title">Your signature</string>
+  <string name="reply_title">Default reply action</string>
+
+  --><!-- Sync Preferences --><!--
+  <string name="sync_title">Sync email periodically</string>
+  <string name="attachment_title">Download incoming attachments</string>
+  <string name="attachment_summary_on">
+    Automatically download attachments for incoming emails
+  </string>
+  <string name="attachment_summary_off">Only download attachments when manually requested</string>-->
 </resources>

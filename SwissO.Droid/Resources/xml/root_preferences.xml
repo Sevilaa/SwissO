@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <PreferenceCategory app:title="@string/display_header">
+
+    <MultiSelectListPreference
+        app:entries="@array/startlist_pref_entries"
+        app:entryValues="@array/startlist_pref_values"
+        app:defaultValue="@array/startlist_pref_default"
+        app:key="startlist"
+        app:title="@string/startlist_title"
+        app:summary="@string/startlist_summary"/>
+        
+    <MultiSelectListPreference
+        app:entries="@array/ranglist_pref_entries"
+        app:entryValues="@array/ranglist_pref_values"
+        app:defaultValue="@array/ranglist_pref_default"
+        app:key="ranglist"
+        app:title="@string/ranglist_title"
+        app:summary="@string/ranglist_summary"/>
+
+  </PreferenceCategory>
+
+  <!--<preferenceCategory app:title="@string/sync_header">
+
+    <SwitchPreferenceCompat
+        app:key="sync"
+        app:title="@string/sync_title" />
+
+    <SwitchPreferenceCompat
+        app:dependency="sync"
+        app:key="attachment"
+        app:summaryOff="@string/attachment_summary_off"
+        app:summaryOn="@string/attachment_summary_on"
+        app:title="@string/attachment_title" />
+
+  </PreferenceCategory>-->
+
+</PreferenceScreen>

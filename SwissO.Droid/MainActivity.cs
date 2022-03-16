@@ -38,6 +38,17 @@ namespace SwissO.Droid {
             return base.OnCreateOptionsMenu(menu);
         }
 
+        public override bool OnOptionsItemSelected(IMenuItem item) {
+            switch (item.ItemId) {
+                case Resource.Id.settings:
+                    Intent intent = new Intent(this, typeof(SettingsActivity));
+                    StartActivity(intent);
+                    return true;
+                default:
+                    return base.OnOptionsItemSelected(item);
+            }
+        }
+
         private MyFragment GetNavigatedFragment(int item_id) {
             switch (item_id) {
                 case Resource.Id.navigation_overview:
@@ -68,9 +79,11 @@ namespace SwissO.Droid {
         }
 
         public void OpenWebBrowser(Uri uri) {
-            Intent intent = new Intent(Intent.ActionView);
-            intent.SetData(Android.Net.Uri.Parse(uri.ToString()));
-            StartActivity(intent);
+            if (uri != null) {
+                Intent intent = new Intent(Intent.ActionView);
+                intent.SetData(Android.Net.Uri.Parse(uri.ToString()));
+                StartActivity(intent);
+            }
         }
 
         public AppManager GetAppManager() {
