@@ -35,7 +35,7 @@ namespace SwissO {
             picoParser.StartEventlistRequest();
         }
 
-        public override void OnFinished(Parser.Parser.RequestCodes requestCode) {
+        public void FinishedEventlistLoading(Parser.Parser.RequestCodes requestCode) {
             runningParser.Remove(requestCode);
             if(runningParser.Count == 0) {
                 page.StopRefreshing();

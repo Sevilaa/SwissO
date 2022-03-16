@@ -90,16 +90,6 @@ namespace SwissO.Droid {
             ShowList();
         }
 
-        public void UpdateEvent() {
-            act.InvalidateOptionsMenu();
-            if (act.GetAppManager().GetSelected().Startliste != null) {
-                manager.SendStartlisteRequest();
-            }
-            else {
-                ShowNotAvailable();
-            }
-        }
-
         public void ShowNotAvailable() {
             View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Visible;
             View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Gone;

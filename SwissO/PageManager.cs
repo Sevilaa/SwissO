@@ -18,7 +18,5 @@ namespace SwissO {
         public AppManager GetAppManager() {
             return appManager;
         }
-
-        public abstract void OnFinished(Parser.Parser.RequestCodes requestCode);
     }
 }

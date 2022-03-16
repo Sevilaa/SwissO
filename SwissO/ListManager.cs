@@ -23,10 +23,6 @@ namespace SwissO {
         private IListPage page;
         private Profil profil;
 
-        //private List<Laeufer> alleLaeufer;
-        //private List<Laeufer> friendsLaeufer;
-        //private List<Laeufer> clubLaeufer;
-
         public ListManager(IListPage page, AppManager appManager, ListType listType) : base(appManager) {
             this.page = page;
             this.listType = listType;
@@ -52,6 +48,10 @@ namespace SwissO {
                 if (selected.Startliste.OriginalString.Contains("entry.picoevents.ch")) {
                     PicoParser picoParser = new PicoParser(httpClient, this, Parser.Parser.RequestCodes.PicoStartliste);
                     picoParser.StartStartlisteRequest(selected);
+                }
+                else if (selected.Startliste.OriginalString.Contains("o-l.ch/cgi-bin/results?type=start&")) {
+                    SOLVParser solvParser = new SOLVParser(httpClient, this, Parser.Parser.RequestCodes.SOLVStartliste);
+                    solvParser.StartStartlisteRequest(selected);
                 }
                 else {
                     page.ShowOnlyInWebBrowser();
@@ -98,10 +98,6 @@ namespace SwissO {
 
         public ListType GetListType() {
             return listType;
-        }
-
-        public override void OnFinished(Parser.Parser.RequestCodes requestCode) {
-            throw new NotImplementedException();
         }
     }
 }

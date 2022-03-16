@@ -55,7 +55,7 @@ namespace SwissO.Parser {
                 DateTime deadline = Helper.GetDate(tds[6].InnerText);
                 ((OverviewManager)manager).Add(new Event(title, date, null, null, null, Helper.intnull, Helper.intnull, deadline, lausschreibung, null, lanmeldung, lmutation, lstartliste, null, null, 2));
             }
-            manager.OnFinished(requestCode);
+            ((OverviewManager)manager).FinishedEventlistLoading(requestCode);
         }
 
         private void StartLiveResultateRequest(Event e) {

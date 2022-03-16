@@ -110,13 +110,11 @@ namespace SwissO.Parser {
             }
             if (manager is OverviewManager ovmanager) {
                 ovmanager.Add(new Event(title, date, club, map, region, intn, inte, deadline, lausschreibung, null, null, null, startliste, liveresultate, rangliste, portal));
+                if (idsUnfinished.Count == 0) {
+                    ovmanager.FinishedEventlistLoading(requestCode);
+                }
             }
-            if (idsUnfinished.Count == 0) {
-                manager.OnFinished(requestCode);
-            }
-
         }
-
 
         private static int GetInt(string s) {
             if (string.IsNullOrWhiteSpace(s)) {
@@ -160,6 +158,41 @@ namespace SwissO.Parser {
             }
         }
 
+        public void StartStartlisteRequest(Event e) {
+            httpClient.SendStringRequest(this, e.Startliste.ToString() + "&kind=all", MyHttpClient.RequestCodes.Startliste, e.Id);
+        }
+
+        private void LoadStartliste(string html) {
+            if (manager is ListManager rgmanager) {
+                Event e = rgmanager.GetAppManager().GetSelected();
+                Daten daten = rgmanager.GetAppManager().GetDaten();
+                daten.DeleteAllLaeuferByEvent(e);
+                HtmlDocument htmlDoc = new HtmlDocument();
+                htmlDoc.LoadHtml(html);
+                HtmlNode body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/table[2]/tr/td[2]");
+                HtmlNodeCollection kategories = body.SelectNodes("./b");
+                for (int i = 0; i < kategories.Count; i++) {
+                    HtmlNode data = NextNodeWithName(kategories[i], "pre");
+                    if (data != null) {
+                        string kat = kategories[i].InnerText.Trim();
+                        string resultate = data.InnerText;
+                        string[] rows = resultate.Split("\n");
+                        for (int j = 2; j < rows.Length - 1; j++) {
+                            string akt = rows[j];
+                            string startnummer = akt.Substring(0, 7).Trim();
+                            string name = akt.Substring(8, 23).Trim();
+                            string jahrgang = akt.Substring(31, 2).Trim();
+                            string ort = akt.Substring(34, 19).Trim();
+                            string club = akt.Substring(53, 19).Trim();
+                            string zeit = akt.Substring(73, 5).Trim();
+                            daten.InsertLaeufer(name, jahrgang, club, kat, startnummer, zeit, null, null, e);
+                        }
+                    }
+                }
+                rgmanager.LoadList();
+            }
+        }
+
         private static HtmlNode NextNodeWithName(HtmlNode node, string name) {
             while(node != null) {
                 if(node.Name == name) {
@@ -174,6 +207,9 @@ namespace SwissO.Parser {
             switch (requestCode) {
                 case MyHttpClient.RequestCodes.Rangliste:
                     LoadRangliste(html);
+                    break;
+                case MyHttpClient.RequestCodes.Startliste:
+                    LoadStartliste(html);
                     break;
                 case MyHttpClient.RequestCodes.Eventliste:
                     LoadEventList(html);

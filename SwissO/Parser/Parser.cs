@@ -5,7 +5,7 @@ using System.Text;
 namespace SwissO.Parser {
     public abstract class Parser {
 
-        public enum RequestCodes { SOLVEventlist, PicoEventlist, SOLVRangliste, PicoStartliste}
+        public enum RequestCodes { SOLVEventlist, PicoEventlist, SOLVRangliste, SOLVStartliste, PicoStartliste}
 
         protected readonly MyHttpClient httpClient;
         protected readonly PageManager manager;
