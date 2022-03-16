@@ -15,7 +15,8 @@
         android:hint="@string/vorname"
         app:layout_constraintEnd_toStartOf="@id/profil_nachname"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/profil_nachname"
@@ -26,7 +27,8 @@
         android:hint="@string/nachname"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/profil_vorname"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" 
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/profil_sinumber"
@@ -37,7 +39,8 @@
         android:hint="@string/si_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profil_vorname" />
+        app:layout_constraintTop_toBottomOf="@id/profil_vorname"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/profil_category"
@@ -48,7 +51,17 @@
         android:hint="@string/category"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profil_sinumber" />
+        app:layout_constraintTop_toBottomOf="@id/profil_sinumber" 
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/friend_title"
+        android:text="@string/friends"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        app:layout_constraintTop_toBottomOf="@id/profil_category"
+        app:layout_constraintBottom_toTopOf="@id/profil_peoplelist" />
 
     <ListView
         android:id="@+id/profil_peoplelist" 
@@ -58,8 +71,17 @@
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profil_category"
-        app:layout_constraintBottom_toTopOf="@id/profil_clublist"/>
+        app:layout_constraintTop_toBottomOf="@id/friend_title"
+        app:layout_constraintBottom_toTopOf="@id/club_title"/>
+
+    <TextView
+        android:id="@+id/club_title"
+        android:text="@string/club"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        app:layout_constraintTop_toBottomOf="@id/profil_peoplelist"
+        app:layout_constraintBottom_toTopOf="@id/profil_clublist" />
     
     <ListView
         android:id="@+id/profil_clublist" 
@@ -70,6 +92,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profil_peoplelist"/>
+        app:layout_constraintTop_toBottomOf="@id/club_title"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

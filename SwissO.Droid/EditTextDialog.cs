@@ -24,7 +24,7 @@ namespace SwissO.Droid {
             v = inflater.Inflate(Resource.Layout.dialog_edittext, null);
             builder.SetView(v);
 
-            builder.SetTitle(Resource.String.namen_eingeben);
+            builder.SetTitle(club ? Resource.String.club_add : Resource.String.friend_add);
             builder.SetPositiveButton("OK", new EventHandler<DialogClickEventArgs>(OkClick));
             builder.SetNegativeButton(Resource.String.cancel, new EventHandler<DialogClickEventArgs>(CancelClick));
             Cancelable = true;

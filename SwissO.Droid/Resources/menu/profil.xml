@@ -1,14 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!--For all properties see: https://aka.ms/android-menu-resource-->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<item android:id="@+id/add_friend"
-		   android:showAsAction="never"
-		  android:title="@string/add_friend"/>
+  <item android:id="@+id/add_friend"
+		  app:showAsAction="ifRoom"
+			android:icon="@drawable/ic_person_add"
+			android:title="@string/new_friend"/>
 
-	<item android:id="@+id/add_club"
-	 android:showAsAction="never"
-	android:title="@string/add_club"/>
+  <item android:id="@+id/add_club"
+			app:showAsAction="ifRoom"
+			android:icon="@drawable/ic_group_add"
+			android:title="@string/new_club"/>
 
 </menu>
 
