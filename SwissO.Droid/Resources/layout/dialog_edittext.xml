@@ -11,25 +11,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/dialog_vorname_layout"
         app:boxBackgroundColor="?android:attr/windowBackground"
-        android:hint="@string/vorname">
+        android:hint="@string/name">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/dialog_vorname" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:id="@+id/dialog_name" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/dialog_nachname_layout"
-        app:boxBackgroundColor="?android:attr/windowBackground"
-        android:hint="@string/nachname">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/dialog_nachname" />
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

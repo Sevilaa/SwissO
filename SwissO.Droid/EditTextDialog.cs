@@ -4,7 +4,6 @@ using Android.Views;
 using Android.Widget;
 using System;
 using Android.App;
-using Google.Android.Material.TextField;
 
 namespace SwissO.Droid {
     class EditTextDialog : AndroidX.Fragment.App.DialogFragment {
@@ -24,10 +23,6 @@ namespace SwissO.Droid {
             LayoutInflater inflater = Activity.LayoutInflater;
             v = inflater.Inflate(Resource.Layout.dialog_edittext, null);
             builder.SetView(v);
-            if (club) {
-                v.FindViewById(Resource.Id.dialog_nachname_layout).Visibility = ViewStates.Gone;
-                ((TextInputLayout)v.FindViewById(Resource.Id.dialog_vorname_layout)).Hint = Resources.GetString(Resource.String.name);
-            }
 
             builder.SetTitle(Resource.String.namen_eingeben);
             builder.SetPositiveButton("OK", new EventHandler<DialogClickEventArgs>(OkClick));
@@ -38,9 +33,8 @@ namespace SwissO.Droid {
 
 
         private void OkClick(object sender, DialogClickEventArgs e) {
-            string vorname = ((EditText)v.FindViewById(Resource.Id.dialog_vorname)).Text;
-            string nachname = club ? null : ((EditText)v.FindViewById(Resource.Id.dialog_nachname)).Text;
-            manager.NamenCallback(club, vorname, nachname);
+            string vorname = ((EditText)v.FindViewById(Resource.Id.dialog_name)).Text;
+            manager.NamenCallback(club, vorname);
             Dismiss();
         }
 

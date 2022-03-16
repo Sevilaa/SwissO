@@ -62,9 +62,9 @@ namespace SwissO.Droid {
             MyCursor_A cursor = (MyCursor_A)daten.GetFreundeByProfil(manager.GetProfilID());
             if (cursor.Read()) {
                 freundeList.Visibility = ViewStates.Visible;
-                string[] anzeigeSpalten = new string[] { SQLiteHelper.COLUMN_Vorname, SQLiteHelper.COLUMN_Nachname };
-                int[] anzeigeViews = new int[] { Resource.Id.listitem_vorname, Resource.Id.listitem_nachname };
-                SimpleCursorAdapter adapter = new SimpleCursorAdapter(Activity, Resource.Layout.listitem_freund, cursor.Get(), anzeigeSpalten, anzeigeViews, 0);
+                string[] anzeigeSpalten = new string[] { SQLiteHelper.COLUMN_Name };
+                int[] anzeigeViews = new int[] { Resource.Id.listitem_name };
+                SimpleCursorAdapter adapter = new SimpleCursorAdapter(Activity, Resource.Layout.listitem_club, cursor.Get(), anzeigeSpalten, anzeigeViews, CursorAdapterFlags.None);
                 freundeList.Adapter = adapter;
             }
             else {

@@ -136,10 +136,9 @@ namespace SwissO {
 
         //Table Freunde
 
-        public int InsertFreund(string vorname, string nachname, int profilID) {
+        public int InsertFreund(string vorname, int profilID) {
             MyContentValues daten = new MyContentValues();
-            daten.Put(SQLiteHelper.COLUMN_Vorname, vorname);
-            daten.Put(SQLiteHelper.COLUMN_Nachname, nachname);
+            daten.Put(SQLiteHelper.COLUMN_Name, vorname);
             daten.Put(SQLiteHelper.COLUMN_Profil, profilID);
             return Insert(SQLiteHelper.TABLE_Freunde, daten);
         }
@@ -193,9 +192,9 @@ namespace SwissO {
             if (freunde.Count == 0) {
                 return Query(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Club + " = 'lkaasdfsjdf'", null, null);
             }
-            string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" + SQLiteHelper.COLUMN_Name + "LIKE '%" + freunde[0] + "%'";
+            string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" + SQLiteHelper.COLUMN_Name + " LIKE '%" + freunde[0] + "%'";
             for (int i = 1; i < freunde.Count; i++) {
-                where += " OR " + SQLiteHelper.COLUMN_Club + "LIKE '%" + freunde[i] + "%'";
+                where += " OR " + SQLiteHelper.COLUMN_Name + " LIKE '%" + freunde[i] + "%'";
             }
             where += ")";
             return Query(SQLiteHelper.TABLE_Laeufer, where, null, null);

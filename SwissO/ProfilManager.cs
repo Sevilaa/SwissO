@@ -38,12 +38,12 @@ namespace SwissO {
             return profil.GetID();
         }
 
-        public void NamenCallback(bool club, string vorname, string nachname) {
+        public void NamenCallback(bool club, string name) {
             if (club) {
-                daten.InsertClub(vorname, profil.GetID());
+                daten.InsertClub(name, profil.GetID());
             }
             else {
-                daten.InsertFreund(vorname, nachname, profil.GetID());
+                daten.InsertFreund(name, profil.GetID());
             }
 
             page.ShowFriendsAndClub();
