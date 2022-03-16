@@ -74,16 +74,16 @@ namespace SwissO {
             }
         }
 
-        public MyCursor GetAlleLaeufer() {
-            return appManager.GetDaten().GetAllLaeuferByEvent(appManager.GetSelected());
+        public MyCursor GetAlleLaeufer(string filter) {
+            return appManager.GetDaten().GetAllLaeuferByEvent(appManager.GetSelected(), filter);
         }
 
-        public MyCursor GetClubLaeufer() {
-            return appManager.GetDaten().GetClubLaeuferByEvent(appManager.GetSelected(), profil.GetClubs());
+        public MyCursor GetClubLaeufer(string filter) {
+            return appManager.GetDaten().GetClubLaeuferByEvent(appManager.GetSelected(), profil.GetClubs(), filter);
         }
 
-        public MyCursor GetFriendsLaeufer() {
-            return appManager.GetDaten().GetFriendLaeuferByEvent(appManager.GetSelected(), profil.GetFriends());
+        public MyCursor GetFriendsLaeufer(string filter) {
+            return appManager.GetDaten().GetFriendLaeuferByEvent(appManager.GetSelected(), profil.GetFriends(), filter);
         }
 
         public void LoadList() {

@@ -32,6 +32,8 @@
 	<string name="liveresult">Live Resultate</string>
 	<string name="rangliste">Rangliste</string>
 
+  <string name="schnellfilter">Schnellfilter</string>
+
 	<!--Menu-->
 	<string name="refresh">Refresh</string>
 	<string name="openinbrowser">In Browser öffnen</string>

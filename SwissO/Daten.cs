@@ -172,15 +172,23 @@ namespace SwissO {
             return Insert(SQLiteHelper.TABLE_Laeufer, daten);
         }
 
-        public MyCursor GetAllLaeuferByEvent(Event e) {
-            return Query(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Event + " = " + e.Id, null, null);
+        public MyCursor GetAllLaeuferByEvent(Event e, string filter) {
+            string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" +
+                SQLiteHelper.COLUMN_Name + " LIKE '%" + filter + "%' OR " + 
+                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " + 
+                SQLiteHelper.COLUMN_Club + " LIKE '%" + filter + "%')";
+            return Query(SQLiteHelper.TABLE_Laeufer, where, null, null);
         }
 
-        public MyCursor GetClubLaeuferByEvent(Event e, List<string> clubs) {
+        public MyCursor GetClubLaeuferByEvent(Event e, List<string> clubs, string filter) {
             if(clubs.Count == 0) {
                 return Query(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Club + " = 'lkaasdfsjdf'", null, null);
             }
-            string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" + SQLiteHelper.COLUMN_Club + " LIKE '%" + clubs[0] + "%'";
+            string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" +
+                SQLiteHelper.COLUMN_Name + " LIKE '%" + filter + "%' OR " + 
+                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " + 
+                SQLiteHelper.COLUMN_Club + " LIKE '%" + filter + "%') AND (" +
+                SQLiteHelper.COLUMN_Club + " LIKE '%" + clubs[0] + "%'";
             for(int i = 1; i<clubs.Count; i++) {
                 where += " OR " + SQLiteHelper.COLUMN_Club + "LIKE '%" + clubs[i] + "%'";
             }
@@ -188,11 +196,15 @@ namespace SwissO {
             return Query(SQLiteHelper.TABLE_Laeufer, where, null, null);
         }
 
-        public MyCursor GetFriendLaeuferByEvent(Event e, List<string> freunde) {
+        public MyCursor GetFriendLaeuferByEvent(Event e, List<string> freunde, string filter) {
             if (freunde.Count == 0) {
                 return Query(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Club + " = 'lkaasdfsjdf'", null, null);
             }
-            string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" + SQLiteHelper.COLUMN_Name + " LIKE '%" + freunde[0] + "%'";
+            string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" + 
+                SQLiteHelper.COLUMN_Name + " LIKE '%" + filter + "%' OR " + 
+                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " + 
+                SQLiteHelper.COLUMN_Club + " LIKE '%" + filter + "%') AND ("  +
+                SQLiteHelper.COLUMN_Name + " LIKE '%" + freunde[0] + "%'";
             for (int i = 1; i < freunde.Count; i++) {
                 where += " OR " + SQLiteHelper.COLUMN_Name + " LIKE '%" + freunde[i] + "%'";
             }
@@ -201,7 +213,7 @@ namespace SwissO {
         }
 
         public int GetLaeuferCountByEvent(Event e) {
-            return GetAllLaeuferByEvent(e).Length();
+            return GetAllLaeuferByEvent(e, "").Length();
         }
 
         public void DeleteAllLaeuferByEvent(Event e) {

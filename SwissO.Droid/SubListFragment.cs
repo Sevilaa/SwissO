@@ -22,7 +22,6 @@ namespace SwissO.Droid {
         public SubListFragment(ListManager listManager, ListContent listContent) : base() {
             this.listContent = listContent;
             this.listManager = listManager;
-
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,26 +31,28 @@ namespace SwissO.Droid {
         public override void OnViewCreated(View view, Bundle savedInstanceState) {
             base.OnViewCreated(view, savedInstanceState);
             LoadList();
+            EditText schnellfilter = (EditText)view.FindViewById(Resource.Id.schnellfilter);
+            schnellfilter.TextChanged += (sender, e) => {
+                LoadList();
+            };
         }
 
         private MyCursor GetLaeuferCursor() {
+            string filter = View.FindViewById<EditText>(Resource.Id.schnellfilter).Text;
             return listContent switch {
-                ListContent.Friends => listManager.GetFriendsLaeufer(),
-                ListContent.Club => listManager.GetClubLaeufer(),
-                ListContent.alle => listManager.GetAlleLaeufer(),
+                ListContent.Friends => listManager.GetFriendsLaeufer(filter),
+                ListContent.Club => listManager.GetClubLaeufer(filter),
+                ListContent.alle => listManager.GetAlleLaeufer(filter),
                 _ => null,
             };
         }
 
         public void LoadList() {
             MyCursor cursor = GetLaeuferCursor();
+            ListView listView = View.FindViewById<ListView>(Resource.Id.listview_laeufer);
             if (cursor.Length() > 0) {
-                //ExpandableListView listView = View.FindViewById<ExpandableListView>(Resource.Id.expandableListView);
-                //SubListAdapter adapter = new SubListAdapter(laeufer, listManager.GetListType(), (LayoutInflater)Context.GetSystemService(Context.LayoutInflaterService));
-                //listView.SetAdapter(adapter);
-                //listView.Invalidate();
+                listView.Visibility = ViewStates.Visible;
                 ICursor cursor1 = ((MyCursor_A)cursor).Get();
-                ListView listView = View.FindViewById<ListView>(Resource.Id.listview_laeufer);
                 SimpleCursorAdapter adapter = null;
                 if (listManager.GetListType() == ListManager.ListType.Startliste) {
                     string[] from = new string[] { SQLiteHelper.COLUMN_Startzeit, SQLiteHelper.COLUMN_Name, SQLiteHelper.COLUMN_Category, SQLiteHelper.COLUMN_Startnummer };
@@ -64,6 +65,9 @@ namespace SwissO.Droid {
                     adapter = new SimpleCursorAdapter(Context, Resource.Layout.listitem_zielzeit, cursor1, from, to, CursorAdapterFlags.None);
                 }
                 listView.Adapter = adapter;
+            }
+            else {
+                listView.Visibility = ViewStates.Gone;
             }
         }
     }
