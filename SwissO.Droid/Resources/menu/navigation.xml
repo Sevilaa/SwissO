@@ -14,7 +14,7 @@
 	<item
         android:id="@+id/navigation_liveresult"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/liveresult" />
+        android:title="@string/rangliste" />
 
     <item
         android:id="@+id/navigation_profil"

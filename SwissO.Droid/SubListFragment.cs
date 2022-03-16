@@ -54,14 +54,14 @@ namespace SwissO.Droid {
                 ListView listView = View.FindViewById<ListView>(Resource.Id.listview_laeufer);
                 SimpleCursorAdapter adapter = null;
                 if (listManager.GetListType() == ListManager.ListType.Startliste) {
-                    string[] from = new string[] { SQLiteHelper.COLUMN_Startzeit, SQLiteHelper.COLUMN_Name, SQLiteHelper.COLUMN_Category };
-                    int[] to = new int[] { Resource.Id.tv_starttime, Resource.Id.tv_name, Resource.Id.tv_kat };
-                    adapter = new SimpleCursorAdapter(Context, Resource.Layout.sublistitem_laeufer, cursor1, from, to, CursorAdapterFlags.None);
+                    string[] from = new string[] { SQLiteHelper.COLUMN_Startzeit, SQLiteHelper.COLUMN_Name, SQLiteHelper.COLUMN_Category, SQLiteHelper.COLUMN_Startnummer };
+                    int[] to = new int[] { Resource.Id.sl_starttime, Resource.Id.sl_name, Resource.Id.sl_kat, Resource.Id.sl_startnummer };
+                    adapter = new SimpleCursorAdapter(Context, Resource.Layout.listitem_startzeit, cursor1, from, to, CursorAdapterFlags.None);
                 }
                 if (listManager.GetListType() == ListManager.ListType.Rangliste) {
-                    string[] from = new string[] { SQLiteHelper.COLUMN_Name, SQLiteHelper.COLUMN_Category, SQLiteHelper.COLUMN_Zielzeit };
-                    int[] to = new int[] { Resource.Id.tv_name, Resource.Id.tv_kat, Resource.Id.tv_goaltime };
-                    adapter = new SimpleCursorAdapter(Context, Resource.Layout.sublistitem_laeufer, cursor1, from, to, CursorAdapterFlags.None);
+                    string[] from = new string[] { SQLiteHelper.COLUMN_Name, SQLiteHelper.COLUMN_Category, SQLiteHelper.COLUMN_Zielzeit, SQLiteHelper.COLUMN_Rang };
+                    int[] to = new int[] { Resource.Id.rl_name, Resource.Id.rl_kat, Resource.Id.rl_zielzeit, Resource.Id.rl_rang };
+                    adapter = new SimpleCursorAdapter(Context, Resource.Layout.listitem_zielzeit, cursor1, from, to, CursorAdapterFlags.None);
                 }
                 listView.Adapter = adapter;
             }

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    android:paddingEnd="5dp">
+
+    <TextView
+        android:text=""
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rl_name"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/rl_rang" />
+    <!--Hacky :-( TODO-->
+    <TextView 
+        android:text="."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        app:layout_constraintStart_toEndOf="@id/rl_rang"
+        app:layout_constraintTop_toTopOf="parent" />
+    
+    <TextView
+        android:text=""
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="5dp"
+        app:layout_constraintStart_toEndOf="@id/rl_rang"
+        app:layout_constraintEnd_toStartOf="@id/rl_kat"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/rl_name" />
+    <TextView
+        android:text=""
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="5dp"
+        app:layout_constraintStart_toEndOf="@id/rl_name"
+        app:layout_constraintEnd_toStartOf="@id/rl_zielzeit"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/rl_kat" />
+    <TextView
+        android:text=""
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:paddingStart="5dp"
+        app:layout_constraintStart_toEndOf="@id/rl_kat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/rl_zielzeit" />
+    
+    <!--<TextView
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        app:layout_constraintStart_toEndOf="@id/sl_starttime"
+        app:layout_constraintEnd_toStartOf="@id/sl_club"
+        android:id="@+id/sl_jahrgang" />
+
+    <TextView
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sl_jahrgang"
+        android:id="@+id/sl_club" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
