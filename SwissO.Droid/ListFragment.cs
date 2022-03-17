@@ -35,6 +35,7 @@ namespace SwissO.Droid {
             View.FindViewById<Button>(Resource.Id.openWebBrowser).Click += (sender, e) => {
                 OpenInWebBrowser();
             };
+            manager.InitEvent();
         }
 
         public void OnConfigureTab(TabLayout.Tab tab, int position) {

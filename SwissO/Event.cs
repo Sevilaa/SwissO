@@ -33,13 +33,13 @@ namespace SwissO {
             Koorde = koorde;
             Koordn = koordn;
             Deadline = deadline;
-            Ausschreibung = newUri(ausschreibung);
-            Weisungen = newUri(weisungen);
-            Anmeldung = newUri(anmeldung);
-            Mutation = newUri(mutation);
-            Startliste = newUri(startliste);
-            Liveresultate = newUri(liveresultate);
-            Rangliste = newUri(rangliste);
+            Ausschreibung = NewUri(ausschreibung);
+            Weisungen = NewUri(weisungen);
+            Anmeldung = NewUri(anmeldung);
+            Mutation = NewUri(mutation);
+            Startliste = NewUri(startliste);
+            Liveresultate = NewUri(liveresultate);
+            Rangliste = NewUri(rangliste);
             Eventportal = portal;
         }
 
@@ -67,9 +67,16 @@ namespace SwissO {
             this.Id = id;
         }
 
-        private static Uri newUri(string s) {
-            Uri.TryCreate(s, UriKind.RelativeOrAbsolute, out Uri uri);
-            return uri;
+        private static Uri NewUri(string s) {
+            if (string.IsNullOrWhiteSpace(s)) {
+                return null;
+            }
+            try {
+                return new Uri(s);
+            }
+            catch {
+                return null;
+            }
         }
 
         public bool equals(Event e) {

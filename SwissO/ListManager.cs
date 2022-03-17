@@ -29,7 +29,6 @@ namespace SwissO {
             this.page = page;
             this.listType = listType;
             profil = appManager.GetDaten().CreateProfil();
-            InitEvent();
             
         }
 
