@@ -15,8 +15,8 @@ namespace SwissO.Droid {
         private readonly ListManager.ListType listType;
         private readonly ListManager manager;
 
-        private static readonly string[] startlistColumns = { SQLiteHelper.COLUMN_Startnummer, SQLiteHelper.COLUMN_Name, SQLiteHelper.COLUMN_Category, SQLiteHelper.COLUMN_Startzeit };
-        private static readonly string[] ranglistColumns = { SQLiteHelper.COLUMN_Rang, SQLiteHelper.COLUMN_Name, SQLiteHelper.COLUMN_Category, SQLiteHelper.COLUMN_Zielzeit };
+        private static readonly string[] startlistColumns = { Helper.original, SQLiteHelper.COLUMN_Startnummer, SQLiteHelper.COLUMN_Name, SQLiteHelper.COLUMN_Category, SQLiteHelper.COLUMN_Startzeit};
+        private static readonly string[] ranglistColumns = { Helper.original, SQLiteHelper.COLUMN_Rang, SQLiteHelper.COLUMN_Name, SQLiteHelper.COLUMN_Category, SQLiteHelper.COLUMN_Zielzeit };
 
         private string selectedColumn;
 

@@ -6,10 +6,17 @@ namespace SwissO {
 
     public class MyContentValues {
 
-        private Dictionary<string, (TypeCode, object)> values = new Dictionary<string, (TypeCode, object)>();
+        private readonly Dictionary<string, (TypeCode, object)> values = new Dictionary<string, (TypeCode, object)>();
 
         public void Put(string column, object value) {
             if (value != null) {
+                TypeCode type = Type.GetTypeCode(value.GetType());
+                if (type == TypeCode.Int32) {
+                    int i = Convert.ToInt32(value);
+                    if (i == Helper.intnull) {
+                        return;
+                    }
+                }
                 values[column] = (Type.GetTypeCode(value.GetType()), value);
             }
         }
@@ -46,44 +53,44 @@ namespace SwissO {
 
     public abstract class MyCursor {
 
-        public abstract string GetString(int index);
+        public abstract string GetString(string column);
 
-        public abstract int GetInt(int index);
+        public abstract int GetInt(string column);
 
-        public abstract long GetLong(int index);
+        public abstract long GetLong(string column);
 
-        public abstract float GetFloat(int index);
+        public abstract float GetFloat(string column);
 
-        public abstract double GetDouble(int index);
+        public abstract double GetDouble(string column);
 
         public abstract bool Read();
 
         public abstract void Close();
 
-        public abstract bool IsNull(int index);
+        public abstract bool IsNull(string column);
 
         public abstract int Length();
 
-        public DateTime GetDate(int index) {
-            if (IsNull(index)) {
+        public DateTime GetDate(string column) {
+            if (IsNull(column)) {
                 return DateTime.MinValue;
             }
-            if(GetLong(index) == Helper.intnull) {
+            if (GetLong(column) == Helper.intnull) {
                 return DateTime.MinValue;
             }
-            return new DateTime(GetLong(index));
+            return new DateTime(GetLong(column));
         }
 
-        public Uri GetUri(int index) {
-            if (IsNull(index)) {
+        public Uri GetUri(string column) {
+            if (IsNull(column)) {
                 return null;
             }
-            string s = GetString(index);
+            string s = GetString(column);
             if (s == "") {
                 return null;
             }
             try {
-                return new Uri(GetString(index));
+                return new Uri(GetString(column));
             }
             catch (Exception) {
                 return null;
@@ -153,14 +160,10 @@ namespace SwissO {
 
         //Table Laeufer
 
-        public int InsertLaeufer(string name, string jahrgang, string club, string cat,
-            string startnummer, string startzeit, string zielzeit, string rang, Event e) {
+        public int InsertLaeufer(string name, int jahrgang, string club, string cat,
+            int startnummer, string startzeit, string zielzeit, int rang, Event e) {
             MyContentValues daten = new MyContentValues();
-            int jahr;
-            bool success = int.TryParse(jahrgang, out jahr);
-            if (success) {
-                daten.Put(SQLiteHelper.COLUMN_Jahrgang, jahr);
-            }
+            daten.Put(SQLiteHelper.COLUMN_Jahrgang, jahrgang);
             daten.Put(SQLiteHelper.COLUMN_Name, name);
             daten.Put(SQLiteHelper.COLUMN_Club, club);
             daten.Put(SQLiteHelper.COLUMN_Category, cat);
@@ -174,22 +177,22 @@ namespace SwissO {
 
         public MyCursor GetAllLaeuferByEvent(Event e, string filter, string order) {
             string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" +
-                SQLiteHelper.COLUMN_Name + " LIKE '%" + filter + "%' OR " + 
-                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " + 
+                SQLiteHelper.COLUMN_Name + " LIKE '%" + filter + "%' OR " +
+                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " +
                 SQLiteHelper.COLUMN_Club + " LIKE '%" + filter + "%')";
             return Query(SQLiteHelper.TABLE_Laeufer, where, null, order);
         }
 
         public MyCursor GetClubLaeuferByEvent(Event e, List<string> clubs, string filter, string order) {
-            if(clubs.Count == 0) {
+            if (clubs.Count == 0) {
                 return Query(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Club + " = 'lkaasdfsjdf'", null, null);
             }
             string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" +
-                SQLiteHelper.COLUMN_Name + " LIKE '%" + filter + "%' OR " + 
-                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " + 
+                SQLiteHelper.COLUMN_Name + " LIKE '%" + filter + "%' OR " +
+                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " +
                 SQLiteHelper.COLUMN_Club + " LIKE '%" + filter + "%') AND (" +
                 SQLiteHelper.COLUMN_Club + " LIKE '%" + clubs[0] + "%'";
-            for(int i = 1; i<clubs.Count; i++) {
+            for (int i = 1; i < clubs.Count; i++) {
                 where += " OR " + SQLiteHelper.COLUMN_Club + "LIKE '%" + clubs[i] + "%'";
             }
             where += ")";
@@ -200,10 +203,10 @@ namespace SwissO {
             if (freunde.Count == 0) {
                 return Query(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Club + " = 'lkaasdfsjdf'", null, null);
             }
-            string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" + 
-                SQLiteHelper.COLUMN_Name + " LIKE '%" + filter + "%' OR " + 
-                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " + 
-                SQLiteHelper.COLUMN_Club + " LIKE '%" + filter + "%') AND ("  +
+            string where = SQLiteHelper.COLUMN_Event + " = " + e.Id + " AND (" +
+                SQLiteHelper.COLUMN_Name + " LIKE '%" + filter + "%' OR " +
+                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " +
+                SQLiteHelper.COLUMN_Club + " LIKE '%" + filter + "%') AND (" +
                 SQLiteHelper.COLUMN_Name + " LIKE '%" + freunde[0] + "%'";
             for (int i = 1; i < freunde.Count; i++) {
                 where += " OR " + SQLiteHelper.COLUMN_Name + " LIKE '%" + freunde[i] + "%'";
@@ -257,7 +260,7 @@ namespace SwissO {
             daten.Put(SQLiteHelper.COLUMN_LLiveRangliste, UriString(e.Liveresultate));
             daten.Put(SQLiteHelper.COLUMN_LStartliste, UriString(e.Startliste));
             daten.Put(SQLiteHelper.COLUMN_EntryPortal, e.Eventportal);
-            return Insert(SQLiteHelper.TABLE_Events, daten);            
+            return Insert(SQLiteHelper.TABLE_Events, daten);
         }
 
         public void UpdateEvent(Event e) {

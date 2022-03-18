@@ -26,7 +26,7 @@ namespace SwissO.Parser {
                     HtmlNodeCollection trs = body.SelectNodes("./table/tr");
                     foreach (HtmlNode tr in trs) {
                         HtmlNodeCollection td = tr.SelectNodes("./td");
-                        daten.InsertLaeufer(td[1].InnerText + " " + td[0].InnerText, null, td[4].InnerText, cat, null, td[5].InnerText, null, null, e);
+                        daten.InsertLaeufer(td[1].InnerText + " " + td[0].InnerText, Helper.intnull, td[4].InnerText, cat, Helper.intnull, td[5].InnerText, null, Helper.intnull, e);
                     }
                     body = body.SelectSingleNode("./body");
                 }

@@ -3,29 +3,41 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace SwissO {
-    /*public class Laeufer {
-        public Laeufer(Event e, string name, string jahrgang, string club, string category, string startnummer, string starttime, string rang, string zielzeit) {
-            this.category = category;
-            this.name = name;
-            this.starttime = starttime;
-            this.club = club;
-            this.zielzeit = zielzeit;
-            eventt = e;
-            this.jahrgang = jahrgang;
-            this.startnummer = startnummer;
-            this.rang = rang;
+    public class Laeufer {
+        //public Laeufer(Event e, string name, string jahrgang, string club, string category, string startnummer, string starttime, string rang, string zielzeit) {
+        //    this.category = category;
+        //    this.name = name;
+        //    this.starttime = starttime;
+        //    this.club = club;
+        //    this.zielzeit = zielzeit;
+        //    eventt = e;
+        //    this.jahrgang = jahrgang;
+        //    this.startnummer = startnummer;
+        //    this.rang = rang;
 
+        //}
+
+        public Laeufer(MyCursor cursor) {
+            Id = cursor.GetInt(SQLiteHelper.COLUMN_ID);
+            Name = cursor.GetString(SQLiteHelper.COLUMN_Name);
+            Jahrgang = cursor.GetInt(SQLiteHelper.COLUMN_Jahrgang);
+            Club = cursor.GetString(SQLiteHelper.COLUMN_Club);
+            Category = cursor.GetString(SQLiteHelper.COLUMN_Category);
+            Startnummer = cursor.GetInt(SQLiteHelper.COLUMN_Startnummer);
+            Startzeit = cursor.GetString(SQLiteHelper.COLUMN_Startzeit);
+            Zielzeit = cursor.GetString(SQLiteHelper.COLUMN_Zielzeit);
+            Rang = cursor.GetInt(SQLiteHelper.COLUMN_Rang);
         }
 
-        public Event eventt { get; }
-        public string name { get; }
-        public string jahrgang { get; }
-        public string club { get; }
-        public string category { get; }
-        public string startnummer { get; }
-        public string starttime { get; }
-        public string rang { get; }
-        public string zielzeit { get; }
+        public int Id { get; }
+        public string Name { get; }
+        public int Jahrgang { get; }
+        public string Club { get; }
+        public string Category { get; }
+        public int Startnummer { get; }
+        public string Startzeit { get; }
+        public string Zielzeit { get; }
+        public int Rang { get; }
 
 
         //public string StartzeitString() {
@@ -46,5 +58,5 @@ namespace SwissO {
         //public bool CompareFriend(string friend) {
         //    return name.Contains(friend);
         //}
-    }*/
+    }
 }

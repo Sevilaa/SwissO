@@ -13,13 +13,13 @@ namespace SwissO {
     }
     public class AppManager {
 
-        private App app;
+        private readonly App app;
 
-        private Daten daten;
+        private readonly Daten daten;
 
         private Event selected;
 
-        private MyHttpClient httpClient;
+        private readonly MyHttpClient httpClient;
 
         private List<Event> events = new List<Event>();
 

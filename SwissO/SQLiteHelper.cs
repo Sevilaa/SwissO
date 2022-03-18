@@ -1,6 +1,7 @@
 ﻿namespace SwissO {
     interface SQLiteHelper {
         public const string DATABASE_NAME = "SwissO.dat";
+        public const int DATABASE_VERSION = 2;
 
         //Tables
         public const string TABLE_Profil = "Profil";
@@ -52,10 +53,10 @@
 
         protected const string SQL_Profil = "CREATE TABLE IF NOT EXISTS " + TABLE_Profil + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                COLUMN_Vorname + " VARCHAR(15) NOT NULL," +
-                COLUMN_Nachname + " VARCHAR(15) NOT NULL," +
-                COLUMN_SI + " INTEGER NOT NULL," +
-                COLUMN_Category + " VARCHAR(15) NOT NULL)";
+                COLUMN_Vorname + " VARCHAR(15)," +
+                COLUMN_Nachname + " VARCHAR(15)," +
+                COLUMN_SI + " INTEGER," +
+                COLUMN_Category + " VARCHAR(15))";
 
         protected const string SQL_Laeufer = "CREATE TABLE IF NOT EXISTS " + TABLE_Laeufer + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -63,10 +64,10 @@
                 COLUMN_Jahrgang + " INTEGER," +
                 COLUMN_Club + " VARCHAR(31)," +
                 COLUMN_Category + " VARCHAR(15) NOT NULL," +
-                COLUMN_Startnummer + " VARCHAR(15)," +
+                COLUMN_Startnummer + " INTEGER," +
                 COLUMN_Startzeit + " VARCHAR(15)," +
                 COLUMN_Zielzeit + " VARCHAR(15)," +
-                COLUMN_Rang + " VARCHAR(7)," +
+                COLUMN_Rang + " INTEGER," +
                 COLUMN_Event + " INTEGER NOT NULL)";
 
         protected const string SQL_Freunde = "CREATE TABLE IF NOT EXISTS " + TABLE_Freunde + "(" +

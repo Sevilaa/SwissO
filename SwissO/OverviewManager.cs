@@ -47,7 +47,7 @@ namespace SwissO {
         public void Add(Event newEvent) {
             List<Event> events = appManager.GetEvents();
             foreach (Event e in events) {
-                if (e.equals(newEvent)) {
+                if (e.Equals(newEvent)) {
                     e.Merge(newEvent);
                     appManager.GetDaten().UpdateEvent(e);
                     return;

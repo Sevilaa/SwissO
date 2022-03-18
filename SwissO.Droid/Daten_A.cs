@@ -11,7 +11,7 @@ namespace SwissO.Droid {
 
     class MyResources_A : MyResources {
 
-        Resources res;
+        private readonly Resources res;
 
         public MyResources_A(Resources res) {
             this.res = res;
@@ -71,27 +71,45 @@ namespace SwissO.Droid {
             cursor.Close();
         }
 
-        public override float GetFloat(int index) {
+        public override float GetFloat(string column) {
+            if (IsNull(column)) {
+                return Helper.intnull;
+            }
+            int index = cursor.GetColumnIndex(column);
             return cursor.GetFloat(index);
         }
 
-        public override double GetDouble(int index) {
+        public override double GetDouble(string column) {
+            if (IsNull(column)) {
+                return Helper.intnull;
+            }
+            int index = cursor.GetColumnIndex(column);
             return cursor.GetDouble(index);
         }
 
-        public override int GetInt(int index) {
+        public override int GetInt(string column) {
+            if (IsNull(column)) {
+                return Helper.intnull;
+            }
+            int index = cursor.GetColumnIndex(column);
             return cursor.GetInt(index);
         }
 
-        public override long GetLong(int index) {
+        public override long GetLong(string column) {
+            if (IsNull(column)) {
+                return Helper.intnull;
+            }
+            int index = cursor.GetColumnIndex(column);
             return cursor.GetLong(index);
         }
 
-        public override string GetString(int index) {
+        public override string GetString(string column) {
+            int index = cursor.GetColumnIndex(column);
             return cursor.GetString(index);
         }
 
-        public override bool IsNull(int index) {
+        public override bool IsNull(string column) {
+            int index = cursor.GetColumnIndex(column);
             return cursor.GetType(index) == FieldType.Null;
         }
 

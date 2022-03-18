@@ -9,7 +9,7 @@ namespace SwissO.Droid {
     public class ListFragment : MyFragment, IListPage, TabLayoutMediator.ITabConfigurationStrategy {
 
         private ListManager manager;
-        private ListManager.ListType listType;
+        private readonly ListManager.ListType listType;
 
         private ListFragmentPagerAdapter adapter;
 
@@ -100,42 +100,50 @@ namespace SwissO.Droid {
         }
 
         public void ShowNotAvailable() {
-            View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Visible;
-            View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Gone;
-            showOpenInBrowserInMenu = false;
-            act.InvalidateOptionsMenu();
+            if (View != null) {
+                View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Visible;
+                View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Gone;
+                showOpenInBrowserInMenu = false;
+                act.InvalidateOptionsMenu();
+            }
         }
 
         public void ShowProgressBar() {
-            View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Visible;
-            View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Gone;
+            if (View != null) {
+                View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Visible;
+                View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Gone;
+            }
         }
 
         public void ShowList() {
-            View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Visible;
-            View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Visible;
-            View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Gone;
-            showOpenInBrowserInMenu = true;
-            act.InvalidateOptionsMenu();
+            if (View != null) {
+                View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Visible;
+                View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Visible;
+                View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Gone;
+                showOpenInBrowserInMenu = true;
+                act.InvalidateOptionsMenu();
+            }
         }
 
         public void ShowOnlyInWebBrowser() {
-            View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
-            View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Visible;
-            showOpenInBrowserInMenu = true;
-            act.InvalidateOptionsMenu();
-            OpenInWebBrowser();
+            if (View != null) {
+                View.FindViewById(Resource.Id.no_list).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.tabLayout).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.viewPager).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.list_progressBar).Visibility = ViewStates.Gone;
+                View.FindViewById(Resource.Id.openWebBrowser).Visibility = ViewStates.Visible;
+                showOpenInBrowserInMenu = true;
+                act.InvalidateOptionsMenu();
+                OpenInWebBrowser();
+            }
         }
 
         public bool GetBoolPref(string key, bool def) {

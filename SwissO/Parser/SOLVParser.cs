@@ -144,13 +144,13 @@ namespace SwissO.Parser {
                         string[] rows = resultate.Split("\n");
                         for (int j = 2; j < rows.Length - 1; j++) {
                             string akt = rows[j];
-                            string rang = akt.Substring(0, 3).Trim();
+                            int rang = Helper.GetInt(akt.Substring(0, 3).Trim());
                             string name = akt.Substring(5, 23).Trim();
-                            string jahrgang = akt.Substring(28, 2).Trim();
+                            int jahrgang = Helper.GetInt(akt.Substring(28, 2).Trim());
                             string ort = akt.Substring(32, 19).Trim();
                             string club = akt.Substring(51, 19).Trim();
                             string zeit = akt.Substring(70, 8).Trim();
-                            daten.InsertLaeufer(name, jahrgang, club, kat, null, null, zeit, rang, e);
+                            daten.InsertLaeufer(name, jahrgang, club, kat, Helper.intnull, null, zeit, rang, e);
                         }
                     }
                 }
@@ -179,13 +179,13 @@ namespace SwissO.Parser {
                         string[] rows = resultate.Split("\n");
                         for (int j = 2; j < rows.Length - 1; j++) {
                             string akt = rows[j];
-                            string startnummer = akt.Substring(0, 7).Trim();
+                            int startnummer = Helper.GetInt(akt.Substring(0, 7).Trim());
                             string name = akt.Substring(8, 23).Trim();
-                            string jahrgang = akt.Substring(31, 2).Trim();
+                            int jahrgang = Helper.GetInt(akt.Substring(31, 2).Trim());
                             string ort = akt.Substring(34, 19).Trim();
                             string club = akt.Substring(53, 19).Trim();
                             string zeit = akt.Substring(73, 5).Trim();
-                            daten.InsertLaeufer(name, jahrgang, club, kat, startnummer, zeit, null, null, e);
+                            daten.InsertLaeufer(name, jahrgang, club, kat, startnummer, zeit, null, Helper.intnull, e);
                         }
                     }
                 }

@@ -1,23 +1,80 @@
 ﻿using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using AndroidX.Fragment.App;
-using Android.Database;
 
 namespace SwissO.Droid {
+
+    public class LaeuferAdapter : ArrayAdapter<Laeufer> {
+
+        private class ViewHolder : Java.Lang.Object{
+            public TextView Nummer { get; set; }
+            public TextView Name { get; set; }
+            public TextView Kat { get; set; }
+            public TextView Zeit { get; set; }
+        }
+
+        private readonly ListManager.ListType listType;
+
+        public LaeuferAdapter(Context context, ListManager.ListType listType, List<Laeufer> laeufer) :
+            base(context, listType == ListManager.ListType.Startliste ? Resource.Layout.listitem_startzeit : Resource.Layout.listitem_zielzeit, laeufer) {
+            this.listType = listType;
+        }
+
+        public override View GetView(int position, View convertView, ViewGroup parent) {
+            Laeufer laeufer = GetItem(position);
+            ViewHolder viewHolder;
+            // Check if an existing view is being reused, otherwise inflate the view
+            if (convertView == null) {
+                // If there's no view to re-use, inflate a brand new view for row
+                viewHolder = new ViewHolder();
+                LayoutInflater inflater = LayoutInflater.From(Context);
+                if (listType == ListManager.ListType.Startliste) {
+                    convertView = inflater.Inflate(Resource.Layout.listitem_startzeit, parent, false);
+                    viewHolder.Nummer = convertView.FindViewById<TextView>(Resource.Id.sl_startnummer);
+                    viewHolder.Name = convertView.FindViewById<TextView>(Resource.Id.sl_name);
+                    viewHolder.Kat = convertView.FindViewById<TextView>(Resource.Id.sl_kat);
+                    viewHolder.Zeit = convertView.FindViewById<TextView>(Resource.Id.sl_starttime);
+                }
+                if (listType == ListManager.ListType.Rangliste) {
+                    convertView = inflater.Inflate(Resource.Layout.listitem_zielzeit, parent, false);
+                    viewHolder.Nummer = convertView.FindViewById<TextView>(Resource.Id.rl_rang);
+                    viewHolder.Name = convertView.FindViewById<TextView>(Resource.Id.rl_name);
+                    viewHolder.Kat = convertView.FindViewById<TextView>(Resource.Id.rl_kat);
+                    viewHolder.Zeit = convertView.FindViewById<TextView>(Resource.Id.rl_zielzeit);
+                }
+                // Cache the viewHolder object inside the fresh view
+                convertView.Tag = viewHolder;
+            }
+            else {
+                // View is being recycled, retrieve the viewHolder object from tag
+                viewHolder = (ViewHolder)convertView.Tag;
+
+            }
+            // Populate the data from the data object via the viewHolder object into the template view
+            viewHolder.Name.Text = laeufer.Name;
+            viewHolder.Kat.Text = laeufer.Category;
+            if (listType == ListManager.ListType.Rangliste) {
+                viewHolder.Nummer.Text = laeufer.Rang != Helper.intnull ? laeufer.Rang + "." : "";
+                viewHolder.Zeit.Text = laeufer.Zielzeit;
+            }
+            if (listType == ListManager.ListType.Startliste) {
+                viewHolder.Nummer.Text = laeufer.Startnummer != Helper.intnull ? laeufer.Startnummer.ToString() : "";
+                viewHolder.Zeit.Text = laeufer.Startzeit;
+            }
+            // Return the completed view to render on screen
+            return convertView;
+        }
+    }
+
     class SubListFragment : Fragment {
 
         public enum ListContent { Friends, Club, alle }
 
-        private ListManager listManager;
-        private ListContent listContent;
-        //private List<Laeufer> laeufer;
+        private readonly ListManager listManager;
+        private readonly ListContent listContent;
 
         public SubListFragment(ListManager listManager, ListContent listContent) : base() {
             this.listContent = listContent;
@@ -37,7 +94,7 @@ namespace SwissO.Droid {
             };
         }
 
-        private MyCursor GetLaeuferCursor() {
+        private List<Laeufer> GetLaeuferCursor() {
             string filter = View.FindViewById<EditText>(Resource.Id.schnellfilter).Text;
             return listContent switch {
                 ListContent.Friends => listManager.GetFriendsLaeufer(filter),
@@ -48,22 +105,11 @@ namespace SwissO.Droid {
         }
 
         public void LoadList() {
-            MyCursor cursor = GetLaeuferCursor();
+            List<Laeufer> laeufer = GetLaeuferCursor();
             ListView listView = View.FindViewById<ListView>(Resource.Id.listview_laeufer);
-            if (cursor.Length() > 0) {
+            if (laeufer.Count > 0) {
                 listView.Visibility = ViewStates.Visible;
-                ICursor cursor1 = ((MyCursor_A)cursor).Get();
-                SimpleCursorAdapter adapter = null;
-                if (listManager.GetListType() == ListManager.ListType.Startliste) {
-                    string[] from = new string[] { SQLiteHelper.COLUMN_Startzeit, SQLiteHelper.COLUMN_Name, SQLiteHelper.COLUMN_Category, SQLiteHelper.COLUMN_Startnummer };
-                    int[] to = new int[] { Resource.Id.sl_starttime, Resource.Id.sl_name, Resource.Id.sl_kat, Resource.Id.sl_startnummer };
-                    adapter = new SimpleCursorAdapter(Context, Resource.Layout.listitem_startzeit, cursor1, from, to, CursorAdapterFlags.None);
-                }
-                if (listManager.GetListType() == ListManager.ListType.Rangliste) {
-                    string[] from = new string[] { SQLiteHelper.COLUMN_Name, SQLiteHelper.COLUMN_Category, SQLiteHelper.COLUMN_Zielzeit, SQLiteHelper.COLUMN_Rang };
-                    int[] to = new int[] { Resource.Id.rl_name, Resource.Id.rl_kat, Resource.Id.rl_zielzeit, Resource.Id.rl_rang };
-                    adapter = new SimpleCursorAdapter(Context, Resource.Layout.listitem_zielzeit, cursor1, from, to, CursorAdapterFlags.None);
-                }
+                LaeuferAdapter adapter = new LaeuferAdapter(Context, listManager.GetListType(), laeufer);
                 listView.Adapter = adapter;
             }
             else {

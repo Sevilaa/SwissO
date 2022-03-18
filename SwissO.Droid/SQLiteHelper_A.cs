@@ -4,7 +4,7 @@ using Android.Database.Sqlite;
 namespace SwissO.Droid {
     class SQLiteHelper_A : SQLiteOpenHelper, SQLiteHelper {
 
-        public SQLiteHelper_A(Context context) : base(context, SQLiteHelper.DATABASE_NAME, null, 1) {
+        public SQLiteHelper_A(Context context) : base(context, SQLiteHelper.DATABASE_NAME, null, SQLiteHelper.DATABASE_VERSION) {
         }
 
         public override void OnCreate(SQLiteDatabase db) {
@@ -16,6 +16,11 @@ namespace SwissO.Droid {
         }
 
         public override void OnUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            if (oldVersion < 2) {
+                db.ExecSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_Profil); 
+                db.ExecSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_Laeufer);
+            }
+            OnCreate(db);
         }
     }
 }

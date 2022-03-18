@@ -44,23 +44,23 @@ namespace SwissO {
         }
 
         public Event(MyCursor cursor) {
-            Id = cursor.GetInt(0);
-            Title = cursor.GetString(1);
-            Date = cursor.GetDate(2);
-            Region = cursor.GetString(3);
-            Club = cursor.GetString(4);
-            Map = cursor.GetString(5);
-            Deadline = cursor.GetDate(6);
-            Koordn = cursor.GetDouble(7);
-            Koorde = cursor.GetDouble(8);
-            Ausschreibung = cursor.GetUri(9);
-            Weisungen = cursor.GetUri(10);
-            Rangliste = cursor.GetUri(11);
-            Liveresultate = cursor.GetUri(12);
-            Startliste = cursor.GetUri(13);
-            Anmeldung = cursor.GetUri(14);
-            Mutation = cursor.GetUri(15);
-            Eventportal = cursor.GetInt(16);
+            Id = cursor.GetInt(SQLiteHelper.COLUMN_ID);
+            Title = cursor.GetString(SQLiteHelper.COLUMN_Title);
+            Date = cursor.GetDate(SQLiteHelper.COLUMN_Date);
+            Region = cursor.GetString(SQLiteHelper.COLUMN_Region);
+            Club = cursor.GetString(SQLiteHelper.COLUMN_Club);
+            Map = cursor.GetString(SQLiteHelper.COLUMN_Map);
+            Deadline = cursor.GetDate(SQLiteHelper.COLUMN_Deadline);
+            Koordn = cursor.GetDouble(SQLiteHelper.COLUMN_IntKoordN);
+            Koorde = cursor.GetDouble(SQLiteHelper.COLUMN_IntKoordE);
+            Ausschreibung = cursor.GetUri(SQLiteHelper.COLUMN_LAusschreibung);
+            Weisungen = cursor.GetUri(SQLiteHelper.COLUMN_LWeisungen);
+            Rangliste = cursor.GetUri(SQLiteHelper.COLUMN_LRangliste);
+            Liveresultate = cursor.GetUri(SQLiteHelper.COLUMN_LLiveRangliste);
+            Startliste = cursor.GetUri(SQLiteHelper.COLUMN_LStartliste);
+            Anmeldung = cursor.GetUri(SQLiteHelper.COLUMN_LAnmeldung);
+            Mutation = cursor.GetUri(SQLiteHelper.COLUMN_LMutation);
+            Eventportal = cursor.GetInt(SQLiteHelper.COLUMN_EntryPortal);
         }
 
         public void SetId(int id) {
@@ -79,7 +79,7 @@ namespace SwissO {
             }
         }
 
-        public bool equals(Event e) {
+        public bool Equals(Event e) {
             bool b = e.Date.Ticks == Date.Ticks;
             b = b && e.Eventportal == Eventportal;
             if(Club != null && e.Club != null) {

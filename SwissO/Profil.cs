@@ -10,24 +10,24 @@ namespace SwissO {
         private string nachname;
         private int siCard;
         private string category;
-        private List<string> clubs = new List<string>();
-        private List<string> freunde = new List<string>();
+        private readonly List<string> clubs = new List<string>();
+        private readonly List<string> freunde = new List<string>();
 
         public Profil(MyCursor cursor, Daten daten) {
-            id = cursor.GetInt(0);
-            vorname = cursor.GetString(1);
-            nachname = cursor.GetString(2);
-            siCard = cursor.GetInt(3);
-            category = cursor.GetString(4);
+            id = cursor.GetInt(SQLiteHelper.COLUMN_ID);
+            vorname = cursor.GetString(SQLiteHelper.COLUMN_Vorname);
+            nachname = cursor.GetString(SQLiteHelper.COLUMN_Nachname);
+            siCard = cursor.GetInt(SQLiteHelper.COLUMN_SI);
+            category = cursor.GetString(SQLiteHelper.COLUMN_Category);
             cursor.Close();
             cursor = daten.GetFreundeByProfil(id);
             while (cursor.Read()) {
-                freunde.Add(cursor.GetString(1));
+                freunde.Add(cursor.GetString(SQLiteHelper.COLUMN_Name));
             }
             cursor.Close();
             cursor = daten.GetClubsByProfil(id);
             while (cursor.Read()) {
-                clubs.Add(cursor.GetString(1));
+                clubs.Add(cursor.GetString(SQLiteHelper.COLUMN_Name));
             }
             cursor.Close();
         }

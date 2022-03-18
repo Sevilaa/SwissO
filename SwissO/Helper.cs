@@ -7,6 +7,7 @@ namespace SwissO {
         public const int selectionablesLength = 5;
 
         public const string pref_file = "default_pref";
+        public const string original = "original";
 
         public interface Keys {
             public const string sorting_startlist_column = "sorting_startlist_column";
@@ -50,12 +51,19 @@ namespace SwissO {
             return (intnord, inteast);
         }
 
+        public static int GetInt(string s) {
+            if (string.IsNullOrWhiteSpace(s)) {
+                return intnull;
+            }
+            bool success = int.TryParse(s, out int i);
+            return success ? i : intnull;
+        }
+
         public static DateTime GetDate(string s) {
-            if (s == "") {
+            if (string.IsNullOrWhiteSpace(s)) {
                 return DateTime.MinValue;
             }
-            DateTime result;
-            bool success =  DateTime.TryParse(s, out result);
+            bool success =  DateTime.TryParse(s, out DateTime result);
             return success ? result : DateTime.MinValue;
         }
     }

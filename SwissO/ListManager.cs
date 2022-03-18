@@ -22,8 +22,8 @@ namespace SwissO {
 
         private readonly ListType listType;
 
-        private IListPage page;
-        private Profil profil;
+        private readonly IListPage page;
+        private readonly Profil profil;
 
         public ListManager(IListPage page, AppManager appManager, ListType listType) : base(appManager) {
             this.page = page;
@@ -75,27 +75,45 @@ namespace SwissO {
             }
         }
 
-        public MyCursor GetAlleLaeufer(string filter) {
-            return appManager.GetDaten().GetAllLaeuferByEvent(appManager.GetSelected(), filter, OrderString());
+        public List<Laeufer> GetAlleLaeufer(string filter) {
+            MyCursor cursor = appManager.GetDaten().GetAllLaeuferByEvent(appManager.GetSelected(), filter, OrderString());
+            return CreateLaeufer(cursor);
         }
 
-        public MyCursor GetClubLaeufer(string filter) {
-            return appManager.GetDaten().GetClubLaeuferByEvent(appManager.GetSelected(), profil.GetClubs(), filter, OrderString());
+        public List<Laeufer> GetClubLaeufer(string filter) {
+            MyCursor cursor = appManager.GetDaten().GetClubLaeuferByEvent(appManager.GetSelected(), profil.GetClubs(), filter, OrderString());
+            return CreateLaeufer(cursor);
         }
 
-        public MyCursor GetFriendsLaeufer(string filter) {
-            return appManager.GetDaten().GetFriendLaeuferByEvent(appManager.GetSelected(), profil.GetFriends(), filter, OrderString());
+        public List<Laeufer> GetFriendsLaeufer(string filter) {
+            MyCursor cursor = appManager.GetDaten().GetFriendLaeuferByEvent(appManager.GetSelected(), profil.GetFriends(), filter, OrderString());
+            return CreateLaeufer(cursor);
+        }
+
+        private List<Laeufer> CreateLaeufer(MyCursor cursor) {
+            List<Laeufer> laeuferList = new List<Laeufer>();
+            while (cursor.Read()) {
+                laeuferList.Add(new Laeufer(cursor));
+            }
+            return laeuferList;
         }
 
         private string OrderString() {
+            string column;
+            bool ascending;
             if(listType == ListType.Startliste) {
-                return page.GetStringPref(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column) +
-                (page.GetBoolPref(Helper.Keys.sorting_startlist_ascending, Helper.Defaults.sorting_startlist_ascending) ? " ASC;" : " DESC;");
+                column = page.GetStringPref(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column);
+                ascending = page.GetBoolPref(Helper.Keys.sorting_startlist_ascending, Helper.Defaults.sorting_startlist_ascending);
             }
             else {
-                return page.GetStringPref(Helper.Keys.sorting_ranglist_column, Helper.Defaults.sorting_ranglist_column) +
-                (page.GetBoolPref(Helper.Keys.sorting_ranglist_ascending, Helper.Defaults.sorting_ranglist_ascending) ? " ASC;" : " DESC;");
+                column = page.GetStringPref(Helper.Keys.sorting_ranglist_column, Helper.Defaults.sorting_ranglist_column);
+                ascending = page.GetBoolPref(Helper.Keys.sorting_ranglist_ascending, Helper.Defaults.sorting_ranglist_ascending);
             }
+            if(column == Helper.original) {
+                return null;
+            }
+            string order = column + (ascending ? " ASC" : " DESC") + " NULLS LAST;";
+            return order;
         }
 
         public void LoadList() {
