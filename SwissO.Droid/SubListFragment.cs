@@ -105,15 +105,17 @@ namespace SwissO.Droid {
         }
 
         public void LoadList() {
-            List<Laeufer> laeufer = GetLaeuferCursor();
-            ListView listView = View.FindViewById<ListView>(Resource.Id.listview_laeufer);
-            if (laeufer.Count > 0) {
-                listView.Visibility = ViewStates.Visible;
-                LaeuferAdapter adapter = new LaeuferAdapter(Context, listManager.GetListType(), laeufer);
-                listView.Adapter = adapter;
-            }
-            else {
-                listView.Visibility = ViewStates.Gone;
+            if (View != null) {
+                List<Laeufer> laeufer = GetLaeuferCursor();
+                ListView listView = View.FindViewById<ListView>(Resource.Id.listview_laeufer);
+                if (laeufer.Count > 0) {
+                    listView.Visibility = ViewStates.Visible;
+                    LaeuferAdapter adapter = new LaeuferAdapter(Context, listManager.GetListType(), laeufer);
+                    listView.Adapter = adapter;
+                }
+                else {
+                    listView.Visibility = ViewStates.Gone;
+                }
             }
         }
     }

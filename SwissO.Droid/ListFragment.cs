@@ -95,8 +95,8 @@ namespace SwissO.Droid {
         }
 
         public void UpdateList() {
-            adapter.UpdateList();
             ShowList();
+            adapter.UpdateList();
         }
 
         public void ShowNotAvailable() {

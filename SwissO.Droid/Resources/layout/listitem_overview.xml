@@ -96,6 +96,7 @@
                 android:id="@+id/overview_item_button1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 card_view:layout_constraintEnd_toStartOf="@+id/overview_item_button2"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/overview_item_region"/>
@@ -105,6 +106,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:maxLines="1"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toEndOf="@id/overview_item_button1"
                 card_view:layout_constraintTop_toTopOf="@id/overview_item_button1" />
@@ -113,6 +115,7 @@
                 android:id="@+id/overview_item_button3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 card_view:layout_constraintEnd_toStartOf="@id/overview_item_button4"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@id/overview_item_button1" />
@@ -122,6 +125,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:maxLines="1"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toEndOf="@id/overview_item_button3"
                 card_view:layout_constraintTop_toTopOf="@id/overview_item_button3"/>
@@ -130,6 +134,7 @@
                 android:id="@+id/overview_item_button5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 card_view:layout_constraintEnd_toStartOf="@id/overview_item_button6"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@id/overview_item_button3" />
@@ -139,6 +144,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:maxLines="1"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toEndOf="@id/overview_item_button5"
                 card_view:layout_constraintTop_toTopOf="@id/overview_item_button5"/>
@@ -147,6 +153,7 @@
                 android:id="@+id/overview_item_button7"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 card_view:layout_constraintEnd_toStartOf="@id/overview_item_button8"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@id/overview_item_button5" />
@@ -156,6 +163,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:maxLines="1"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toEndOf="@id/overview_item_button7"
                 card_view:layout_constraintTop_toTopOf="@id/overview_item_button7"/>
