@@ -121,8 +121,11 @@ namespace SwissO {
             if (count > 0) {
                 page.UpdateList();
             }
-            else {
+            else if (appManager.GetSelected().Startliste == null){
                 page.ShowNotAvailable();
+            }
+            else {
+                page.ShowOnlyInWebBrowser();
             }
         }
 

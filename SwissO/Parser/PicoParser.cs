@@ -19,7 +19,7 @@ namespace SwissO.Parser {
                 daten.DeleteAllLaeuferByEvent(e);
                 HtmlDocument htmlDoc = new HtmlDocument();
                 htmlDoc.LoadHtml(html);
-                HtmlNode body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/div/font/div/p/body");
+                HtmlNode body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/div/font/div/body");
                 while (body != null) {
                     HtmlNode strong = body.SelectSingleNode("./p/strong");
                     string cat = strong.InnerText;

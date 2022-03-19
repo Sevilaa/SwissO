@@ -2,21 +2,27 @@
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using AndroidX.Fragment.App;
 using AndroidX.ViewPager2.Widget;
 using Google.Android.Material.Tabs;
 
 namespace SwissO.Droid {
-    public class ListFragment : MyFragment, IListPage, TabLayoutMediator.ITabConfigurationStrategy {
+    public class ListFragment : Fragment, IListPage, TabLayoutMediator.ITabConfigurationStrategy {
 
         private ListManager manager;
+        private MainActivity act;
         private readonly ListManager.ListType listType;
 
         private ListFragmentPagerAdapter adapter;
 
         private bool showOpenInBrowserInMenu = true;
 
-        public ListFragment(MainActivity activity, ListManager.ListType listType) : base(activity, listType == ListManager.ListType.Startliste ? Resource.String.startlist : Resource.String.rangliste) {
+        public ListFragment(ListManager.ListType listType) {
             this.listType = listType;
+        }
+
+        public ListFragment() {
+            listType = ListManager.ListType.Rangliste;
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -26,6 +32,8 @@ namespace SwissO.Droid {
 
         public override void OnViewCreated(View view, Bundle savedInstanceState) {
             base.OnViewCreated(view, savedInstanceState);
+            act = (MainActivity)Activity;
+            act.SetTitle(listType == ListManager.ListType.Startliste ? Resource.String.startlist : Resource.String.rangliste);
             manager = new ListManager(this, act.GetAppManager(), listType);
             adapter = new ListFragmentPagerAdapter(this, manager);
             ViewPager2 viewPager = (ViewPager2)view.FindViewById(Resource.Id.viewPager);

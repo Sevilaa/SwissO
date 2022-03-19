@@ -2,26 +2,25 @@
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using AndroidX.Fragment.App;
 using System;
 
 namespace SwissO.Droid {
-    public class ProfilFragment : MyFragment, IProfilPage {
+    public class ProfilFragment : Fragment, IProfilPage {
 
         private ProfilManager manager;
-        private Daten daten;
-
-        public ProfilFragment(MainActivity activity) : base(activity, Resource.String.profil) {
-        }
+        private MainActivity act;
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             HasOptionsMenu = true;
             return inflater.Inflate(Resource.Layout.fragment_profil, container, false);
         }
 
-        public override void OnResume() {
-            base.OnResume();
-            daten = act.GetAppManager().GetDaten();
-            manager = new ProfilManager(daten, this);
+        public override void OnViewCreated(View view, Bundle savedInstanceState) {
+            base.OnViewCreated(view, savedInstanceState);
+            act = (MainActivity)Activity;
+            act.SetTitle(Resource.String.profil);
+            manager = new ProfilManager(act.GetAppManager(), this);
             (string vorname, string nachname, int si, string cat) = manager.LoadData();
             ((EditText)View.FindViewById(Resource.Id.profil_vorname)).Text = vorname;
             ((EditText)View.FindViewById(Resource.Id.profil_nachname)).Text = nachname;
@@ -31,12 +30,12 @@ namespace SwissO.Droid {
             ListView clubList = (ListView)View.FindViewById(Resource.Id.profil_clublist);
             freundeList.ItemLongClick += (sender, e) => {
                 int id = ((ICursor)freundeList.GetItemAtPosition(e.Position)).GetInt(0);
-                daten.DeleteFreundById(id);
+                act.GetAppManager().GetDaten().DeleteFreundById(id);
                 ShowFriendsAndClub();
             };
             clubList.ItemLongClick += (sender, e) => {
                 int id = ((ICursor)clubList.GetItemAtPosition(e.Position)).GetInt(0);
-                daten.DeleteClubById(id);
+                act.GetAppManager().GetDaten().DeleteClubById(id);
                 ShowFriendsAndClub();
             };
 
@@ -59,7 +58,7 @@ namespace SwissO.Droid {
 
         public void ShowFriendsAndClub() {
             ListView freundeList = (ListView)View.FindViewById(Resource.Id.profil_peoplelist);
-            MyCursor_A cursor = (MyCursor_A)daten.GetFreundeByProfil(manager.GetProfilID());
+            MyCursor_A cursor = (MyCursor_A)act.GetAppManager().GetDaten().GetFreundeByProfil(manager.GetProfilID());
             if (cursor.Read()) {
                 freundeList.Visibility = ViewStates.Visible;
                 string[] anzeigeSpalten = new string[] { SQLiteHelper.COLUMN_Name };
@@ -71,7 +70,7 @@ namespace SwissO.Droid {
                 freundeList.Visibility = ViewStates.Invisible;
             }
             ListView clubList = (ListView)View.FindViewById(Resource.Id.profil_clublist);
-            cursor = (MyCursor_A)daten.GetClubsByProfil(manager.GetProfilID());
+            cursor = (MyCursor_A)act.GetAppManager().GetDaten().GetClubsByProfil(manager.GetProfilID());
             if (cursor.Read()) {
                 clubList.Visibility = ViewStates.Visible;
                 string[] anzeigeSpalten = new string[] { SQLiteHelper.COLUMN_Name };
