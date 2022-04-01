@@ -17,7 +17,7 @@ The app does use third-party services that may collect information used to ident
 Link to the privacy policy (if available) of third-party service providers used by the app
 
 *   [Google Play Services](https://www.google.com/policies/privacy/)
-*   [Swiss Orienteering](https://o-l.ch)
+*   [Swiss Orienteering](https://www.swiss-orienteering.ch/files/20210824_DEF_Datenschutzrichtlinie.pdf)
 *   [Pico Events](https://picoevents.ch/)
 
 
