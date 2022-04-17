@@ -161,15 +161,15 @@ namespace SwissO {
         //Table Laeufer
 
         public int InsertLaeufer(string name, int jahrgang, string club, string cat,
-            int startnummer, string startzeit, string zielzeit, int rang, Event e) {
+            int startnummer, DateTime startzeit, DateTime zielzeit, int rang, Event e) {
             MyContentValues daten = new MyContentValues();
             daten.Put(SQLiteHelper.COLUMN_Jahrgang, jahrgang);
             daten.Put(SQLiteHelper.COLUMN_Name, name);
             daten.Put(SQLiteHelper.COLUMN_Club, club);
             daten.Put(SQLiteHelper.COLUMN_Category, cat);
             daten.Put(SQLiteHelper.COLUMN_Startnummer, startnummer);
-            daten.Put(SQLiteHelper.COLUMN_Startzeit, startzeit);
-            daten.Put(SQLiteHelper.COLUMN_Zielzeit, zielzeit);
+            daten.Put(SQLiteHelper.COLUMN_Startzeit, startzeit.Ticks);
+            daten.Put(SQLiteHelper.COLUMN_Zielzeit, zielzeit.Ticks);
             daten.Put(SQLiteHelper.COLUMN_Rang, rang);
             daten.Put(SQLiteHelper.COLUMN_Event, e.Id);
             return Insert(SQLiteHelper.TABLE_Laeufer, daten);
@@ -311,7 +311,7 @@ namespace SwissO {
         }
 
         private static string UriString(Uri uri) {
-            return uri == null ? null : uri.OriginalString;
+            return uri?.OriginalString;
         }
     }
 }

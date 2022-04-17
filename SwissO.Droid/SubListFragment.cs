@@ -58,11 +58,11 @@ namespace SwissO.Droid {
             viewHolder.Kat.Text = laeufer.Category;
             if (listType == ListManager.ListType.Rangliste) {
                 viewHolder.Nummer.Text = laeufer.Rang != Helper.intnull ? laeufer.Rang + "." : "";
-                viewHolder.Zeit.Text = laeufer.Zielzeit;
+                viewHolder.Zeit.Text = laeufer.Zielzeit.ToLongTimeString().TrimStart('0').TrimStart(':');
             }
             if (listType == ListManager.ListType.Startliste) {
                 viewHolder.Nummer.Text = laeufer.Startnummer != Helper.intnull ? laeufer.Startnummer.ToString() : "";
-                viewHolder.Zeit.Text = laeufer.Startzeit;
+                viewHolder.Zeit.Text = laeufer.Startzeit.ToShortTimeString().TrimStart('0').TrimStart(':');
             }
             // Return the completed view to render on screen
             return convertView;

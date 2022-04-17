@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace SwissO.Parser {
     class PicoParser : Parser {
@@ -26,7 +27,17 @@ namespace SwissO.Parser {
                     HtmlNodeCollection trs = body.SelectNodes("./table/tr");
                     foreach (HtmlNode tr in trs) {
                         HtmlNodeCollection td = tr.SelectNodes("./td");
-                        daten.InsertLaeufer(td[1].InnerText + " " + td[0].InnerText, Helper.intnull, td[4].InnerText, cat, Helper.intnull, td[5].InnerText, null, Helper.intnull, e);
+                        string startZeit = td[5].InnerText;
+                        DateTime start = DateTime.MinValue;
+                        if(startZeit != "bezahlt" && !string.IsNullOrWhiteSpace(startZeit)) {
+                            CultureInfo culture = new CultureInfo("de-CH");
+                            bool success = DateTime.TryParseExact(startZeit, "H:mm", new CultureInfo("de-CH"), DateTimeStyles.None, out start);
+                            if(!success) {
+                                start = DateTime.MinValue;
+                            }
+
+                        }
+                        daten.InsertLaeufer(td[1].InnerText + " " + td[0].InnerText, Helper.intnull, td[4].InnerText, cat, Helper.intnull, start , DateTime.MinValue, Helper.intnull, e);
                     }
                     body = body.SelectSingleNode("./body");
                 }

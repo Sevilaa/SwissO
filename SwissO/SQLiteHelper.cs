@@ -1,7 +1,7 @@
 ﻿namespace SwissO {
     interface SQLiteHelper {
         public const string DATABASE_NAME = "SwissO.dat";
-        public const int DATABASE_VERSION = 2;
+        public const int DATABASE_VERSION = 3;
 
         //Tables
         public const string TABLE_Profil = "Profil";
@@ -65,8 +65,8 @@
                 COLUMN_Club + " VARCHAR(31)," +
                 COLUMN_Category + " VARCHAR(15) NOT NULL," +
                 COLUMN_Startnummer + " INTEGER," +
-                COLUMN_Startzeit + " VARCHAR(15)," +
-                COLUMN_Zielzeit + " VARCHAR(15)," +
+                COLUMN_Startzeit + " INTEGER," +
+                COLUMN_Zielzeit + " INTEGER," +
                 COLUMN_Rang + " INTEGER," +
                 COLUMN_Event + " INTEGER NOT NULL)";
 

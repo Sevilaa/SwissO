@@ -16,7 +16,7 @@ namespace SwissO.Droid {
         }
 
         public override void OnUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            if (oldVersion < 2) {
+            if (oldVersion < 3) {
                 db.ExecSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_Profil); 
                 db.ExecSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_Laeufer);
             }

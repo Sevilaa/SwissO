@@ -24,8 +24,8 @@ namespace SwissO {
             Club = cursor.GetString(SQLiteHelper.COLUMN_Club);
             Category = cursor.GetString(SQLiteHelper.COLUMN_Category);
             Startnummer = cursor.GetInt(SQLiteHelper.COLUMN_Startnummer);
-            Startzeit = cursor.GetString(SQLiteHelper.COLUMN_Startzeit);
-            Zielzeit = cursor.GetString(SQLiteHelper.COLUMN_Zielzeit);
+            Startzeit = cursor.GetDate(SQLiteHelper.COLUMN_Startzeit);
+            Zielzeit = cursor.GetDate(SQLiteHelper.COLUMN_Zielzeit);
             Rang = cursor.GetInt(SQLiteHelper.COLUMN_Rang);
         }
 
@@ -35,8 +35,8 @@ namespace SwissO {
         public string Club { get; }
         public string Category { get; }
         public int Startnummer { get; }
-        public string Startzeit { get; }
-        public string Zielzeit { get; }
+        public DateTime Startzeit { get; }
+        public DateTime Zielzeit { get; }
         public int Rang { get; }
 
 
