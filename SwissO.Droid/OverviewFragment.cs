@@ -2,20 +2,20 @@
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using AndroidX.Fragment.App;
 using AndroidX.SwipeRefreshLayout.Widget;
 using System;
 using System.Collections.Generic;
 
 namespace SwissO.Droid {
 
-    public class OverviewFragment : MyFragment, OverviewPage {
+    public class OverviewFragment : Fragment, OverviewPage {
 
         private OverviewManager manager;
 
         private SwipeRefreshLayout refreshLayout;
 
-        public OverviewFragment(MainActivity activity) : base(activity, Resource.String.overview) {
-        }
+        private MainActivity act;
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             HasOptionsMenu = true;
@@ -41,8 +41,10 @@ namespace SwissO.Droid {
             return base.OnOptionsItemSelected(item);
         }
 
-        public override void OnResume() {
-            base.OnResume();
+        public override void OnViewCreated(View view, Bundle savedInstanceState) {
+            base.OnViewCreated(view, savedInstanceState);
+            act = (MainActivity)Activity;
+            act.SetTitle(Resource.String.overview);
             refreshLayout = (SwipeRefreshLayout)View.FindViewById(Resource.Id.refreshLayout_overview);
             manager = new OverviewManager(this, act.GetAppManager());
             ShowEvents();

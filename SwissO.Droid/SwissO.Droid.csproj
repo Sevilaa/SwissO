@@ -45,6 +45,9 @@
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidSupportedAbis />
     <MandroidI18n />
+    <AndroidPackageFormat>aab</AndroidPackageFormat>
+    <AndroidUseAapt2>true</AndroidUseAapt2>
+    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -81,7 +84,6 @@
     <Compile Include="ListFragmentPagerAdapter.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Daten_A.cs" />
-    <Compile Include="MyFragment.cs" />
     <Compile Include="MyHttpClient_A.cs" />
     <Compile Include="OverviewAdapter.cs" />
     <Compile Include="OverviewButton.cs" />
@@ -94,7 +96,6 @@
     <Compile Include="SortingDialog.cs" />
     <Compile Include="SQLiteHelper_A.cs" />
     <Compile Include="ListFragment.cs" />
-    <Compile Include="SubListAdapter.cs" />
     <Compile Include="SubListFragment.cs" />
   </ItemGroup>
   <ItemGroup>

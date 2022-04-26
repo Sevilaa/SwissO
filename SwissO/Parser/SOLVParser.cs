@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -150,7 +151,8 @@ namespace SwissO.Parser {
                             string ort = akt.Substring(32, 19).Trim();
                             string club = akt.Substring(51, 19).Trim();
                             string zeit = akt.Substring(70, 8).Trim();
-                            daten.InsertLaeufer(name, jahrgang, club, kat, Helper.intnull, null, zeit, rang, e);
+                            TimeSpan ziel = Helper.GetZielzeit(zeit);
+                            daten.InsertLaeufer(name, jahrgang, club, kat, Helper.intnull, TimeSpan.MinValue, ziel, rang, e);
                         }
                     }
                 }
@@ -185,7 +187,11 @@ namespace SwissO.Parser {
                             string ort = akt.Substring(34, 19).Trim();
                             string club = akt.Substring(53, 19).Trim();
                             string zeit = akt.Substring(73, 5).Trim();
-                            daten.InsertLaeufer(name, jahrgang, club, kat, startnummer, zeit, null, Helper.intnull, e);
+                            bool success = TimeSpan.TryParseExact(zeit, @"h\:mm", new CultureInfo("de-CH"), TimeSpanStyles.None, out TimeSpan start);
+                            if (!success) {
+                                start = TimeSpan.MinValue;
+                            }
+                            daten.InsertLaeufer(name, jahrgang, club, kat, startnummer, start, TimeSpan.MinValue, Helper.intnull, e);
                         }
                     }
                 }
@@ -194,8 +200,8 @@ namespace SwissO.Parser {
         }
 
         private static HtmlNode NextNodeWithName(HtmlNode node, string name) {
-            while(node != null) {
-                if(node.Name == name) {
+            while (node != null) {
+                if (node.Name == name) {
                     return node;
                 }
                 node = node.NextSibling;

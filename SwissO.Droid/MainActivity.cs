@@ -12,7 +12,7 @@ namespace SwissO.Droid {
 
         private AppManager manager;
 
-        private MyFragment fragment;
+        private AndroidX.Fragment.App.Fragment fragment;
 
 
         protected override void OnCreate(Bundle savedInstanceState) {
@@ -38,30 +38,30 @@ namespace SwissO.Droid {
             return base.OnCreateOptionsMenu(menu);
         }
 
-        public override bool OnOptionsItemSelected(IMenuItem item) {
-            switch (item.ItemId) {
-                case Resource.Id.settings:
-                    Intent intent = new Intent(this, typeof(SettingsActivity));
-                    StartActivity(intent);
-                    return true;
-                default:
-                    return base.OnOptionsItemSelected(item);
-            }
-        }
+        //public override bool OnOptionsItemSelected(IMenuItem item) {
+        //    switch (item.ItemId) {
+        //        case Resource.Id.settings:
+        //            Intent intent = new Intent(this, typeof(SettingsActivity));
+        //            StartActivity(intent);
+        //            return true;
+        //        default:
+        //            return base.OnOptionsItemSelected(item);
+        //    }
+        //}
 
-        private MyFragment GetNavigatedFragment(int item_id) {
+        private AndroidX.Fragment.App.Fragment GetNavigatedFragment(int item_id) {
             switch (item_id) {
                 case Resource.Id.navigation_overview:
-                    fragment = new OverviewFragment(this);
+                    fragment = new OverviewFragment();
                     return fragment;
                 case Resource.Id.navigation_startlist:
-                    fragment = new ListFragment(this, ListManager.ListType.Startliste);
+                    fragment = new ListFragment(ListManager.ListType.Startliste);
                     return fragment;
                 case Resource.Id.navigation_liveresult:
-                    fragment = new ListFragment(this, ListManager.ListType.Rangliste);
+                    fragment = new ListFragment(ListManager.ListType.Rangliste);
                     return fragment;
                 case Resource.Id.navigation_profil:
-                    fragment = new ProfilFragment(this);
+                    fragment = new ProfilFragment();
                     return fragment;
                 default:
                     return null;

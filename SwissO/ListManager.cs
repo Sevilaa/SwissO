@@ -18,7 +18,7 @@ namespace SwissO {
 
     public class ListManager : PageManager {
 
-        public enum ListType { Startliste, Rangliste}
+        public enum ListType { Startliste, Rangliste }
 
         private readonly ListType listType;
 
@@ -29,7 +29,7 @@ namespace SwissO {
             this.page = page;
             this.listType = listType;
             profil = appManager.GetDaten().CreateProfil();
-            
+
         }
 
         public void InitEvent() {
@@ -44,7 +44,7 @@ namespace SwissO {
 
         public void SendStartlisteRequest() {
             Event selected = appManager.GetSelected();
-            if(selected != null && selected.Startliste != null) {
+            if (selected != null && selected.Startliste != null) {
                 page.ShowProgressBar();
                 if (selected.Startliste.OriginalString.Contains("entry.picoevents.ch")) {
                     PicoParser picoParser = new PicoParser(httpClient, this, Parser.Parser.RequestCodes.PicoStartliste);
@@ -76,32 +76,45 @@ namespace SwissO {
         }
 
         public List<Laeufer> GetAlleLaeufer(string filter) {
-            MyCursor cursor = appManager.GetDaten().GetAllLaeuferByEvent(appManager.GetSelected(), filter, OrderString());
-            return CreateLaeufer(cursor);
+            (string order, string orderColumn) = OrderString();
+            MyCursor cursor = appManager.GetDaten().GetAllLaeuferByEvent(appManager.GetSelected(), filter, order);
+            return CreateLaeufer(cursor, orderColumn);
         }
 
         public List<Laeufer> GetClubLaeufer(string filter) {
-            MyCursor cursor = appManager.GetDaten().GetClubLaeuferByEvent(appManager.GetSelected(), profil.GetClubs(), filter, OrderString());
-            return CreateLaeufer(cursor);
+            (string order, string orderColumn) = OrderString();
+            MyCursor cursor = appManager.GetDaten().GetClubLaeuferByEvent(appManager.GetSelected(), profil.GetClubs(), filter, order);
+            return CreateLaeufer(cursor, orderColumn);
         }
 
         public List<Laeufer> GetFriendsLaeufer(string filter) {
-            MyCursor cursor = appManager.GetDaten().GetFriendLaeuferByEvent(appManager.GetSelected(), profil.GetFriends(), filter, OrderString());
-            return CreateLaeufer(cursor);
+            (string order, string orderColumn) = OrderString();
+            MyCursor cursor = appManager.GetDaten().GetFriendLaeuferByEvent(appManager.GetSelected(), profil.GetFriends(), filter, order);
+            return CreateLaeufer(cursor, orderColumn);
         }
 
-        private List<Laeufer> CreateLaeufer(MyCursor cursor) {
+        private List<Laeufer> CreateLaeufer(MyCursor cursor, string orderColumn) {
             List<Laeufer> laeuferList = new List<Laeufer>();
+            List<Laeufer> nullList = new List<Laeufer>();
             while (cursor.Read()) {
-                laeuferList.Add(new Laeufer(cursor));
+                if (orderColumn == null) {
+                    laeuferList.Add(new Laeufer(cursor));
+                }
+                else if (cursor.IsNull(orderColumn)) {
+                    nullList.Add(new Laeufer(cursor));
+                }
+                else {
+                    laeuferList.Add(new Laeufer(cursor));
+                }
             }
+            laeuferList.AddRange(nullList);
             return laeuferList;
         }
 
-        private string OrderString() {
+        private (string, string) OrderString() {
             string column;
             bool ascending;
-            if(listType == ListType.Startliste) {
+            if (listType == ListType.Startliste) {
                 column = page.GetStringPref(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column);
                 ascending = page.GetBoolPref(Helper.Keys.sorting_startlist_ascending, Helper.Defaults.sorting_startlist_ascending);
             }
@@ -109,11 +122,11 @@ namespace SwissO {
                 column = page.GetStringPref(Helper.Keys.sorting_ranglist_column, Helper.Defaults.sorting_ranglist_column);
                 ascending = page.GetBoolPref(Helper.Keys.sorting_ranglist_ascending, Helper.Defaults.sorting_ranglist_ascending);
             }
-            if(column == Helper.original) {
-                return null;
+            if (column == Helper.original) {
+                return (null, null);
             }
-            string order = column + (ascending ? " ASC" : " DESC") + " NULLS LAST;";
-            return order;
+            string order = column + (ascending ? " ASC;" : " DESC;");
+            return (order, column);
         }
 
         public void LoadList() {
@@ -121,8 +134,11 @@ namespace SwissO {
             if (count > 0) {
                 page.UpdateList();
             }
-            else {
+            else if (appManager.GetSelected().Startliste == null) {
                 page.ShowNotAvailable();
+            }
+            else {
+                page.ShowOnlyInWebBrowser();
             }
         }
 

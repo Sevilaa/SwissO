@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace SwissO.Parser {
     class PicoParser : Parser {
@@ -20,13 +21,26 @@ namespace SwissO.Parser {
                 HtmlDocument htmlDoc = new HtmlDocument();
                 htmlDoc.LoadHtml(html);
                 HtmlNode body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/div/font/div/p/body");
+                if(body == null) {
+                    body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/div/font/div/body");
+                }
                 while (body != null) {
                     HtmlNode strong = body.SelectSingleNode("./p/strong");
                     string cat = strong.InnerText;
                     HtmlNodeCollection trs = body.SelectNodes("./table/tr");
                     foreach (HtmlNode tr in trs) {
                         HtmlNodeCollection td = tr.SelectNodes("./td");
-                        daten.InsertLaeufer(td[1].InnerText + " " + td[0].InnerText, Helper.intnull, td[4].InnerText, cat, Helper.intnull, td[5].InnerText, null, Helper.intnull, e);
+                        string startZeit = td[5].InnerText;
+                        TimeSpan start = TimeSpan.MinValue;
+                        if(startZeit != "bezahlt" && !string.IsNullOrWhiteSpace(startZeit)) {
+                            CultureInfo culture = new CultureInfo("de-CH");
+                            bool success = TimeSpan.TryParseExact(startZeit, @"h\:mm", new CultureInfo("de-CH"), TimeSpanStyles.None, out start);
+                            if(!success) {
+                                start = TimeSpan.MinValue;
+                            }
+
+                        }
+                        daten.InsertLaeufer(td[1].InnerText + " " + td[0].InnerText, Helper.intnull, td[4].InnerText, cat, Helper.intnull, start , TimeSpan.MinValue, Helper.intnull, e);
                     }
                     body = body.SelectSingleNode("./body");
                 }

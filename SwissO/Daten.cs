@@ -72,13 +72,17 @@ namespace SwissO {
         public abstract int Length();
 
         public DateTime GetDate(string column) {
-            if (IsNull(column)) {
-                return DateTime.MinValue;
-            }
-            if (GetLong(column) == Helper.intnull) {
+            if (IsNull(column) || GetLong(column) == Helper.intnull) {
                 return DateTime.MinValue;
             }
             return new DateTime(GetLong(column));
+        }
+
+        public TimeSpan GetTime(string column) {
+            if (IsNull(column)) {
+                return TimeSpan.MinValue;
+            }
+            return TimeSpan.FromTicks(GetLong(column));
         }
 
         public Uri GetUri(string column) {
@@ -100,7 +104,7 @@ namespace SwissO {
 
     public abstract class MyResources {
         public enum StringResource {
-            Ausschreibung, Anmeldung, Weisungen, Mutation, Wkz, Startlist, Liveresult, Rangliste
+            Ausschreibung, Anmeldung, Weisungen, Mutation, Wkz, Startlist, Liveresult, Rangliste, PostenFalsch, Aufgegeben, PostenFehlt, Disqet, DNS, nichtKlassiert, Ueberzeit
         }
 
         public abstract string GetString(StringResource name);
@@ -161,15 +165,15 @@ namespace SwissO {
         //Table Laeufer
 
         public int InsertLaeufer(string name, int jahrgang, string club, string cat,
-            int startnummer, string startzeit, string zielzeit, int rang, Event e) {
+            int startnummer, TimeSpan startzeit, TimeSpan zielzeit, int rang, Event e) {
             MyContentValues daten = new MyContentValues();
             daten.Put(SQLiteHelper.COLUMN_Jahrgang, jahrgang);
             daten.Put(SQLiteHelper.COLUMN_Name, name);
             daten.Put(SQLiteHelper.COLUMN_Club, club);
             daten.Put(SQLiteHelper.COLUMN_Category, cat);
             daten.Put(SQLiteHelper.COLUMN_Startnummer, startnummer);
-            daten.Put(SQLiteHelper.COLUMN_Startzeit, startzeit);
-            daten.Put(SQLiteHelper.COLUMN_Zielzeit, zielzeit);
+            daten.Put(SQLiteHelper.COLUMN_Startzeit, startzeit.Ticks);
+            daten.Put(SQLiteHelper.COLUMN_Zielzeit, zielzeit.Ticks);
             daten.Put(SQLiteHelper.COLUMN_Rang, rang);
             daten.Put(SQLiteHelper.COLUMN_Event, e.Id);
             return Insert(SQLiteHelper.TABLE_Laeufer, daten);
@@ -311,7 +315,7 @@ namespace SwissO {
         }
 
         private static string UriString(Uri uri) {
-            return uri == null ? null : uri.OriginalString;
+            return uri?.OriginalString;
         }
     }
 }

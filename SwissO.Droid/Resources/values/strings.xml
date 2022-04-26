@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">SwissO</string>
+	<string name="app_name">SwissO</string>
 
-    <string name="overview">Übersicht</string>
+	<string name="overview">Übersicht</string>
 
 	<string name="cancel">Abbrechen</string>
 
@@ -12,8 +12,8 @@
 	<string name="vorname">Vorname</string>
 	<string name="name">Name</string>
 	<string name="nachname">Nachname</string>
-  <string name="club_add">Club hinzufügen</string>
-  <string name="friend_add">Freund hinzufügen</string>
+	<string name="club_add">Club hinzufügen</string>
+	<string name="friend_add">Freund hinzufügen</string>
 	<string name="si_number">SI-Nummer</string>
 	<string name="category">Kategorie</string>
 	<string name="new_friend">Neuer Freund</string>
@@ -32,7 +32,7 @@
 	<string name="liveresult">Live Resultate</string>
 	<string name="rangliste">Rangliste</string>
 
-  <string name="schnellfilter">Schnellfilter</string>
+	<string name="schnellfilter">Schnellfilter</string>
 
 	<!--Menu-->
 	<string name="refresh">Refresh</string>
@@ -41,28 +41,38 @@
 
 	<string name="noeventselected">Kein Event ausgewählt</string>
 
-  <string name="sortierung">Sortierung</string>
-  <string name="absteigend">Absteigend</string>
-  <string name="aufsteigend">Aufsteigend</string>
+	<string name="sortierung">Sortierung</string>
+	<string name="absteigend">Absteigend</string>
+	<string name="aufsteigend">Aufsteigend</string>
 
 
-  <!--Settings-->
-  <string name="display_header">Anzeige</string>
+	<!--Settings-->
+	<string name="display_header">Anzeige</string>
 
-  <string name="startlist_title">Startlisten Infos</string>
-  <string name="startlist_summary">Sichtbare Spalten in der Startliste</string>
+	<string name="startlist_title">Startlisten Infos</string>
+	<string name="startlist_summary">Sichtbare Spalten in der Startliste</string>
 
-  <string name="ranglist_title">Ranglisten Infos</string>
-  <string name="ranglist_summary">Sichtbare Spalten in der Rangliste</string>
+	<string name="ranglist_title">Ranglisten Infos</string>
+	<string name="ranglist_summary">Sichtbare Spalten in der Rangliste</string>
 
+	<string name="postenfehlt">Po. fehl.</string>
+	<string name="aufgegeben">Aufgeg.</string>
+	<string name="nichtklassiert">n. kl.</string>
+	<string name="postenfalsch">Po. fal.</string>
+	<string name="disqet">Disqu.</string>
+	<string name="dns">n. gestar.</string>
+	<string name="ueberzeit">Überz.</string>
+	<!--<string name="sync_header">Sync</string>
 
-  <!--<string name="sync_header">Sync</string>
-
-  --><!-- Messages Preferences --><!--
+  -->
+	<!-- Messages Preferences -->
+	<!--
   <string name="signature_title">Your signature</string>
   <string name="reply_title">Default reply action</string>
 
-  --><!-- Sync Preferences --><!--
+  -->
+	<!-- Sync Preferences -->
+	<!--
   <string name="sync_title">Sync email periodically</string>
   <string name="attachment_title">Download incoming attachments</string>
   <string name="attachment_summary_on">
