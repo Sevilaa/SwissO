@@ -49,11 +49,33 @@ namespace SwissO.Droid {
                 case StringResource.Rangliste:
                     stringId = Resource.String.rangliste;
                     break;
+                case StringResource.PostenFalsch:
+                    stringId = Resource.String.postenfalsch;
+                    break;
+                case StringResource.PostenFehlt:
+                    stringId = Resource.String.postenfehlt;
+                    break;
+                case StringResource.Aufgegeben:
+                    stringId = Resource.String.aufgegeben;
+                    break;
+                case StringResource.DNS:
+                    stringId = Resource.String.dns;
+                    break;
+                case StringResource.Ueberzeit:
+                    stringId = Resource.String.ueberzeit;
+                    break;
+                case StringResource.nichtKlassiert:
+                    stringId = Resource.String.nichtklassiert;
+                    break;
+                case StringResource.Disqet:
+                    stringId = Resource.String.disqet;
+                    break;
+
             }
             if (stringId != Helper.intnull) {
                 return stringId;
             }
-            throw new NotImplementedException("String not implemented in MyResource_A");
+            throw new NotImplementedException("String " + name.ToString() + " not implemented in MyResource_A");
         }
     }
 

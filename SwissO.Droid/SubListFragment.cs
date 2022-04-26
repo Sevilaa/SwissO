@@ -1,4 +1,5 @@
-﻿using Android.Content;
+﻿using System;
+using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -58,11 +59,11 @@ namespace SwissO.Droid {
             viewHolder.Kat.Text = laeufer.Category;
             if (listType == ListManager.ListType.Rangliste) {
                 viewHolder.Nummer.Text = laeufer.Rang != Helper.intnull ? laeufer.Rang + "." : "";
-                viewHolder.Zeit.Text = laeufer.Zielzeit.ToLongTimeString().TrimStart('0').TrimStart(':');
+                viewHolder.Zeit.Text = Helper.GetZielzeit(laeufer.Zielzeit, new MyResources_A(convertView.Resources));
             }
             if (listType == ListManager.ListType.Startliste) {
                 viewHolder.Nummer.Text = laeufer.Startnummer != Helper.intnull ? laeufer.Startnummer.ToString() : "";
-                viewHolder.Zeit.Text = laeufer.Startzeit.ToShortTimeString().TrimStart('0').TrimStart(':');
+                viewHolder.Zeit.Text = laeufer.Startzeit == TimeSpan.MinValue ? "" : laeufer.Startzeit.ToString(@"h\:mm");
             }
             // Return the completed view to render on screen
             return convertView;
@@ -72,7 +73,7 @@ namespace SwissO.Droid {
     class SubListFragment : Fragment {
 
         public enum ListContent { Friends, Club, alle }
-
+         
         private readonly ListManager listManager;
         private readonly ListContent listContent;
 

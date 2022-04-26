@@ -151,11 +151,8 @@ namespace SwissO.Parser {
                             string ort = akt.Substring(32, 19).Trim();
                             string club = akt.Substring(51, 19).Trim();
                             string zeit = akt.Substring(70, 8).Trim();
-                            bool success = DateTime.TryParseExact(zeit, new string[] { "H:mm:ss", "m:ss" }, new CultureInfo("de-CH"), DateTimeStyles.None, out DateTime ziel);
-                            if (!success) {
-                                ziel = DateTime.MinValue;
-                            }
-                            daten.InsertLaeufer(name, jahrgang, club, kat, Helper.intnull, DateTime.MinValue, ziel, rang, e);
+                            TimeSpan ziel = Helper.GetZielzeit(zeit);
+                            daten.InsertLaeufer(name, jahrgang, club, kat, Helper.intnull, TimeSpan.MinValue, ziel, rang, e);
                         }
                     }
                 }
@@ -190,11 +187,11 @@ namespace SwissO.Parser {
                             string ort = akt.Substring(34, 19).Trim();
                             string club = akt.Substring(53, 19).Trim();
                             string zeit = akt.Substring(73, 5).Trim();
-                            bool success = DateTime.TryParseExact(zeit, "H:mm", new CultureInfo("de-CH"), DateTimeStyles.None, out DateTime start);
+                            bool success = TimeSpan.TryParseExact(zeit, @"h\:mm", new CultureInfo("de-CH"), TimeSpanStyles.None, out TimeSpan start);
                             if (!success) {
-                                start = DateTime.MinValue;
+                                start = TimeSpan.MinValue;
                             }
-                            daten.InsertLaeufer(name, jahrgang, club, kat, startnummer, start, DateTime.MinValue, Helper.intnull, e);
+                            daten.InsertLaeufer(name, jahrgang, club, kat, startnummer, start, TimeSpan.MinValue, Helper.intnull, e);
                         }
                     }
                 }

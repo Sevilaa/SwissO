@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using static SwissO.MyResources;
 
 namespace SwissO {
     public abstract class Helper {
@@ -23,6 +25,63 @@ namespace SwissO {
             public const bool sorting_ranglist_ascending = true;
 
         }
+
+        public sealed class Disqet {
+            public static TimeSpan postenFalsch = new TimeSpan(2000, 1, 1);
+            public static TimeSpan aufgegeben = new TimeSpan(2000, 1, 2);
+            public static TimeSpan postenFehlt = new TimeSpan(2000, 1, 3);
+            public static TimeSpan disqet = new TimeSpan(2000, 1, 4);
+            public static TimeSpan dns = new TimeSpan(2000, 1, 5);
+            public static TimeSpan ueberzeit = new TimeSpan(2000, 1, 6);
+            public static TimeSpan nichtKlassiert = new TimeSpan(2000, 1, 7);
+        }
+
+        public static TimeSpan GetZielzeit(string time) {
+            switch (time) {
+                case "Po.f.":
+                case "Po.fal.":
+                case "mp":
+                    return Disqet.postenFalsch;
+                case "P.fehl.":
+                    return Disqet.postenFehlt;
+                case "aufgeg.":
+                    return Disqet.aufgegeben;
+                case "Überzt.":
+                    return Disqet.ueberzeit;
+                case "n.kl.":
+                    return Disqet.nichtKlassiert;
+                case "disqu.":
+                    return Disqet.disqet;
+                default:
+                    bool success = TimeSpan.TryParseExact(time, new string[] { @"h\:mm\:ss", @"m\:ss" }, new CultureInfo("de-CH"), TimeSpanStyles.None, out TimeSpan ziel);
+                    if (!success) {
+                        ziel = TimeSpan.MinValue;
+                    }
+                    return ziel;
+            }
+        }
+
+        public static string GetZielzeit(TimeSpan time, MyResources res) {
+            if (time == Disqet.postenFalsch)
+                return res.GetString(StringResource.PostenFalsch);
+            if (time == Disqet.dns)
+                return res.GetString(StringResource.DNS);
+            if (time == Disqet.disqet)
+                return res.GetString(StringResource.Disqet);
+            if (time == Disqet.postenFehlt)
+                return res.GetString(StringResource.PostenFehlt);
+            if (time == Disqet.aufgegeben)
+                return res.GetString(StringResource.Aufgegeben);
+            if (time == Disqet.nichtKlassiert)
+                return res.GetString(StringResource.nichtKlassiert);
+            if (time == Disqet.ueberzeit)
+                return res.GetString(StringResource.Ueberzeit);
+            return time.ToString(@"h\:mm\:ss").TrimStart('0').TrimStart(':');
+
+        }
+
+
+
 
         public interface EntryPortal {
             public const int None = 0;
@@ -63,7 +122,7 @@ namespace SwissO {
             if (string.IsNullOrWhiteSpace(s)) {
                 return DateTime.MinValue;
             }
-            bool success =  DateTime.TryParse(s, out DateTime result);
+            bool success = DateTime.TryParse(s, out DateTime result);
             return success ? result : DateTime.MinValue;
         }
     }

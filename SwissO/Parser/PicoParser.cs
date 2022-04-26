@@ -20,7 +20,10 @@ namespace SwissO.Parser {
                 daten.DeleteAllLaeuferByEvent(e);
                 HtmlDocument htmlDoc = new HtmlDocument();
                 htmlDoc.LoadHtml(html);
-                HtmlNode body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/div/font/div/body");
+                HtmlNode body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/div/font/div/p/body");
+                if(body == null) {
+                    body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/div/font/div/body");
+                }
                 while (body != null) {
                     HtmlNode strong = body.SelectSingleNode("./p/strong");
                     string cat = strong.InnerText;
@@ -28,16 +31,16 @@ namespace SwissO.Parser {
                     foreach (HtmlNode tr in trs) {
                         HtmlNodeCollection td = tr.SelectNodes("./td");
                         string startZeit = td[5].InnerText;
-                        DateTime start = DateTime.MinValue;
+                        TimeSpan start = TimeSpan.MinValue;
                         if(startZeit != "bezahlt" && !string.IsNullOrWhiteSpace(startZeit)) {
                             CultureInfo culture = new CultureInfo("de-CH");
-                            bool success = DateTime.TryParseExact(startZeit, "H:mm", new CultureInfo("de-CH"), DateTimeStyles.None, out start);
+                            bool success = TimeSpan.TryParseExact(startZeit, @"h\:mm", new CultureInfo("de-CH"), TimeSpanStyles.None, out start);
                             if(!success) {
-                                start = DateTime.MinValue;
+                                start = TimeSpan.MinValue;
                             }
 
                         }
-                        daten.InsertLaeufer(td[1].InnerText + " " + td[0].InnerText, Helper.intnull, td[4].InnerText, cat, Helper.intnull, start , DateTime.MinValue, Helper.intnull, e);
+                        daten.InsertLaeufer(td[1].InnerText + " " + td[0].InnerText, Helper.intnull, td[4].InnerText, cat, Helper.intnull, start , TimeSpan.MinValue, Helper.intnull, e);
                     }
                     body = body.SelectSingleNode("./body");
                 }
