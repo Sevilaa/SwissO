@@ -140,18 +140,18 @@
     <PackageReference Include="Xamarin.Android.Volley">
       <Version>1.1.1.1</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.4.1" />
+    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.4.1.1" />
     <PackageReference Include="Xamarin.AndroidX.Preference">
-      <Version>1.2.0</Version>
+      <Version>1.2.0.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout">
-      <Version>1.1.0.7</Version>
+      <Version>1.1.0.8</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.AndroidX.ViewPager2">
-      <Version>1.0.0.14</Version>
+      <Version>1.0.0.15</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.5.0.1" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.7.1" />
+    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.5.0.2" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.2" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\fragment_profil.xml">
