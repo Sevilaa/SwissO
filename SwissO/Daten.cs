@@ -197,7 +197,7 @@ namespace SwissO {
                 SQLiteHelper.COLUMN_Club + " LIKE '%" + filter + "%') AND (" +
                 SQLiteHelper.COLUMN_Club + " LIKE '%" + clubs[0] + "%'";
             for (int i = 1; i < clubs.Count; i++) {
-                where += " OR " + SQLiteHelper.COLUMN_Club + "LIKE '%" + clubs[i] + "%'";
+                where += " OR " + SQLiteHelper.COLUMN_Club + " LIKE '%" + clubs[i] + "%'";
             }
             where += ")";
             return Query(SQLiteHelper.TABLE_Laeufer, where, null, order);

@@ -87,7 +87,7 @@ namespace SwissO.Parser {
             DateTime deadline = Helper.GetDate(e.fields[Array.IndexOf(e.titles, COLUMN_Deadline)]);
             int skoordn = GetInt(e.fields[Array.IndexOf(e.titles, COLUMN_SKoordN)]);
             int skoorde = GetInt(e.fields[Array.IndexOf(e.titles, COLUMN_SKoordE)]);
-            (double intn, double inte) = Helper.CalcSwiss(skoordn, skoorde);
+            (double intn, double inte) = skoordn != Helper.intnull ? Helper.CalcSwiss(skoordn, skoorde) : (Helper.intnull, Helper.intnull);
             string lausschreibung = e.fields[Array.IndexOf(e.titles, COLUMN_LAusschreibung)];
             string club = e.fields[Array.IndexOf(e.titles, COLUMN_Club)].Trim();
             int portal = GetInt(e.fields[Array.IndexOf(e.titles, COLUMN_EntryPortal)]);

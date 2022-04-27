@@ -10,13 +10,6 @@ namespace SwissO.Droid {
 
     public class LaeuferAdapter : ArrayAdapter<Laeufer> {
 
-        private class ViewHolder : Java.Lang.Object{
-            public TextView Nummer { get; set; }
-            public TextView Name { get; set; }
-            public TextView Kat { get; set; }
-            public TextView Zeit { get; set; }
-        }
-
         private readonly ListManager.ListType listType;
 
         public LaeuferAdapter(Context context, ListManager.ListType listType, List<Laeufer> laeufer) :
@@ -26,44 +19,35 @@ namespace SwissO.Droid {
 
         public override View GetView(int position, View convertView, ViewGroup parent) {
             Laeufer laeufer = GetItem(position);
-            ViewHolder viewHolder;
             // Check if an existing view is being reused, otherwise inflate the view
             if (convertView == null) {
                 // If there's no view to re-use, inflate a brand new view for row
-                viewHolder = new ViewHolder();
                 LayoutInflater inflater = LayoutInflater.From(Context);
-                if (listType == ListManager.ListType.Startliste) {
-                    convertView = inflater.Inflate(Resource.Layout.listitem_startzeit, parent, false);
-                    viewHolder.Nummer = convertView.FindViewById<TextView>(Resource.Id.sl_startnummer);
-                    viewHolder.Name = convertView.FindViewById<TextView>(Resource.Id.sl_name);
-                    viewHolder.Kat = convertView.FindViewById<TextView>(Resource.Id.sl_kat);
-                    viewHolder.Zeit = convertView.FindViewById<TextView>(Resource.Id.sl_starttime);
-                }
-                if (listType == ListManager.ListType.Rangliste) {
-                    convertView = inflater.Inflate(Resource.Layout.listitem_zielzeit, parent, false);
-                    viewHolder.Nummer = convertView.FindViewById<TextView>(Resource.Id.rl_rang);
-                    viewHolder.Name = convertView.FindViewById<TextView>(Resource.Id.rl_name);
-                    viewHolder.Kat = convertView.FindViewById<TextView>(Resource.Id.rl_kat);
-                    viewHolder.Zeit = convertView.FindViewById<TextView>(Resource.Id.rl_zielzeit);
-                }
-                // Cache the viewHolder object inside the fresh view
-                convertView.Tag = viewHolder;
+                convertView = inflater.Inflate(listType == ListManager.ListType.Startliste ? Resource.Layout.listitem_startzeit : Resource.Layout.listitem_zielzeit, parent, false);
+            }
+            TextView nummer, name, kat, zeit;
+            if (listType == ListManager.ListType.Startliste) {
+                nummer = convertView.FindViewById<TextView>(Resource.Id.sl_startnummer);
+                name = convertView.FindViewById<TextView>(Resource.Id.sl_name);
+                kat = convertView.FindViewById<TextView>(Resource.Id.sl_kat);
+                zeit = convertView.FindViewById<TextView>(Resource.Id.sl_starttime);
             }
             else {
-                // View is being recycled, retrieve the viewHolder object from tag
-                viewHolder = (ViewHolder)convertView.Tag;
-
+                nummer = convertView.FindViewById<TextView>(Resource.Id.rl_rang);
+                name = convertView.FindViewById<TextView>(Resource.Id.rl_name);
+                kat = convertView.FindViewById<TextView>(Resource.Id.rl_kat);
+                zeit = convertView.FindViewById<TextView>(Resource.Id.rl_zielzeit);
             }
-            // Populate the data from the data object via the viewHolder object into the template view
-            viewHolder.Name.Text = laeufer.Name;
-            viewHolder.Kat.Text = laeufer.Category;
-            if (listType == ListManager.ListType.Rangliste) {
-                viewHolder.Nummer.Text = laeufer.Rang != Helper.intnull ? laeufer.Rang + "." : "";
-                viewHolder.Zeit.Text = Helper.GetZielzeit(laeufer.Zielzeit, new MyResources_A(convertView.Resources));
-            }
+            // Populate the data from the data object into the template view
+            name.Text = laeufer.Name;
+            kat.Text = laeufer.Category;
             if (listType == ListManager.ListType.Startliste) {
-                viewHolder.Nummer.Text = laeufer.Startnummer != Helper.intnull ? laeufer.Startnummer.ToString() : "";
-                viewHolder.Zeit.Text = laeufer.Startzeit == TimeSpan.MinValue ? "" : laeufer.Startzeit.ToString(@"h\:mm");
+                nummer.Text = laeufer.Startnummer != Helper.intnull ? laeufer.Startnummer.ToString() : "";
+                zeit.Text = laeufer.Startzeit == TimeSpan.MinValue ? "" : laeufer.Startzeit.ToString(@"h\:mm");
+            }
+            else {
+                nummer.Text = laeufer.Rang != Helper.intnull ? laeufer.Rang + "." : "";
+                zeit.Text = Helper.GetZielzeit(laeufer.Zielzeit, new MyResources_A(convertView.Resources));
             }
             // Return the completed view to render on screen
             return convertView;
@@ -73,7 +57,7 @@ namespace SwissO.Droid {
     class SubListFragment : Fragment {
 
         public enum ListContent { Friends, Club, alle }
-         
+
         private readonly ListManager listManager;
         private readonly ListContent listContent;
 

@@ -45,7 +45,7 @@
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidSupportedAbis />
     <MandroidI18n />
-    <AndroidPackageFormat>aab</AndroidPackageFormat>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
   </PropertyGroup>
