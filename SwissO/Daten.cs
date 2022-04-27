@@ -162,6 +162,23 @@ namespace SwissO {
             Delete(SQLiteHelper.TABLE_Freunde, SameID(id));
         }
 
+        //Table Clubs
+
+        public int InsertClub(string name, int profilID) {
+            MyContentValues daten = new MyContentValues();
+            daten.Put(SQLiteHelper.COLUMN_Name, name);
+            daten.Put(SQLiteHelper.COLUMN_Profil, profilID);
+            return Insert(SQLiteHelper.TABLE_Clubs, daten);
+        }
+
+        public MyCursor GetClubsByProfil(int profilID) {
+            return Query(SQLiteHelper.TABLE_Clubs, SQLiteHelper.COLUMN_Profil + " = " + profilID, null, null);
+        }
+
+        public void DeleteClubById(int id) {
+            Delete(SQLiteHelper.TABLE_Clubs, SameID(id));
+        }
+
         //Table Laeufer
 
         public int InsertLaeufer(string name, int jahrgang, string club, string cat,
@@ -227,47 +244,17 @@ namespace SwissO {
             Delete(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Event + " = " + e.Id);
         }
 
-        //Table Clubs
-
-        public int InsertClub(string name, int profilID) {
-            MyContentValues daten = new MyContentValues();
-            daten.Put(SQLiteHelper.COLUMN_Name, name);
-            daten.Put(SQLiteHelper.COLUMN_Profil, profilID);
-            return Insert(SQLiteHelper.TABLE_Clubs, daten);
-        }
-
-        public MyCursor GetClubsByProfil(int profilID) {
-            return Query(SQLiteHelper.TABLE_Clubs, SQLiteHelper.COLUMN_Profil + " = " + profilID, null, null);
-        }
-
-        public void DeleteClubById(int id) {
-            Delete(SQLiteHelper.TABLE_Clubs, SameID(id));
-        }
-
         //Table Events
 
         public int InsertEvent(Event e) {
-            MyContentValues daten = new MyContentValues();
-            daten.Put(SQLiteHelper.COLUMN_Title, e.Title);
-            daten.Put(SQLiteHelper.COLUMN_Date, e.Date.Ticks);
-            daten.Put(SQLiteHelper.COLUMN_Region, e.Region);
-            daten.Put(SQLiteHelper.COLUMN_Club, e.Club);
-            daten.Put(SQLiteHelper.COLUMN_Map, e.Map);
-            daten.Put(SQLiteHelper.COLUMN_Deadline, e.Deadline.Ticks);
-            daten.Put(SQLiteHelper.COLUMN_IntKoordN, e.Koordn);
-            daten.Put(SQLiteHelper.COLUMN_IntKoordE, e.Koorde);
-            daten.Put(SQLiteHelper.COLUMN_LAusschreibung, UriString(e.Ausschreibung));
-            daten.Put(SQLiteHelper.COLUMN_LWeisungen, UriString(e.Weisungen));
-            daten.Put(SQLiteHelper.COLUMN_LRangliste, UriString(e.Rangliste));
-            daten.Put(SQLiteHelper.COLUMN_LAnmeldung, UriString(e.Anmeldung));
-            daten.Put(SQLiteHelper.COLUMN_LMutation, UriString(e.Mutation));
-            daten.Put(SQLiteHelper.COLUMN_LLiveRangliste, UriString(e.Liveresultate));
-            daten.Put(SQLiteHelper.COLUMN_LStartliste, UriString(e.Startliste));
-            daten.Put(SQLiteHelper.COLUMN_EntryPortal, e.Eventportal);
-            return Insert(SQLiteHelper.TABLE_Events, daten);
+            return Insert(SQLiteHelper.TABLE_Events, CreateEventContentValues(e));
         }
 
         public void UpdateEvent(Event e) {
+            Update(SQLiteHelper.TABLE_Events, CreateEventContentValues(e), SameID(e.Id));
+        }
+
+        private MyContentValues CreateEventContentValues(Event e) {
             MyContentValues daten = new MyContentValues();
             daten.Put(SQLiteHelper.COLUMN_Title, e.Title);
             daten.Put(SQLiteHelper.COLUMN_Date, e.Date.Ticks);
@@ -285,11 +272,22 @@ namespace SwissO {
             daten.Put(SQLiteHelper.COLUMN_LLiveRangliste, UriString(e.Liveresultate));
             daten.Put(SQLiteHelper.COLUMN_LStartliste, UriString(e.Startliste));
             daten.Put(SQLiteHelper.COLUMN_EntryPortal, e.Eventportal);
-            Update(SQLiteHelper.TABLE_Events, daten, SameID(e.Id));
+            return daten;
         }
 
         public MyCursor GetAllEvents() {
             return Query(SQLiteHelper.TABLE_Events, null, null, SQLiteHelper.COLUMN_Date + " ASC;");
+        }
+
+        public MyCursor GetFilteredEvents(string filter) {
+            string where = SQLiteHelper.COLUMN_Title + " LIKE '%" + filter + "%' OR " +
+                SQLiteHelper.COLUMN_Club + " LIKE '%" + filter + "%' OR " +
+                SQLiteHelper.COLUMN_Map + " LIKE '%" + filter + "%'";
+            bool success = DateTime.TryParse(filter, out DateTime date);
+            if (success) {
+                where += " OR " + SQLiteHelper.COLUMN_Date + " = " + date.Ticks;
+            }
+            return Query(SQLiteHelper.TABLE_Events, where, null, SQLiteHelper.COLUMN_Date + " ASC;");
         }
 
         public MyCursor GetTodayEvent() {

@@ -9,7 +9,7 @@ namespace SwissO {
     interface OverviewPage {
         public void ShowEvents();
 
-        public void StopRefreshing();
+        public void SetRefreshing(bool b);
     }
 
     class OverviewManager : PageManager {
@@ -33,13 +33,14 @@ namespace SwissO {
             PicoParser picoParser = new PicoParser(httpClient, this, Parser.Parser.RequestCodes.PicoEventlist);
             runningParser.Add(Parser.Parser.RequestCodes.PicoEventlist);
             picoParser.StartEventlistRequest();
+            page.SetRefreshing(true);
         }
 
         public void FinishedEventlistLoading(Parser.Parser.RequestCodes requestCode) {
             runningParser.Remove(requestCode);
             if(runningParser.Count == 0) {
-                page.StopRefreshing();
-                appManager.InitEvents(); //Quick way to sort
+                page.SetRefreshing(false);
+                appManager.InitEvents();
                 page.ShowEvents();
             }
         }

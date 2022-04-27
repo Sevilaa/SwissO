@@ -79,19 +79,15 @@ namespace SwissO.Droid {
             };
         }
 
-        private List<Laeufer> GetLaeuferCursor() {
-            string filter = View.FindViewById<EditText>(Resource.Id.schnellfilter).Text;
-            return listContent switch {
-                ListContent.Friends => listManager.GetFriendsLaeufer(filter),
-                ListContent.Club => listManager.GetClubLaeufer(filter),
-                ListContent.alle => listManager.GetAlleLaeufer(filter),
-                _ => null,
-            };
-        }
-
         public void LoadList() {
             if (View != null) {
-                List<Laeufer> laeufer = GetLaeuferCursor();
+                string filter = View.FindViewById<EditText>(Resource.Id.schnellfilter).Text;
+                List<Laeufer> laeufer = listContent switch {
+                    ListContent.Friends => listManager.GetFriendsLaeufer(filter),
+                    ListContent.Club => listManager.GetClubLaeufer(filter),
+                    ListContent.alle => listManager.GetAlleLaeufer(filter),
+                    _ => null,
+                };
                 ListView listView = View.FindViewById<ListView>(Resource.Id.listview_laeufer);
                 if (laeufer.Count > 0) {
                     listView.Visibility = ViewStates.Visible;

@@ -14,6 +14,7 @@ namespace SwissO.Droid {
         private OverviewManager manager;
 
         private SwipeRefreshLayout refreshLayout;
+        private EditText schnellfilter;
 
         private MainActivity act;
 
@@ -30,7 +31,6 @@ namespace SwissO.Droid {
             switch (item.ItemId) {
                 case Resource.Id.refresh:
                     if (!refreshLayout.Refreshing) {
-                        refreshLayout.Refreshing = true;
                         manager.StartRefresh();
                         return true;
                     }
@@ -46,22 +46,29 @@ namespace SwissO.Droid {
             act = (MainActivity)Activity;
             act.SetTitle(Resource.String.overview);
             refreshLayout = (SwipeRefreshLayout)View.FindViewById(Resource.Id.refreshLayout_overview);
+            schnellfilter = (EditText)View.FindViewById(Resource.Id.schnellfilter);
             manager = new OverviewManager(this, act.GetAppManager());
-            ShowEvents();
             refreshLayout.Refresh += (sender, e) => {
                 manager.StartRefresh();
+            };
+            schnellfilter.TextChanged += (sender, e) => {
+                ShowEvents();
             };
         }
 
         public void ShowEvents() {
             if (View != null) {
+                string filter = schnellfilter.Text;
                 ListView overviewList = (ListView)View.FindViewById(Resource.Id.listView_overview);
-                List<Event> events = act.GetAppManager().GetEvents();
+                List<Event> events = act.GetAppManager().GetFilteredEvents(filter);
                 if (events.Count > 0) {
                     overviewList.Visibility = ViewStates.Visible;
                     OverviewAdapter adapter = new OverviewAdapter(events, act, act.GetAppManager());
                     overviewList.Adapter = adapter;
                     Event selected = act.GetAppManager().GetSelected();
+                    if (!events.Contains(selected)) {
+                        selected = AppManager.GetUpComingEvent(events);
+                    }
                     int index = events.IndexOf(selected);
                     overviewList.SetSelection(Math.Max(index, 0));
                 }
@@ -72,8 +79,8 @@ namespace SwissO.Droid {
             }
         }
 
-        public void StopRefreshing() {
-            refreshLayout.Refreshing = false;
+        public void SetRefreshing(bool b) {
+            refreshLayout.Refreshing = b;
         }
     }
 }

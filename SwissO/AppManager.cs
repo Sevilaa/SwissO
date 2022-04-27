@@ -29,7 +29,6 @@ namespace SwissO {
             httpClient = client;
             InitEvents();
             selected = GetUpComingEvent();
-            selected ??= GetLastEvent();
         }
 
         public void InitEvents() {
@@ -70,15 +69,27 @@ namespace SwissO {
         }
 
         private Event GetUpComingEvent() {
-            return events.Where(i => i.Date >= DateTime.Today).FirstOrDefault();
+            return GetUpComingEvent(events);
         }
 
-        private Event GetLastEvent() {
-            return events.Where(i => i.Date <= DateTime.Today).LastOrDefault();
+        public static Event GetUpComingEvent(List<Event> selectedEvents) {
+            Event upComingEvent = selectedEvents.Where(i => i.Date >= DateTime.Today).FirstOrDefault();
+            upComingEvent ??= selectedEvents.Where(i => i.Date <= DateTime.Today).LastOrDefault();
+            return upComingEvent;
         }
 
         public List<Event> GetEvents() {
             return events;
+        }
+
+        public List<Event> GetFilteredEvents(string filter) {
+            List<Event> filteredEvents = new List<Event>();
+            MyCursor cursor = daten.GetFilteredEvents(filter);
+            while (cursor.Read()) {
+                int id = cursor.GetInt(SQLiteHelper.COLUMN_ID);
+                filteredEvents.Add(events.Where(i => i.Id == id).FirstOrDefault());
+            }
+            return filteredEvents;
         }
 
         public Daten GetDaten() {
