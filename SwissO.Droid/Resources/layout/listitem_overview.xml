@@ -15,6 +15,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
+        android:backgroundTint="@color/cardview_background"
         card_view:cardCornerRadius="4dp">
 
 

@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <resources>
   <color name="colorPrimary">#cc6d00</color>
-  <color name="colorPrimaryDark">#995200</color>
+  <color name="colorPrimaryDark">#000000</color>
   <color name="colorAccent">#005fcc</color>
   <color name="ic_launcher_background">#FFFFFF</color>
-  <color name="cardview_background">#e6e6e6</color>
+  <color name="cardview_background">#191919</color>
 </resources>

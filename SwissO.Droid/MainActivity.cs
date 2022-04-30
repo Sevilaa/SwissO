@@ -30,7 +30,7 @@ namespace SwissO.Droid {
                 SupportFragmentManager.BeginTransaction().Replace(Resource.Id.host_fragment_activity_main, GetNavigatedFragment(e.Item.ItemId)).Commit();
             };
 
-            SupportFragmentManager.BeginTransaction().Add(Resource.Id.host_fragment_activity_main, GetNavigatedFragment(navigation.SelectedItemId)).Commit();
+            SupportFragmentManager.BeginTransaction().Replace(Resource.Id.host_fragment_activity_main, GetNavigatedFragment(navigation.SelectedItemId)).Commit();
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu) {
