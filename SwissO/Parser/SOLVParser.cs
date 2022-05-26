@@ -125,36 +125,26 @@ namespace SwissO.Parser {
         }
 
         public void StartRanglisteRequest(Event e) {
-            httpClient.SendStringRequest(this, e.Rangliste.ToString() + "&kind=all", MyHttpClient.RequestCodes.Rangliste, e.Id);
+            httpClient.SendStringRequest(this, e.Rangliste.ToString() + "&kind=all&csv=1", MyHttpClient.RequestCodes.Rangliste, e.Id);
         }
 
-        private void LoadRangliste(string html) {
+        private void LoadRangliste(string csv) {
             if (manager is ListManager rgmanager) {
                 Event e = rgmanager.GetAppManager().GetSelected();
                 Daten daten = rgmanager.GetAppManager().GetDaten();
                 daten.DeleteAllLaeuferByEvent(e);
-                HtmlDocument htmlDoc = new HtmlDocument();
-                htmlDoc.LoadHtml(html);
-                HtmlNode body = htmlDoc.DocumentNode.SelectSingleNode("//html/body/table[2]/tr/td[2]");
-                HtmlNodeCollection kategories = body.SelectNodes("./b");
-                for (int i = 0; i < kategories.Count; i++) {
-                    HtmlNode data = NextNodeWithName(kategories[i], "pre");
-                    if (data != null) {
-                        string kat = kategories[i].InnerText.Trim();
-                        string resultate = data.InnerText;
-                        string[] rows = resultate.Split("\n");
-                        for (int j = 2; j < rows.Length - 1; j++) {
-                            string akt = rows[j];
-                            int rang = Helper.GetInt(akt.Substring(0, 3).Trim());
-                            string name = akt.Substring(5, 23).Trim();
-                            int jahrgang = Helper.GetInt(akt.Substring(28, 2).Trim());
-                            string ort = akt.Substring(32, 19).Trim();
-                            string club = akt.Substring(51, 19).Trim();
-                            string zeit = akt.Substring(70, 8).Trim();
-                            TimeSpan ziel = Helper.GetZielzeit(zeit);
-                            daten.InsertLaeufer(name, jahrgang, club, kat, Helper.intnull, TimeSpan.MinValue, ziel, rang, e);
-                        }
-                    }
+                string[] rows = csv.Split('\n');
+                string[] titles = rows[0].Split(';');
+                for (int i = 1; i < rows.Length - 1; i++) {
+                    string[] fields = rows[i].Split(';');
+                    string name = fields[Array.IndexOf(titles, "Name")];
+                    string club = fields[Array.IndexOf(titles, "Club")];
+                    int jahrgang = Helper.GetInt(fields[Array.IndexOf(titles, "Jahrgang")]);
+                    int rang = Helper.GetInt(fields[Array.IndexOf(titles, "Rang")]);
+                    string kat = fields[Array.IndexOf(titles, "Kategorie")];
+                    string zeit = fields[Array.IndexOf(titles, "Zeit")];
+                    TimeSpan ziel = Helper.GetZielzeit(zeit);
+                    daten.InsertLaeufer(name, jahrgang, club, kat, Helper.intnull, TimeSpan.MinValue, ziel, rang, e);
                 }
                 rgmanager.LoadList();
             }
