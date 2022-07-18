@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ch.laasch.swisso.OverviewLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:id="@+id/linearLayout1">
+
+            <TextView
+                android:id="@+id/overview_item_title"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/overview_item_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:drawableLeftCompat="@drawable/ic_baseline_calendar_today" />
+
+            <TextView
+                android:id="@+id/overview_item_map"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:drawableLeftCompat="@drawable/ic_baseline_map" />
+
+            <TextView
+                android:id="@+id/overview_item_club"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_map"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:drawableLeftCompat="@drawable/ic_baseline_group" />
+
+            <TextView
+                android:id="@+id/overview_item_deadline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_club"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:drawableLeftCompat="@drawable/ic_baseline_edit_calendar" />
+
+            <TextView
+                android:id="@+id/overview_item_region"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_deadline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:drawableLeftCompat="@drawable/ic_baseline_location_city" />
+
+            <ch.laasch.swisso.OverviewButton
+                android:id="@+id/overview_item_button1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintEnd_toStartOf="@+id/overview_item_button2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_region"/>
+
+            <ch.laasch.swisso.OverviewButton
+                android:id="@+id/overview_item_button2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/overview_item_button1"
+                app:layout_constraintTop_toTopOf="@id/overview_item_button1" />
+
+            <ch.laasch.swisso.OverviewButton
+                android:id="@+id/overview_item_button3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintEnd_toStartOf="@id/overview_item_button4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/overview_item_button1" />
+
+            <ch.laasch.swisso.OverviewButton
+                android:id="@+id/overview_item_button4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/overview_item_button3"
+                app:layout_constraintTop_toTopOf="@id/overview_item_button3"/>
+
+            <ch.laasch.swisso.OverviewButton
+                android:id="@+id/overview_item_button5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintEnd_toStartOf="@id/overview_item_button6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/overview_item_button3" />
+
+            <ch.laasch.swisso.OverviewButton
+                android:id="@+id/overview_item_button6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/overview_item_button5"
+                app:layout_constraintTop_toTopOf="@id/overview_item_button5"/>
+
+            <ch.laasch.swisso.OverviewButton
+                android:id="@+id/overview_item_button7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintEnd_toStartOf="@id/overview_item_button8"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/overview_item_button5" />
+
+            <ch.laasch.swisso.OverviewButton
+                android:id="@+id/overview_item_button8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/overview_item_button7"
+                app:layout_constraintTop_toTopOf="@id/overview_item_button7"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</ch.laasch.swisso.OverviewLayout>

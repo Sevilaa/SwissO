@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Programmierung/Appprogrammierung/SwissO/app/src/main/res/drawable/ic_baseline_format_list_bulleted.xml" value="0.362" />
+        <entry key="..\:/Programmierung/Appprogrammierung/SwissO/app/src/main/res/drawable/ic_select_home.xml" value="0.473" />
+        <entry key="..\:/Programmierung/Appprogrammierung/SwissO/app/src/main/res/drawable/ic_select_info.xml" value="0.362" />
+        <entry key="..\:/Programmierung/Appprogrammierung/SwissO/app/src/main/res/drawable/ic_select_person.xml" value="0.362" />
+        <entry key="..\:/Programmierung/Appprogrammierung/SwissO/app/src/main/res/layout/activity_main.xml" value="0.3140625" />
+        <entry key="..\:/Programmierung/Appprogrammierung/SwissO/app/src/main/res/layout/fragment_overview.xml" value="0.4551282051282051" />
+        <entry key="..\:/Programmierung/Appprogrammierung/SwissO/app/src/main/res/layout/listitem_overview.xml" value="0.3572404371584699" />
+        <entry key="..\:/Programmierung/Appprogrammierung/SwissO/app/src/main/res/menu/navigation.xml" value="0.36302083333333335" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
