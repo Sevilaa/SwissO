@@ -20,30 +20,25 @@ import java.util.HashMap;
 
 public class OverviewFragment extends MyFragment {
 
-    private MainActivity act;
-
     private final HashMap<Chip, String> chips = new HashMap<>();
     private SwipeRefreshLayout refreshLayout;
     private ListView listView;
     private TextInputEditText suche;
 
+    private boolean sucheVisible = false;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_overview, container, false);
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        act = (MainActivity)getActivity();
-        act.setTitle(R.string.overview);
         chips.put(view.findViewById(R.id.chip_club), SQLiteHelper.COLUMN_CLUB);
         chips.put(view.findViewById(R.id.chip_karte), SQLiteHelper.COLUMN_MAP);
         chips.put(view.findViewById(R.id.chip_name), SQLiteHelper.COLUMN_NAME);
         chips.put(view.findViewById(R.id.chip_region), SQLiteHelper.COLUMN_REGION);
-        for (Chip chip: chips.keySet()) {
-            chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                showList();
-            });
+        for (Chip chip : chips.keySet()) {
+            chip.setOnCheckedChangeListener((buttonView, isChecked) -> showList());
         }
         refreshLayout = view.findViewById(R.id.refreshLayout_overview);
         listView = view.findViewById(R.id.listView_overview);
@@ -51,10 +46,7 @@ public class OverviewFragment extends MyFragment {
 
         refreshLayout.setOnRefreshListener(this::refresh);
 
-        view.findViewById(R.id.chip_group_overview).setVisibility(suche.hasFocus() ? View.VISIBLE : View.GONE);
-        suche.setOnFocusChangeListener((v, hasFocus) -> {
-            view.findViewById(R.id.chip_group_overview).setVisibility(hasFocus ? View.VISIBLE : View.GONE);
-        });
+        setSucheVisibility(false);
         suche.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -66,54 +58,75 @@ public class OverviewFragment extends MyFragment {
                 showList();
             }
         });
-        if(act.getEvents().size() == 0){
+        if (act.getEvents().size() == 0) {
             refresh();
-        }
-        else {
+        } else {
             showList();
         }
     }
 
-    public void refresh(){
-        SwissOParser parser = new SwissOParser(act);
-        parser.sendEventRequest();
+    public boolean onOptionsItemClicked(int itemId) {
+        if (itemId == R.id.menu_search) {
+            setSucheVisibility(!sucheVisible);
+            return true;
+        } else if (itemId == R.id.menu_refresh) {
+            refresh();
+            return true;
+        }
+        return false;
+    }
+
+    private void setSucheVisibility(boolean visibile) {
+        sucheVisible = visibile;
+        getView().findViewById(R.id.suche_overview_layout).setVisibility(visibile ? View.VISIBLE : View.GONE);
+        showList();
+    }
+
+    public void refresh() {
+        act.getParser().sendEventRequest();
         refreshLayout.setRefreshing(true);
     }
 
-    public void reloadEvents(){
+    public void reloadEvents() {
         showList();
         refreshLayout.setRefreshing(false);
     }
 
-    public void showList(){
+    public void reloadList() {
+    }
+
+    public void showList() {
         if (getView() != null) {
-            String filter = suche.getText().toString();
             ArrayList<Event> events = act.getEvents();
             ArrayList<Event> filteredEvents = new ArrayList<>();
             Event topShownEvent = null;
-            Cursor cursor = act.getDaten().getEvents(filter, chips);
+            Cursor cursor;
+            if (sucheVisible) {
+                String filter = suche.getText().toString();
+                cursor = act.getDaten().getEvents(filter, chips);
+            } else {
+                cursor = act.getDaten().getEvents();
+            }
             cursor.moveToFirst();
-            for (int i = 0; i < events.size() && !cursor.isAfterLast(); i++){
+            for (int i = 0; i < events.size() && !cursor.isAfterLast(); i++) {
                 Event e = events.get(i);
-                if(Helper.getInt(cursor, SQLiteHelper.COLUMN_ID) == e.getId()){
+                if (Helper.getInt(cursor, SQLiteHelper.COLUMN_ID) == e.getId()) {
                     filteredEvents.add(e);
                     cursor.moveToNext();
-                    if((act.getSelectedEvent() != null && e == act.getSelectedEvent()) ||
-                            (topShownEvent == null && e.getBeginDate() != null && e.getBeginDate().getTime() >= Helper.getToday().getTimeInMillis())){
+                    if (e == act.getSelectedEvent()) {
                         topShownEvent = e;
                     }
                 }
             }
             if (filteredEvents.size() > 0) {
-                if(topShownEvent == null){
+                if (topShownEvent == null) {
                     topShownEvent = filteredEvents.get(filteredEvents.size() - 1);
                 }
                 listView.setVisibility(View.VISIBLE);
                 OverviewAdapter adapter = new OverviewAdapter(act, filteredEvents);
                 listView.setAdapter(adapter);
                 listView.setSelection(filteredEvents.indexOf(topShownEvent));
-            }
-            else {
+            } else {
                 listView.setVisibility(View.INVISIBLE);
             }
             listView.invalidate();

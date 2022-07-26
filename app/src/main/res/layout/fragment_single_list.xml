@@ -6,13 +6,10 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/suche_overview_layout"
+        android:id="@+id/suche_list_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -23,7 +20,7 @@
             android:hint="@string/suche">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/suche_overview"
+                android:id="@+id/suche_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionSearch" />
@@ -35,14 +32,14 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group_overview"
+                android:id="@+id/chip_group_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 app:singleLine="true">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_name"
+                    android:id="@+id/chip_name_list"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -50,7 +47,7 @@
                     android:text="@string/name" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_club"
+                    android:id="@+id/chip_club_list"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -58,20 +55,28 @@
                     android:text="@string/club" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_karte"
+                    android:id="@+id/chip_kategorie_list"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="@string/karte" />
+                    android:text="@string/category" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_region"
+                    android:id="@+id/chip_startnummer_list"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="@string/region" />
+                    android:text="@string/startnummer" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_rang_list"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/rang" />
             </com.google.android.material.chip.ChipGroup>
 
         </HorizontalScrollView>
@@ -79,12 +84,12 @@
     </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refreshLayout_overview"
+        android:id="@+id/refreshLayout_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ListView
-            android:id="@+id/listView_overview"
+            android:id="@+id/listView_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"

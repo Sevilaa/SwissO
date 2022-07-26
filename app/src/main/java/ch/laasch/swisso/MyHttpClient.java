@@ -30,7 +30,7 @@ public class MyHttpClient {
         queue.start();
     }
 
-    public void sendStringRequest(Parser parser, String url, RequestCodes requestCode, int id) {
+    public void sendStringRequest(SwissOParser parser, String url, RequestCodes requestCode, int id) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
                     parser.onResult(requestCode, id, response);
@@ -40,5 +40,5 @@ public class MyHttpClient {
         queue.add(stringRequest);
     }
 
-    public enum RequestCodes {Eventliste, SingleEvent, Rangliste, Startliste}
+    public enum RequestCodes {Eventliste, Laeufer}
 }

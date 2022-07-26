@@ -5,56 +5,101 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MyHttpClient httpClient;
     private MyFragment fragment;
     private Daten daten;
+    private SwissOParser parser;
     private Event selectedEvent;
     private ArrayList<Event> events = new ArrayList<>();
-    private TabSelection selectedTab;
+    private FragmentType fragmentType;
+    private BottomNavigationView navigation;
+    private MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         daten = new Daten(this);
-        httpClient = new MyHttpClient(this);
-        BottomNavigationView navigation = findViewById(R.id.bottom_navigation);
-        navigation.setOnItemSelectedListener(item -> {
-            setFragment(item.getItemId());
-            getSupportFragmentManager().beginTransaction().replace(R.id.host_fragment_activity_main, fragment).commit();
-            return true;
-        });
-        setFragment(R.id.navigation_overview);
-        getSupportFragmentManager().beginTransaction().replace(R.id.host_fragment_activity_main, fragment).commit();
+        parser = new SwissOParser(this);
+
+        navigation = findViewById(R.id.bottom_navigation);
+        navigation.setOnItemSelectedListener(item -> setFragment(item.getItemId()));
+
+        toolbar = findViewById(R.id.topAppBar);
+        toolbar.setOnMenuItemClickListener(item -> onOptionItemClicked(item.getItemId()));
+
         initEvents();
+
+        setFragment(R.id.navigation_overview);
     }
 
-    private void setFragment(int itemId) {
+    private boolean onOptionItemClicked(int itemId) {
+        return fragment.onOptionsItemClicked(itemId);
+    }
+
+    public void editOptionMenuItem(int itemId, boolean visible) {
+        toolbar.getMenu().findItem(itemId).setVisible(visible);
+    }
+
+    private boolean setFragment(int itemId) {
+        toolbar.getMenu().findItem(R.id.menu_refresh).setVisible(false);
+        toolbar.getMenu().findItem(R.id.menu_search).setVisible(false);
+        toolbar.getMenu().findItem(R.id.menu_browser).setVisible(false);
+        toolbar.getMenu().findItem(R.id.menu_sorting).setVisible(false);
+        toolbar.getMenu().findItem(R.id.menu_club_add).setVisible(false);
+        toolbar.getMenu().findItem(R.id.menu_friend_add).setVisible(false);
         if (itemId == R.id.navigation_overview) {
             fragment = new OverviewFragment();
-            selectedTab = TabSelection.Overview;
-        } else if (itemId == R.id.navigation_startlist) {
+            fragmentType = FragmentType.Overview;
+            toolbar.getMenu().findItem(R.id.menu_refresh).setVisible(true);
+            toolbar.getMenu().findItem(R.id.menu_search).setVisible(true);
+            toolbar.setTitle(R.string.overview);
+        } else if (itemId == R.id.navigation_startliste) {
             fragment = new ListFragment();
-            selectedTab = TabSelection.Startliste;
-        } else if (itemId == R.id.navigation_liveresult) {
+            fragmentType = FragmentType.Startliste;
+            toolbar.getMenu().findItem(R.id.menu_refresh).setVisible(true);
+            toolbar.getMenu().findItem(R.id.menu_search).setVisible(true);
+            toolbar.getMenu().findItem(R.id.menu_browser).setVisible(true);
+            toolbar.getMenu().findItem(R.id.menu_sorting).setVisible(true);
+            setToolbarTitle(R.string.startlist);
+        } else if (itemId == R.id.navigation_rangliste) {
             fragment = new ListFragment();
-            selectedTab = TabSelection.Rangliste;
+            fragmentType = FragmentType.Rangliste;
+            toolbar.getMenu().findItem(R.id.menu_refresh).setVisible(true);
+            toolbar.getMenu().findItem(R.id.menu_search).setVisible(true);
+            toolbar.getMenu().findItem(R.id.menu_browser).setVisible(true);
+            toolbar.getMenu().findItem(R.id.menu_sorting).setVisible(true);
+            setToolbarTitle(R.string.rangliste);
         } else if (itemId == R.id.navigation_profil) {
             fragment = new ProfilFragment();
-            selectedTab = TabSelection.Profil;
-        } else {
+            fragmentType = FragmentType.Profil;
+            toolbar.getMenu().findItem(R.id.menu_club_add).setVisible(true);
+            toolbar.getMenu().findItem(R.id.menu_friend_add).setVisible(true);
+            setToolbarTitle(R.string.profil);
+        } else if (itemId == R.id.navigation_details) {
             fragment = new DetailsFragment();
-            selectedTab = TabSelection.Details;
+            fragmentType = FragmentType.Details;
+        } else {
+            return false;
         }
+        getSupportFragmentManager().beginTransaction().replace(R.id.host_fragment_activity_main, fragment).commit();
+        return true;
+    }
+
+    private void setToolbarTitle(@StringRes int resId) {
+        String title = getString(resId);
+        title += ": " + selectedEvent.getName();
+        toolbar.setTitle(title);
     }
 
     public final void initEvents() {
@@ -62,30 +107,39 @@ public class MainActivity extends AppCompatActivity {
         events.clear();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            events.add(new Event(cursor));
+            Event e = new Event(cursor);
+            if (selectedEvent == null && e.getBeginDate().getTime() >= Helper.getToday().getTimeInMillis()) {
+                selectedEvent = e;
+            }
+            events.add(e);
             cursor.moveToNext();
+        }
+        if (selectedEvent == null && events.size() > 0) {
+            selectedEvent = events.get(events.size() - 1);
         }
         cursor.close();
     }
 
-    public void reloadEvents(ArrayList<Event> events){
+    public void reloadEvents(@NonNull ArrayList<Event> events) {
         this.events = events;
-        if(selectedEvent != null){
-            for(int i=0;i<events.size(); i++){
-                if(events.get(i).getId() == selectedEvent.getId()){
-                    selectedEvent = events.get(i);
-                    i = events.size();
-                }
+        for (int i = 0; i < events.size(); i++) {
+            if ((selectedEvent == null && events.get(i).getBeginDate().getTime() >= Helper.getToday().getTimeInMillis()) || (selectedEvent != null && events.get(i).getId() == selectedEvent.getId())) {
+                selectedEvent = events.get(i);
+                i = events.size();
             }
         }
         fragment.reloadEvents();
+    }
+
+    public void reloadList() {
+        fragment.reloadList();
     }
 
     public Event getSelectedEvent() {
         return selectedEvent;
     }
 
-    public ArrayList<Event> getEvents(){
+    public ArrayList<Event> getEvents() {
         return events;
     }
 
@@ -93,8 +147,8 @@ public class MainActivity extends AppCompatActivity {
         return daten;
     }
 
-    public MyHttpClient getHttpClient(){
-        return httpClient;
+    public SwissOParser getParser() {
+        return parser;
     }
 
     @Override
@@ -103,15 +157,15 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-   public final void openEventDetails(Event e, Event.UriArt uriArt) {
+    public final void openEventDetails(Event e, Event.UriArt uriArt) {
         selectedEvent = e;
         switch (uriArt) {
-//            case Event.UriArt.Rangliste:
-//                openRangliste();
-//                break;
-//            case Event.UriArt.Startliste:
-//                openStartliste();
-//                break;
+            case Rangliste:
+                navigation.setSelectedItemId(R.id.navigation_rangliste);
+                break;
+            case Startliste:
+                navigation.setSelectedItemId(R.id.navigation_startliste);
+                break;
             default:
                 openWebBrowser(e.getUri(uriArt));
                 break;
@@ -126,54 +180,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*public final void setSelectedEvent(Event e) {
-        selectedEvent = e;
+    public FragmentType getFragmentType() {
+        return fragmentType;
     }
 
-    public static Event getUpComingEvent(ArrayList<Event> selectedEvents) {
-            Event upComingEvent = selectedEvents.Where(i -> i.Date >= LocalDateTime.Today).FirstOrDefault();
-            upComingEvent = upComingEvent != null ? upComingEvent : selectedEvents.Where(i -> i.Date <= LocalDateTime.Today).LastOrDefault();
-            return upComingEvent;
-    }
-
-//    public final Event[] getEventSelectionables() {
-//        ArrayList<Event> selectionables = new ArrayList<Event>();
-//        int middleIndex = events.indexOf(selected);
-//        int beginIndex = Math.max(middleIndex - Helper.selectionablesLength / 2, 0);
-//        for (int i = 0; i < Helper.selectionablesLength && beginIndex + i < events.size(); i++) {
-//            selectionables.add(events.get(i + beginIndex));
-//        }
-//        return selectionables.toArray(new Event[0]);
-//    }
-
-    private Event getUpComingEvent() {
-        return getUpComingEvent(events);
-    }
-
-    public final ArrayList<Event> getEvents() {
-        return events;
-    }
-
-    public final ArrayList<Event> getEvents(String filter) {
-//        ArrayList<Event> filteredEvents = new ArrayList<>();
-//        Cursor cursor = daten.getFilteredEvents(filter);
-//        while (cursor.Read()) {
-//            int id = Helper.getInt(cursor, SQLiteHelper.COLUMN_ID);
-//            filteredEvents.add(events.Where(i -> i.Id == id).FirstOrDefault());
-//        }
-//        return filteredEvents;
-    }
-
-    public final MyHttpClient getHttpClient() {
-        return httpClient;
-    }
-
-    public final Event getSelectedEvent() {
-        return selectedEvent;
-    }
-*/
-
-    public enum TabSelection {
+    public enum FragmentType {
         Overview, Startliste, Rangliste, Profil, Details
     }
 }

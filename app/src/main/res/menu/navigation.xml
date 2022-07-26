@@ -11,12 +11,12 @@
         android:title="@string/details" />
 
     <item
-        android:id="@+id/navigation_startlist"
+        android:id="@+id/navigation_startliste"
         android:icon="@drawable/ic_baseline_format_list_bulleted"
         android:title="@string/startlist" />
 
     <item
-        android:id="@+id/navigation_liveresult"
+        android:id="@+id/navigation_rangliste"
         android:icon="@drawable/ic_baseline_format_list_numbered"
         android:title="@string/rangliste" />
 

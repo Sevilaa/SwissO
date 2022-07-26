@@ -6,11 +6,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "SwissO.dat";
+    public static final String DATABASE_NAME = "SwissO.db";
     public static final int DATABASE_VERSION = 1;
 
     //Tables
-    public static final String TABLE_Profil = "Profil";
+//    public static final String TABLE_Profil = "Profil";
     public static final String TABLE_Freunde = "Freunde";
     public static final String TABLE_Laeufer = "Laeufer";
     public static final String TABLE_Clubs = "Clubs";
@@ -18,42 +18,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     //Primary Key
     public static final String COLUMN_ID = "id";
-
-    //Fremdschlüssel
-    public static final String COLUMN_Profil = "profil";
-    public static final String COLUMN_Event = "event";
-
-    //Table Profil
-    public static final String COLUMN_Vorname = "first_name";
-    public static final String COLUMN_Nachname = "surname";
-    public static final String COLUMN_SI = "sicard";
-    public static final String COLUMN_Category = "category";
-
-    //Table Events
-    /*public static final String COLUMN_Title = "title";
-    public static final String COLUMN_SOLVId = "solvid";
-    public static final String COLUMN_Date = "date";
-    public static final String COLUMN_Deadline = "deadline";
-    public static final String COLUMN_Region = "region";
-    public static final String COLUMN_IntKoordN = "skoordn";
-    public static final String COLUMN_IntKoordE = "skoorde";
-    public static final String COLUMN_Club = "club";
-    public static final String COLUMN_Map = "map";
-    public static final String COLUMN_LAusschreibung = "ausschreibung";
-    public static final String COLUMN_LWeisungen = "weisungen";
-    public static final String COLUMN_LRangliste = "rangliste";
-    public static final String COLUMN_LLiveRangliste = "liverangliste";
-    public static final String COLUMN_LStartliste = "startliste";
-    public static final String COLUMN_LAnmeldung = "anmeldung";
-    public static final String COLUMN_LMutation = "mutation";
-    public static final String COLUMN_EntryPortal = "entryportal";*/
-
-    //Table Laeufer
-    public static final String COLUMN_Jahrgang = "jahrgang";
-    public static final String COLUMN_Startnummer = "startnummer";
-    public static final String COLUMN_Startzeit = "startzeit";
-    public static final String COLUMN_Zielzeit = "zielzeit";
-    public static final String COLUMN_Rang = "rang";
+    public static final String COLUMN_AUTO_ID = "_id";
 
     //Table Events
     public static final String COLUMN_NAME = "name";
@@ -79,34 +44,35 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TEILNEHMERLISTE = "teilnehmerliste";
     public static final String COLUMN_MUTATION = "mutation";
 
-    private static final String SQL_Profil = "CREATE TABLE IF NOT EXISTS " + TABLE_Profil + "(" +
+    //Table Laeufer
+    public static final String COLUMN_JAHRGANG = "jahrgang";
+    public static final String COLUMN_KATEGORIE = "kategorie";
+    public static final String COLUMN_STARTNUMMER = "startnummer";
+    public static final String COLUMN_STARTZEIT = "startzeit";
+    public static final String COLUMN_ZIELZEIT = "zielzeit";
+    public static final String COLUMN_RANG = "rang";
+    public static final String COLUMN_EVENT = "event";
+
+    //Table Profil
+//    public static final String COLUMN_Vorname = "first_name";
+//    public static final String COLUMN_Nachname = "surname";
+//    public static final String COLUMN_SI = "sicard";
+
+
+    /*private static final String SQL_Profil = "CREATE TABLE IF NOT EXISTS " + TABLE_Profil + "(" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             COLUMN_Vorname + " VARCHAR(15)," +
             COLUMN_Nachname + " VARCHAR(15)," +
             COLUMN_SI + " INTEGER," +
-            COLUMN_Category + " VARCHAR(15))";
-
-    private static final String SQL_Laeufer = "CREATE TABLE IF NOT EXISTS " + TABLE_Laeufer + "(" +
-            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            COLUMN_NAME + " VARCHAR(31) NOT NULL," +
-            COLUMN_Jahrgang + " INTEGER," +
-            COLUMN_CLUB + " VARCHAR(31)," +
-            COLUMN_Category + " VARCHAR(15) NOT NULL," +
-            COLUMN_Startnummer + " INTEGER," +
-            COLUMN_Startzeit + " INTEGER," +
-            COLUMN_Zielzeit + " INTEGER," +
-            COLUMN_Rang + " INTEGER," +
-            COLUMN_Event + " INTEGER NOT NULL)";
+            COLUMN_KATEGORIE + " VARCHAR(15))";*/
 
     private static final String SQL_Freunde = "CREATE TABLE IF NOT EXISTS " + TABLE_Freunde + "(" +
-            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            COLUMN_NAME + " VARCHAR(31) NOT NULL," +
-            COLUMN_Profil + " INTEGER NOT NULL)";
+            COLUMN_AUTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            COLUMN_NAME + " VARCHAR(31) NOT NULL)";
 
     private static final String SQL_Clubs = "CREATE TABLE IF NOT EXISTS " + TABLE_Clubs + "(" +
-            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            COLUMN_NAME + " VARCHAR(31) NOT NULL," +
-            COLUMN_Profil + " INTEGER NOT NULL)";
+            COLUMN_AUTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            COLUMN_NAME + " VARCHAR(31) NOT NULL)";
 
     private static final String SQL_Events = "CREATE TABLE IF NOT EXISTS " + TABLE_Events + "(" +
             COLUMN_ID + " INTEGER PRIMARY KEY," +
@@ -133,12 +99,27 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             COLUMN_TEILNEHMERLISTE + " TEXT," +
             COLUMN_MUTATION + " TEXT)";
 
+    private static final String SQL_Laeufer = "CREATE TABLE IF NOT EXISTS " + TABLE_Laeufer + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY,"
+            + COLUMN_NAME + " VARCHAR(31) NOT NULL,"
+            + COLUMN_JAHRGANG + " INTEGER,"
+            + COLUMN_CLUB + " VARCHAR(31),"
+            + COLUMN_KATEGORIE + " VARCHAR(15) NOT NULL,"
+            + COLUMN_STARTNUMMER + " INTEGER,"
+            + COLUMN_STARTZEIT + " INTEGER,"
+            + COLUMN_ZIELZEIT + " INTEGER,"
+            + COLUMN_RANG + " INTEGER,"
+            + COLUMN_EVENT + " INTEGER NOT NULL,"
+            + COLUMN_STARTLISTE + " INTEGER,"
+            + COLUMN_RANGLISTE + " INTEGER)";
+
+
     public SQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQLiteHelper.SQL_Profil);
+//        db.execSQL(SQLiteHelper.SQL_Profil);
         db.execSQL(SQLiteHelper.SQL_Freunde);
         db.execSQL(SQLiteHelper.SQL_Clubs);
         db.execSQL(SQLiteHelper.SQL_Events);
@@ -150,6 +131,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //            db.ExecSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_Profil);
 //            db.ExecSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_Laeufer);
 //        }
-        onCreate(db);
+//        onCreate(db);
     }
 }

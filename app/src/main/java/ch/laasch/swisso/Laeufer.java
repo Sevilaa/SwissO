@@ -20,13 +20,13 @@ public class Laeufer {
     public Laeufer(Cursor cursor) {
         id = Helper.getInt(cursor, SQLiteHelper.COLUMN_ID);
         name = Helper.getString(cursor, SQLiteHelper.COLUMN_NAME);
-        jahrgang = Helper.getInt(cursor, SQLiteHelper.COLUMN_Jahrgang);
+        jahrgang = Helper.getInt(cursor, SQLiteHelper.COLUMN_JAHRGANG);
         club = Helper.getString(cursor, SQLiteHelper.COLUMN_CLUB);
-        category = Helper.getString(cursor, SQLiteHelper.COLUMN_Category);
-        startnummer = Helper.getInt(cursor, SQLiteHelper.COLUMN_Startnummer);
-//        startzeit = Helper.getTime(cursor, SQLiteHelper.COLUMN_Startzeit);
-//        zielzeit = Helper.getTime(cursor, SQLiteHelper.COLUMN_Zielzeit);
-        rang = Helper.getInt(cursor, SQLiteHelper.COLUMN_Rang);
+        category = Helper.getString(cursor, SQLiteHelper.COLUMN_KATEGORIE);
+        startnummer = Helper.getInt(cursor, SQLiteHelper.COLUMN_STARTNUMMER);
+        startzeit = Helper.getInt(cursor, SQLiteHelper.COLUMN_STARTZEIT);
+        zielzeit = Helper.getInt(cursor, SQLiteHelper.COLUMN_ZIELZEIT);
+        rang = Helper.getInt(cursor, SQLiteHelper.COLUMN_RANG);
     }
 
     private int id;
@@ -35,9 +35,9 @@ public class Laeufer {
     private String club;
     private String category;
     private int startnummer;
+    private int startzeit;
+    private int zielzeit;
     private int rang;
-//    private TimeSpan startzeit;
-//    private TimeSpan zielzeit;
 
     public final int getId() {
         return id;
@@ -63,13 +63,13 @@ public class Laeufer {
         return startnummer;
     }
 
-//    public final TimeSpan getStartzeit() {
-//        return startzeit;
-//    }
-//
-//    public final TimeSpan getZielzeit() {
-//        return zielzeit;
-//    }
+    public int getStartZeit() {
+        return startzeit;
+    }
+
+    public int getZielzeit() {
+        return zielzeit;
+    }
 
     public final int getRang() {
         return rang;

@@ -6,11 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 public class Daten {
@@ -33,12 +34,12 @@ public class Daten {
 
     //Table Profil
 
-    public int insertProfil(String vorname, String nachname, int si, String category) {
+    /*public int insertProfil(String vorname, String nachname, int si, String category) {
         ContentValues daten = new ContentValues();
         daten.put(SQLiteHelper.COLUMN_Vorname, vorname);
         daten.put(SQLiteHelper.COLUMN_Nachname, nachname);
         daten.put(SQLiteHelper.COLUMN_SI, si);
-        daten.put(SQLiteHelper.COLUMN_Category, category);
+        daten.put(SQLiteHelper.COLUMN_KATEGORIE, category);
         return (int) database.insert(SQLiteHelper.TABLE_Profil, null, daten);
     }
 
@@ -47,7 +48,7 @@ public class Daten {
         daten.put(SQLiteHelper.COLUMN_Vorname, vorname);
         daten.put(SQLiteHelper.COLUMN_Nachname, nachname);
         daten.put(SQLiteHelper.COLUMN_SI, si);
-        daten.put(SQLiteHelper.COLUMN_Category, category);
+        daten.put(SQLiteHelper.COLUMN_KATEGORIE, category);
         database.update(SQLiteHelper.TABLE_Profil, daten, SQLiteHelper.COLUMN_ID + " = " + id, null);
     }
 
@@ -55,125 +56,123 @@ public class Daten {
         return database.query(SQLiteHelper.TABLE_Profil, null, null, null, null, null, null);
     }
 
-//    public Profil CreateProfil() {
-//        Cursor cursor = getAllProfile();
-//        if (cursor.isAfterLast()) {
-//            insertProfil("", "", Helper.intnull, "");
-//            cursor = getAllProfile();
-//        }
-//        return new Profil(cursor, this);
-//    }
+    public Profil CreateProfil() {
+        Cursor cursor = getAllProfile();
+        if (cursor.isAfterLast()) {
+            insertProfil("", "", Helper.intnull, "");
+            cursor = getAllProfile();
+        }
+        return new Profil(cursor, this);
+    }*/
 
     //Table Freunde
 
-    public int insertFreund(String vorname, int profilID) {
+    public int insertFreund(String name) {
         ContentValues daten = new ContentValues();
-        daten.put(SQLiteHelper.COLUMN_NAME, vorname);
-        daten.put(SQLiteHelper.COLUMN_Profil, profilID);
+        daten.put(SQLiteHelper.COLUMN_NAME, name);
         return (int) database.insert(SQLiteHelper.TABLE_Freunde, null, daten);
     }
 
-    public Cursor getFreundeByProfil(int profilID) {
-        return database.query(SQLiteHelper.TABLE_Freunde, null, SQLiteHelper.COLUMN_Profil + " = " + profilID, null, null, null, null);
+    public Cursor getAllFreunde() {
+        return database.query(SQLiteHelper.TABLE_Freunde, null, null, null, null, null, null);
     }
 
     public void deleteFreundById(int id) {
-        database.delete(SQLiteHelper.TABLE_Freunde, SQLiteHelper.COLUMN_ID + " = " + id, null);
+        database.delete(SQLiteHelper.TABLE_Freunde, SQLiteHelper.COLUMN_AUTO_ID + " = " + id, null);
     }
 
     //Table Clubs
 
-    public int insertClub(String name, int profilID) {
+    public int insertClub(String name) {
         ContentValues daten = new ContentValues();
         daten.put(SQLiteHelper.COLUMN_NAME, name);
-        daten.put(SQLiteHelper.COLUMN_Profil, profilID);
         return (int) database.insert(SQLiteHelper.TABLE_Clubs, null, daten);
     }
 
-    public Cursor getClubsByProfil(int profilID) {
-        return database.query(SQLiteHelper.TABLE_Clubs, null, SQLiteHelper.COLUMN_Profil + " = " + profilID, null, null, null, null);
+    public Cursor getAllClubs() {
+        return database.query(SQLiteHelper.TABLE_Clubs, null, null, null, null, null, null);
     }
 
     public void deleteClubById(int id) {
-        database.delete(SQLiteHelper.TABLE_Clubs, SQLiteHelper.COLUMN_ID + " = " + id, null);
+        database.delete(SQLiteHelper.TABLE_Clubs, SQLiteHelper.COLUMN_AUTO_ID + " = " + id, null);
+    }
+
+    public ArrayList<String> getFriendsClubList(boolean club){
+        Cursor cursor = club ? getAllClubs() : getAllFreunde();
+        cursor.moveToFirst();
+        ArrayList<String> list = new ArrayList<>();
+        while (!cursor.isAfterLast()){
+            list.add(Helper.getString(cursor, SQLiteHelper.COLUMN_NAME));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return list;
     }
 
     //Table Laeufer
 
-//    public int insertLaeufer(String name, int jahrgang, String club, String cat,
-//                             int startnummer, TimeSpan startzeit, TimeSpan zielzeit, int rang, Event e) {
-//        ContentValues daten = new ContentValues();
-//        daten.put(SQLiteHelper.COLUMN_Jahrgang, jahrgang);
-//        daten.put(SQLiteHelper.COLUMN_NAME, name);
-//        daten.put(SQLiteHelper.COLUMN_Club, club);
-//        daten.put(SQLiteHelper.COLUMN_Category, cat);
-//        daten.put(SQLiteHelper.COLUMN_Startnummer, startnummer);
-//        daten.put(SQLiteHelper.COLUMN_Startzeit, startzeit.Ticks);
-//        daten.put(SQLiteHelper.COLUMN_Zielzeit, zielzeit.Ticks);
-//        daten.put(SQLiteHelper.COLUMN_Rang, rang);
-//        daten.put(SQLiteHelper.COLUMN_Event, e.getId());
-//        return (int) database.insert(SQLiteHelper.TABLE_Laeufer, null, daten);
-//    }
+    public void insertLaeufer(ContentValues contentValues) {
+        database.insert(SQLiteHelper.TABLE_Laeufer, null, contentValues);
+    }
 
-    public Cursor getAllLaeuferByEvent(Event e, String filter, String order) {
-        String where = SQLiteHelper.COLUMN_Event + " = " + e.getId() + " AND (" +
-                SQLiteHelper.COLUMN_NAME + " LIKE '%" + filter + "%' OR " +
-                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " +
-                SQLiteHelper.COLUMN_CLUB + " LIKE '%" + filter + "%')";
+    public void updateLaeufer(ContentValues contentValues, int id) {
+        database.update(SQLiteHelper.TABLE_Laeufer, contentValues, SQLiteHelper.COLUMN_ID + " = " + id, null);
+    }
+
+    public Cursor getLaeuferById(int id) {
+        String where = SQLiteHelper.COLUMN_ID + " = " + id;
+        return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, null);
+    }
+
+    public Cursor getFilteredLaeuferByEvent(@NonNull Event e, MainActivity.FragmentType fragmentType, SingleListFragment.ListContent content, String filter, HashMap<Chip, String> chips, String order) {
+        String where = SQLiteHelper.COLUMN_EVENT + " = " + e.getId();
+        if(filter != null && !filter.trim().isEmpty()) {
+            where += " AND (" + getFilterString(filter, chips) + ")";
+        }
+        if(fragmentType == MainActivity.FragmentType.Rangliste){
+            where += " AND " + SQLiteHelper.COLUMN_RANGLISTE + " = 1";
+        }
+        else if (fragmentType == MainActivity.FragmentType.Startliste){
+            where += " AND " + SQLiteHelper.COLUMN_STARTLISTE + " = 1";
+        }
+        if (content != SingleListFragment.ListContent.alle) {
+            ArrayList<String> list;
+            String col;
+            if (content == SingleListFragment.ListContent.Friends) {
+                list = getFriendsClubList(false);
+                col = SQLiteHelper.COLUMN_NAME;
+            } else {
+                list = getFriendsClubList(true);
+                col = SQLiteHelper.COLUMN_CLUB;
+            }
+            if (list.size() > 0) {
+                StringBuilder builder = new StringBuilder(" AND (");
+                builder.append(col + " LIKE '%" + list.get(0) + "%'");
+                for (int i = 1; i < list.size(); i++) {
+                    builder.append(" OR " + col + " LIKE '%").append(list.get(i)).append("%'");
+                }
+                where += builder + ")";
+            }
+        }
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, order);
     }
 
-    public Cursor getClubLaeuferByEvent(Event e, ArrayList<String> clubs, String filter, String order) {
-        if (clubs.size() == 0) {
-            return database.query(SQLiteHelper.TABLE_Laeufer, null, SQLiteHelper.COLUMN_CLUB + " = 'lkaasdfsjdf'", null, null, null, null);
-        }
-        StringBuilder where = new StringBuilder(SQLiteHelper.COLUMN_Event + " = " + e.getId() + " AND (" +
-                SQLiteHelper.COLUMN_NAME + " LIKE '%" + filter + "%' OR " +
-                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " +
-                SQLiteHelper.COLUMN_CLUB + " LIKE '%" + filter + "%') AND (" +
-                SQLiteHelper.COLUMN_CLUB + " LIKE '%" + clubs.get(0) + "%'");
-        for (int i = 1; i < clubs.size(); i++) {
-            where.append(" OR " + SQLiteHelper.COLUMN_CLUB + " LIKE '%").append(clubs.get(i)).append("%'");
-        }
-        where.append(")");
-        return database.query(SQLiteHelper.TABLE_Laeufer, null, where.toString(), null, null, null, order);
-    }
-
-    public Cursor getFriendLaeuferByEvent(Event e, ArrayList<String> freunde, String filter, String order) {
-        if (freunde.size() == 0) {
-            return database.query(SQLiteHelper.TABLE_Laeufer, null, SQLiteHelper.COLUMN_CLUB + " = 'lkaasdfsjdf'", null, null, null, null);
-        }
-        StringBuilder where = new StringBuilder(SQLiteHelper.COLUMN_Event + " = " + e.getId() + " AND (" +
-                SQLiteHelper.COLUMN_NAME + " LIKE '%" + filter + "%' OR " +
-                SQLiteHelper.COLUMN_Category + " LIKE '%" + filter + "%' OR " +
-                SQLiteHelper.COLUMN_CLUB + " LIKE '%" + filter + "%') AND (" +
-                SQLiteHelper.COLUMN_NAME + " LIKE '%" + freunde.get(0) + "%'");
-        for (int i = 1; i < freunde.size(); i++) {
-            where.append(" OR " + SQLiteHelper.COLUMN_NAME + " LIKE '%").append(freunde.get(i)).append("%'");
-        }
-        where.append(")");
-        return database.query(SQLiteHelper.TABLE_Laeufer, null, where.toString(), null, null, null, order);
-    }
-
-    public int getLaeuferCountByEvent(Event e) {
-        return getAllLaeuferByEvent(e, "", null).getCount();
-    }
-
-    public void deleteAllLaeuferByEvent(Event e) {
-        database.delete(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_Event + " = " + e.getId(), null);
+    public int getLaeuferCountByEvent(Event e, MainActivity.FragmentType type) {
+        return getFilteredLaeuferByEvent(e, type, SingleListFragment.ListContent.alle, null, null, null).getCount();
     }
 
     //Table Events
 
-    public int insertEvent(Event e) {
-        return (int) database.insert(SQLiteHelper.TABLE_Events, null, CreateEventContentValues(e));
+    public void insertEvent(Event e) {
+        database.insert(SQLiteHelper.TABLE_Events, null, CreateEventContentValues(e));
     }
 
     public void updateEvent(Event e) {
         database.update(SQLiteHelper.TABLE_Events, CreateEventContentValues(e), SQLiteHelper.COLUMN_ID + " = " + e.getId(), null);
     }
 
-    private ContentValues CreateEventContentValues(Event e) {
+    @NonNull
+    private ContentValues CreateEventContentValues(@NonNull Event e) {
         ContentValues daten = new ContentValues();
         daten.put(SQLiteHelper.COLUMN_NAME, e.getName());
         if (e.getBeginDate() != null)
@@ -210,15 +209,8 @@ public class Daten {
         return database.query(SQLiteHelper.TABLE_Events, null, getFilterString(filter, chips), null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
     }
 
-  /*  public int getUpcomingEventId(String filter, HashMap<Chip, String> chips){
-        long today = ;
-        String where = "(" + getFilterString(filter, chips) + ") AND " + SQLiteHelper.COLUMN_Date + " >= " + today;
-        Cursor c = database.query(SQLiteHelper.TABLE_Events, null, where, null, null, null, SQLiteHelper.COLUMN_Date + " ASC;");
-        c.moveToFirst();
-        return Helper.getInt(c, SQLiteHelper.COLUMN_ID);
-    }*/
-
-    private String getFilterString(String filter, HashMap<Chip, String> chips) {
+    @Nullable
+    private String getFilterString(String filter, @NonNull HashMap<Chip, String> chips) {
         StringBuilder builder = new StringBuilder();
         for (Chip chip : chips.keySet()) {
             if (chip.isChecked()) {
@@ -231,10 +223,6 @@ public class Daten {
         } else {
             return where.substring(0, where.length() - 4); // Remove last OR
         }
-//        boolean success = DateTime.TryParse(filter, out DateTime date);
-//            if (success) {
-//                where += " OR " + SQLiteHelper.COLUMN_Date + " = " + date.Ticks;
-//            }
     }
 
 //    public Cursor getTodayEvent() {
@@ -247,10 +235,6 @@ public class Daten {
 //        return database.query(SQLiteHelper.TABLE_Events, null, SQLiteHelper.COLUMN_Date + " = " + today, null, null, null, SQLiteHelper.COLUMN_Date + " ASC;");
 //    }
 
-    //        private static String SameID(int id) {
-//            return SQLiteHelper.COLUMN_ID + " = " + id;
-//        }
-//
     private String UriString(Uri uri) {
         return uri == null ? null : uri.toString();
     }

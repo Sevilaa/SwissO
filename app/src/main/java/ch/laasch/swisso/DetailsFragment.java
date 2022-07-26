@@ -7,4 +7,14 @@ public class DetailsFragment extends MyFragment {
     public void reloadEvents() {
 
     }
+
+    @Override
+    public void reloadList() {
+
+    }
+
+    @Override
+    public boolean onOptionsItemClicked(int itemId) {
+        return false;
+    }
 }
