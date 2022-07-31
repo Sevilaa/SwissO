@@ -6,11 +6,11 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "ch.laasch.swisso"
+        applicationId "ch.swisso"
         minSdk 21
         targetSdk 31
         versionCode 1
-        versionName "1.0"
+        versionName "0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
