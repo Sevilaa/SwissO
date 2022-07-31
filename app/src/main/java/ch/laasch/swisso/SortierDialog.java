@@ -15,8 +15,8 @@ public class SortierDialog extends DialogFragment {
     private final MainActivity.FragmentType listType;
     private final ListFragment listFragment;
 
-    private static final String[] startlistColumns = {Helper.original, SQLiteHelper.COLUMN_STARTNUMMER, SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_KATEGORIE, SQLiteHelper.COLUMN_STARTZEIT};
-    private static final String[] ranglistColumns = {Helper.original, SQLiteHelper.COLUMN_RANG, SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_KATEGORIE, SQLiteHelper.COLUMN_ZIELZEIT};
+    private static final String[] startlistColumns = {SQLiteHelper.COLUMN_STARTNUMMER, SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_KATEGORIE, SQLiteHelper.COLUMN_STARTZEIT};
+    private static final String[] ranglistColumns = {SQLiteHelper.COLUMN_RANG, SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_KATEGORIE, SQLiteHelper.COLUMN_ZIELZEIT};
 
     private String selectedColumn;
 

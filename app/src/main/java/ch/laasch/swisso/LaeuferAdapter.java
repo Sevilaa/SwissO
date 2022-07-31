@@ -46,7 +46,8 @@ public class LaeuferAdapter extends ArrayAdapter<Laeufer> {
         kat.setText(laeufer.getCategory());
         if (listType == MainActivity.FragmentType.Startliste) {
             nummer.setText(laeufer.getStartnummer() != Helper.intnull ? "" + laeufer.getStartnummer() : "");
-            zeit.setText(DateUtils.formatElapsedTime(laeufer.getStartZeit() / 1000));
+            String hhmmss = DateUtils.formatElapsedTime(laeufer.getStartZeit() / 1000);
+            zeit.setText(hhmmss.substring(0, hhmmss.length() - 3));
         }
         else {
             nummer.setText(Helper.getRang(laeufer.getRang(),  convertView.getResources()));

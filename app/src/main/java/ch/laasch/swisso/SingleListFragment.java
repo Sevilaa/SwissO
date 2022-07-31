@@ -95,7 +95,7 @@ public class SingleListFragment extends Fragment {
     }
 
     public void setRefreshing(boolean b) {
-        refreshLayout.setRefreshing(false);
+        refreshLayout.setRefreshing(b);
     }
 
     public final void loadList() {
@@ -123,33 +123,35 @@ public class SingleListFragment extends Fragment {
         boolean ascending;
         MainActivity.FragmentType fragmentType = listFragment.getAct().getFragmentType();
         Daten daten = listFragment.getAct().getDaten();
-        if (listFragment.getAct().getFragmentType() == MainActivity.FragmentType.Startliste) {
+        boolean startliste = listFragment.getAct().getFragmentType() == MainActivity.FragmentType.Startliste;
+        if (startliste) {
             column = getStringPref(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column);
             ascending = getBoolPref(Helper.Keys.sorting_startlist_ascending, Helper.Defaults.sorting_startlist_ascending);
         } else {
             column = getStringPref(Helper.Keys.sorting_ranglist_column, Helper.Defaults.sorting_ranglist_column);
             ascending = getBoolPref(Helper.Keys.sorting_ranglist_ascending, Helper.Defaults.sorting_ranglist_ascending);
         }
-        if (column.equals(Helper.original)) {
-            column = null;
-            order = null;
+        if (column.equals(SQLiteHelper.COLUMN_KATEGORIE)) {
+            order = column + (ascending ? " ASC" : " DESC") + ", " + (startliste ? SQLiteHelper.COLUMN_STARTNUMMER : SQLiteHelper.COLUMN_RANG) + " ASC;";
         } else {
             order = column + (ascending ? " ASC;" : " DESC;");
         }
 
         Cursor cursor = daten.getFilteredLaeuferByEvent(listFragment.getAct().getSelectedEvent(), fragmentType, listContent, filter, chips, order);
         ArrayList<Laeufer> laeuferList = new ArrayList<>();
-        ArrayList<Laeufer> nullList = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            if (column != null && Helper.isNull(cursor, column)) {
-                nullList.add(new Laeufer(cursor));
-            } else {
-                laeuferList.add(new Laeufer(cursor));
+        if (cursor != null) {
+            ArrayList<Laeufer> nullList = new ArrayList<>();
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                if (Helper.isNull(cursor, column)) {
+                    nullList.add(new Laeufer(cursor));
+                } else {
+                    laeuferList.add(new Laeufer(cursor));
+                }
+                cursor.moveToNext();
             }
-            cursor.moveToNext();
+            laeuferList.addAll(nullList);
         }
-        laeuferList.addAll(nullList);
         return laeuferList;
     }
 
@@ -166,6 +168,6 @@ public class SingleListFragment extends Fragment {
     public enum ListContent {
         Friends,
         Club,
-        alle;
+        alle
     }
 }

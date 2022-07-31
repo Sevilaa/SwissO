@@ -22,7 +22,6 @@ public abstract class Helper {
     public static final int kind_ski = 2;
     public static final int kind_bike = 3;
     public static final String pref_file = "default_pref";
-    public static final String original = "original";
 
     @NonNull
     public static Calendar getToday() {
@@ -138,9 +137,9 @@ public abstract class Helper {
     }
 
     public interface Defaults {
-        String sorting_startlist_column = Helper.original;
+        String sorting_startlist_column = SQLiteHelper.COLUMN_STARTNUMMER;
         boolean sorting_startlist_ascending = true;
-        String sorting_ranglist_column = Helper.original;
+        String sorting_ranglist_column = SQLiteHelper.COLUMN_KATEGORIE;
         boolean sorting_ranglist_ascending = true;
     }
 

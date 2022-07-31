@@ -78,7 +78,6 @@
     <string name="rang">Rang</string>
 
     <string-array name="sorting_startlist_entires">
-        <item>Ursprünlich</item>
         <item>Startnummer</item>
         <item>Name</item>
         <item>Kategorie</item>
@@ -86,7 +85,6 @@
     </string-array>
 
     <string-array name="sorting_ranglist_entires">
-        <item>Ursprünglich</item>
         <item>Rang</item>
         <item>Name</item>
         <item>Kategorie</item>

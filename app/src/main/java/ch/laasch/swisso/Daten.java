@@ -97,11 +97,11 @@ public class Daten {
         database.delete(SQLiteHelper.TABLE_Clubs, SQLiteHelper.COLUMN_AUTO_ID + " = " + id, null);
     }
 
-    public ArrayList<String> getFriendsClubList(boolean club){
+    public ArrayList<String> getFriendsClubList(boolean club) {
         Cursor cursor = club ? getAllClubs() : getAllFreunde();
         cursor.moveToFirst();
         ArrayList<String> list = new ArrayList<>();
-        while (!cursor.isAfterLast()){
+        while (!cursor.isAfterLast()) {
             list.add(Helper.getString(cursor, SQLiteHelper.COLUMN_NAME));
             cursor.moveToNext();
         }
@@ -126,14 +126,13 @@ public class Daten {
 
     public Cursor getFilteredLaeuferByEvent(@NonNull Event e, MainActivity.FragmentType fragmentType, SingleListFragment.ListContent content, String filter, HashMap<Chip, String> chips, String order) {
         String where = SQLiteHelper.COLUMN_EVENT + " = " + e.getId();
-        if(filter != null && !filter.trim().isEmpty()) {
+        if (filter != null && !filter.trim().isEmpty()) {
             where += " AND (" + getFilterString(filter, chips) + ")";
         }
-        if(fragmentType == MainActivity.FragmentType.Rangliste){
-            where += " AND " + SQLiteHelper.COLUMN_RANGLISTE + " = 1";
-        }
-        else if (fragmentType == MainActivity.FragmentType.Startliste){
-            where += " AND " + SQLiteHelper.COLUMN_STARTLISTE + " = 1";
+        if (fragmentType == MainActivity.FragmentType.Rangliste) {
+            where += " AND " + SQLiteHelper.COLUMN_RANGLISTE + " > 0";
+        } else if (fragmentType == MainActivity.FragmentType.Startliste) {
+            where += " AND " + SQLiteHelper.COLUMN_STARTLISTE + " > 0";
         }
         if (content != SingleListFragment.ListContent.alle) {
             ArrayList<String> list;
@@ -152,6 +151,8 @@ public class Daten {
                     builder.append(" OR " + col + " LIKE '%").append(list.get(i)).append("%'");
                 }
                 where += builder + ")";
+            } else {
+                return null;
             }
         }
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, order);
