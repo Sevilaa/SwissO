@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean setFragment(int itemId) {
+        if(selectedEvent == null){
+            return false;
+        }
         toolbar.getMenu().findItem(R.id.menu_refresh).setVisible(false);
         toolbar.getMenu().findItem(R.id.menu_search).setVisible(false);
         toolbar.getMenu().findItem(R.id.menu_browser).setVisible(false);
