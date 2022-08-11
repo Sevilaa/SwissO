@@ -49,10 +49,10 @@ public class SingleListFragment extends Fragment {
         chips.put(view.findViewById(R.id.chip_club_list), SQLiteHelper.COLUMN_CLUB);
         chips.put(view.findViewById(R.id.chip_name_list), SQLiteHelper.COLUMN_NAME);
         chips.put(view.findViewById(R.id.chip_kategorie_list), SQLiteHelper.COLUMN_KATEGORIE);
-        if(listFragment.getAct().getFragmentType() == MainActivity.FragmentType.Startliste) {
+        if (listFragment.getAct().getFragmentType() == MainActivity.FragmentType.Startliste) {
             chips.put(view.findViewById(R.id.chip_startnummer_list), SQLiteHelper.COLUMN_REGION);
             view.findViewById(R.id.chip_rang_list).setVisibility(View.GONE);
-        } else{
+        } else {
             chips.put(view.findViewById(R.id.chip_rang_list), SQLiteHelper.COLUMN_RANG);
             view.findViewById(R.id.chip_startnummer_list).setVisibility(View.GONE);
         }
@@ -84,7 +84,7 @@ public class SingleListFragment extends Fragment {
 
     private void setSucheVisibility(boolean visibile) {
         sucheVisible = visibile;
-        if(getView() != null) {
+        if (getView() != null) {
             getView().findViewById(R.id.suche_list_layout).setVisibility(visibile ? View.VISIBLE : View.GONE);
             loadList();
         }
@@ -131,10 +131,21 @@ public class SingleListFragment extends Fragment {
             column = getStringPref(Helper.Keys.sorting_ranglist_column, Helper.Defaults.sorting_ranglist_column);
             ascending = getBoolPref(Helper.Keys.sorting_ranglist_ascending, Helper.Defaults.sorting_ranglist_ascending);
         }
-        if (column.equals(SQLiteHelper.COLUMN_KATEGORIE)) {
-            order = column + (ascending ? " ASC" : " DESC") + ", " + (startliste ? SQLiteHelper.COLUMN_STARTNUMMER : SQLiteHelper.COLUMN_RANG) + " ASC;";
-        } else {
-            order = column + (ascending ? " ASC;" : " DESC;");
+        if(column.equals(SQLiteHelper.COLUMN_ZIELZEIT)){
+            order = "(" + SQLiteHelper.COLUMN_ZIELZEIT + " < 0), " + SQLiteHelper.COLUMN_ZIELZEIT;
+        }
+        else if (column.equals(SQLiteHelper.COLUMN_STARTNUMMER)){
+            order = column + (ascending ? " ASC" : " DESC");
+        }
+        else {
+            order = column + (ascending ? " ASC" : " DESC");
+            if (column.equals(SQLiteHelper.COLUMN_KATEGORIE)) {
+                if (startliste) {
+                    order += ", " + SQLiteHelper.COLUMN_STARTNUMMER;
+                } else {
+                    order += ", (" + SQLiteHelper.COLUMN_ZIELZEIT + " < 0), " + SQLiteHelper.COLUMN_ZIELZEIT;
+                }
+            }
         }
 
         Cursor cursor = daten.getFilteredLaeuferByEvent(listFragment.getAct().getSelectedEvent(), fragmentType, listContent, filter, chips, order);
