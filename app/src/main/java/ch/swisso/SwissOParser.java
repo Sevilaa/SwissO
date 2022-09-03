@@ -42,12 +42,10 @@ public class SwissOParser {
     public void LoadEvents(String json) {
         try {
             JSONArray array = new JSONArray(json);
-            ArrayList<Event> events = new ArrayList<>();
             Daten daten = act.getDaten();
             for (int i = 0; i < array.length(); i++) {
                 JSONObject jsonEvent = array.getJSONObject(i);
                 Event e = new Event(jsonEvent);
-                events.add(e);
                 Cursor c = daten.getEventById(e.getId());
                 if (c.getCount() == 0) {
                     daten.insertEvent(e);
@@ -56,7 +54,7 @@ public class SwissOParser {
                 }
                 c.close();
             }
-            act.reloadEvents(events);
+            act.initEvents();
         } catch (JSONException e) {
             e.printStackTrace();
         }

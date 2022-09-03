@@ -80,12 +80,12 @@ public class Event {
             beginDate = Helper.getDate(json, SQLiteHelper.COLUMN_BEGIN_DATE);
             endDate = Helper.getDate(json, SQLiteHelper.COLUMN_END_DATE);
             deadline = Helper.getDate(json, SQLiteHelper.COLUMN_DEADLINE);
-            kind = json.getInt(SQLiteHelper.COLUMN_KIND);
+            kind = Helper.getInt(json, SQLiteHelper.COLUMN_KIND);
             region = Helper.getString(json, SQLiteHelper.COLUMN_REGION);
             club = Helper.getString(json, SQLiteHelper.COLUMN_CLUB);
             map = Helper.getString(json, SQLiteHelper.COLUMN_MAP);
-            koordn = json.isNull(SQLiteHelper.COLUMN_INT_NORD) ? Helper.intnull : json.getDouble(SQLiteHelper.COLUMN_INT_NORD);
-            koorde = json.isNull(SQLiteHelper.COLUMN_INT_EAST) ? Helper.intnull : json.getDouble(SQLiteHelper.COLUMN_INT_EAST);
+            koordn = Helper.getDouble(json, SQLiteHelper.COLUMN_INT_NORD);
+            koorde = Helper.getDouble(json, SQLiteHelper.COLUMN_INT_EAST);
             ausschreibung = Helper.getUri(json, SQLiteHelper.COLUMN_AUSSCHREIBUNG);
             weisungen = Helper.getUri(json, SQLiteHelper.COLUMN_WEISUNGEN);
             rangliste = Helper.getUri(json, SQLiteHelper.COLUMN_RANGLISTE);
@@ -97,6 +97,17 @@ public class Event {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (o == null){
+            return false;
+        }
+        if (o instanceof Event){
+            return ((Event)o).getId() == id;
+        }
+        return false;
     }
 
     public final int getId() {

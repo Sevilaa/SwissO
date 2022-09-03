@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private Daten daten;
     private SwissOParser parser;
     private Event selectedEvent;
-    private ArrayList<Event> events = new ArrayList<>();
+    private final ArrayList<Event> events = new ArrayList<>();
     private FragmentType fragmentType;
     private BottomNavigationView navigation;
     private MaterialToolbar toolbar;
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean setFragment(int itemId) {
-        if(selectedEvent == null){
+        if (selectedEvent == null && itemId != R.id.navigation_overview) {
             return false;
         }
         toolbar.getMenu().findItem(R.id.menu_refresh).setVisible(false);
@@ -111,27 +110,29 @@ public class MainActivity extends AppCompatActivity {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Event e = new Event(cursor);
-            if (selectedEvent == null && e.getBeginDate().getTime() >= Helper.getToday().getTimeInMillis()) {
-                selectedEvent = e;
-            }
             events.add(e);
             cursor.moveToNext();
+        }
+        cursor.close();
+
+        int index = events.indexOf(selectedEvent);
+        if (index != -1) {
+            selectedEvent = events.get(index);
+        } else { // Get the next Event that happens
+            for (int i = 0; i < events.size(); i++) {
+                if (selectedEvent == null && events.get(i).getBeginDate() != null && events.get(i).getBeginDate().getTime() >= Helper.getToday().getTimeInMillis()) {
+                    selectedEvent = events.get(i);
+                    i = events.size();
+                }
+            }
         }
         if (selectedEvent == null && events.size() > 0) {
             selectedEvent = events.get(events.size() - 1);
         }
-        cursor.close();
-    }
 
-    public void reloadEvents(@NonNull ArrayList<Event> events) {
-        this.events = events;
-        for (int i = 0; i < events.size(); i++) {
-            if ((selectedEvent == null && events.get(i).getBeginDate().getTime() >= Helper.getToday().getTimeInMillis()) || (selectedEvent != null && events.get(i).getId() == selectedEvent.getId())) {
-                selectedEvent = events.get(i);
-                i = events.size();
-            }
+        if (fragment != null) {
+            fragment.reloadEvents();
         }
-        fragment.reloadEvents();
     }
 
     public void reloadList() {

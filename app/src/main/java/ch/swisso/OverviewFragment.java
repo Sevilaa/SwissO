@@ -97,35 +97,28 @@ public class OverviewFragment extends MyFragment {
 
     public void showList() {
         if (getView() != null) {
-            ArrayList<Event> events = act.getEvents();
-            ArrayList<Event> filteredEvents = new ArrayList<>();
-            Event topShownEvent = null;
-            Cursor cursor;
+            ArrayList<Event> events;
             if (sucheVisible) {
+                events = new ArrayList<>();
                 String filter = suche.getText().toString();
-                cursor = act.getDaten().getEvents(filter, chips);
-            } else {
-                cursor = act.getDaten().getEvents();
-            }
-            cursor.moveToFirst();
-            for (int i = 0; i < events.size() && !cursor.isAfterLast(); i++) {
-                Event e = events.get(i);
-                if (Helper.getInt(cursor, SQLiteHelper.COLUMN_ID) == e.getId()) {
-                    filteredEvents.add(e);
+                Cursor cursor = act.getDaten().getEvents(filter, chips);
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast()) {
+                    events.add(new Event(cursor));
                     cursor.moveToNext();
-                    if (e == act.getSelectedEvent()) {
-                        topShownEvent = e;
-                    }
                 }
+            } else {
+                events = act.getEvents();
             }
-            if (filteredEvents.size() > 0) {
-                if (topShownEvent == null) {
-                    topShownEvent = filteredEvents.get(filteredEvents.size() - 1);
+            if (events.size() > 0) {
+                int selectedIndex = events.indexOf(act.getSelectedEvent());
+                if (selectedIndex == -1) {
+                    selectedIndex = events.size() - 1;
                 }
                 listView.setVisibility(View.VISIBLE);
-                OverviewAdapter adapter = new OverviewAdapter(act, filteredEvents);
+                OverviewAdapter adapter = new OverviewAdapter(act, events);
                 listView.setAdapter(adapter);
-                listView.setSelection(filteredEvents.indexOf(topShownEvent));
+                listView.setSelection(selectedIndex);
             } else {
                 listView.setVisibility(View.INVISIBLE);
             }

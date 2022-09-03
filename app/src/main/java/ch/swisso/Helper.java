@@ -129,6 +129,14 @@ public abstract class Helper {
         return !json.isNull(field) ? new Date(json.getLong(field)) : null;
     }
 
+    public static int getInt(@NonNull JSONObject json, String field) throws JSONException {
+        return  !json.isNull(field) ? json.getInt(field) : Helper.intnull;
+    }
+
+    public static double getDouble(@NonNull JSONObject json, String field) throws JSONException {
+        return  !json.isNull(field) ? json.getDouble(field) : Helper.intnull;
+    }
+
     public interface Keys {
         String sorting_startlist_column = "sorting_startlist_column";
         String sorting_startlist_ascending = "sorting_startlist_ascending";

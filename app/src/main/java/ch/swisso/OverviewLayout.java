@@ -129,6 +129,7 @@ public class OverviewLayout extends FrameLayout {
     }
 
     private void setTextViewVisible(TextView tv) {
-        tv.setVisibility(tv.getText().toString().trim().isEmpty() ? GONE : VISIBLE);
+        String s = tv.getText().toString().trim();
+        tv.setVisibility(s.isEmpty() || s.equals("null") ? GONE : VISIBLE);
     }
 }
