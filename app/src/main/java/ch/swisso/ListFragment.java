@@ -57,9 +57,8 @@ public class ListFragment extends MyFragment {
         layoutMediator.attach();
         view.findViewById(R.id.openWebBrowser).setOnClickListener(v -> openInWebBrowser());
         int count = act.getDaten().getLaeuferCountByEvent(act.getSelectedEvent(), act.getFragmentType());
-        if (count == 0) {
-            refresh();
-        } else {
+        refresh();
+        if (count != 0) {
             loadList();
         }
     }
@@ -83,8 +82,10 @@ public class ListFragment extends MyFragment {
     }
 
     private void refresh() {
-        adapter.setRefreshing(true, viewPager.getCurrentItem());
-        act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId());
+        if(act.isNetworkAvailable()){
+            adapter.setRefreshing(true, viewPager.getCurrentItem());
+            act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId());
+        }
     }
 
     private void openInWebBrowser() {

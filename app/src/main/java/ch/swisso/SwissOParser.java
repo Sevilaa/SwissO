@@ -2,6 +2,8 @@ package ch.swisso;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
@@ -40,64 +42,68 @@ public class SwissOParser {
     }
 
     public void LoadEvents(String json) {
-        try {
-            JSONArray array = new JSONArray(json);
-            Daten daten = act.getDaten();
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject jsonEvent = array.getJSONObject(i);
-                Event e = new Event(jsonEvent);
-                Cursor c = daten.getEventById(e.getId());
-                if (c.getCount() == 0) {
-                    daten.insertEvent(e);
-                } else {
-                    daten.updateEvent(e);
+        new Handler(Looper.getMainLooper()).post(() -> {
+            try {
+                JSONArray array = new JSONArray(json);
+                Daten daten = act.getDaten();
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject jsonEvent = array.getJSONObject(i);
+                    Event e = new Event(jsonEvent);
+                    Cursor c = daten.getEventById(e.getId());
+                    if (c.getCount() == 0) {
+                        daten.insertEvent(e);
+                    } else {
+                        daten.updateEvent(e);
+                    }
+                    c.close();
                 }
-                c.close();
+                act.initEvents();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            act.initEvents();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     public void LoadLaeufer(String json) {
-        try {
-            JSONArray array = new JSONArray(json);
-            Daten daten = act.getDaten();
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject jsonLauefer = array.getJSONObject(i);
-                ContentValues contentValues = new ContentValues();
-                int id = jsonLauefer.getInt(SQLiteHelper.COLUMN_ID);
-                contentValues.put(SQLiteHelper.COLUMN_ID, id);
-                contentValues.put(SQLiteHelper.COLUMN_NAME, Helper.getString(jsonLauefer, SQLiteHelper.COLUMN_NAME));
-                if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_JAHRGANG))
-                    contentValues.put(SQLiteHelper.COLUMN_JAHRGANG, jsonLauefer.getInt(SQLiteHelper.COLUMN_JAHRGANG));
-                contentValues.put(SQLiteHelper.COLUMN_CLUB, Helper.getString(jsonLauefer, SQLiteHelper.COLUMN_CLUB));
-                contentValues.put(SQLiteHelper.COLUMN_KATEGORIE, Helper.getString(jsonLauefer, SQLiteHelper.COLUMN_KATEGORIE));
-                if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_STARTNUMMER))
-                    contentValues.put(SQLiteHelper.COLUMN_STARTNUMMER, jsonLauefer.getInt(SQLiteHelper.COLUMN_STARTNUMMER));
-                if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_STARTZEIT))
-                    contentValues.put(SQLiteHelper.COLUMN_STARTZEIT, jsonLauefer.getInt(SQLiteHelper.COLUMN_STARTZEIT));
-                if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_ZIELZEIT))
-                    contentValues.put(SQLiteHelper.COLUMN_ZIELZEIT, jsonLauefer.getInt(SQLiteHelper.COLUMN_ZIELZEIT));
-                if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_RANG))
-                    contentValues.put(SQLiteHelper.COLUMN_RANG, jsonLauefer.getInt(SQLiteHelper.COLUMN_RANG));
-                contentValues.put(SQLiteHelper.COLUMN_EVENT, jsonLauefer.getInt(SQLiteHelper.COLUMN_EVENT));
-                if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_STARTLISTE))
-                    contentValues.put(SQLiteHelper.COLUMN_STARTLISTE, jsonLauefer.getInt(SQLiteHelper.COLUMN_STARTLISTE));
-                if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_RANGLISTE))
-                    contentValues.put(SQLiteHelper.COLUMN_RANGLISTE, jsonLauefer.getInt(SQLiteHelper.COLUMN_RANGLISTE));
-                Cursor c = daten.getLaeuferById(id);
-                if (c.getCount() == 0) {
-                    daten.insertLaeufer(contentValues);
-                } else {
-                    daten.updateLaeufer(contentValues, id);
+        new Handler(Looper.getMainLooper()).post(() -> {
+            try {
+                JSONArray array = new JSONArray(json);
+                Daten daten = act.getDaten();
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject jsonLauefer = array.getJSONObject(i);
+                    ContentValues contentValues = new ContentValues();
+                    int id = jsonLauefer.getInt(SQLiteHelper.COLUMN_ID);
+                    contentValues.put(SQLiteHelper.COLUMN_ID, id);
+                    contentValues.put(SQLiteHelper.COLUMN_NAME, Helper.getString(jsonLauefer, SQLiteHelper.COLUMN_NAME));
+                    if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_JAHRGANG))
+                        contentValues.put(SQLiteHelper.COLUMN_JAHRGANG, jsonLauefer.getInt(SQLiteHelper.COLUMN_JAHRGANG));
+                    contentValues.put(SQLiteHelper.COLUMN_CLUB, Helper.getString(jsonLauefer, SQLiteHelper.COLUMN_CLUB));
+                    contentValues.put(SQLiteHelper.COLUMN_KATEGORIE, Helper.getString(jsonLauefer, SQLiteHelper.COLUMN_KATEGORIE));
+                    if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_STARTNUMMER))
+                        contentValues.put(SQLiteHelper.COLUMN_STARTNUMMER, jsonLauefer.getInt(SQLiteHelper.COLUMN_STARTNUMMER));
+                    if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_STARTZEIT))
+                        contentValues.put(SQLiteHelper.COLUMN_STARTZEIT, jsonLauefer.getInt(SQLiteHelper.COLUMN_STARTZEIT));
+                    if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_ZIELZEIT))
+                        contentValues.put(SQLiteHelper.COLUMN_ZIELZEIT, jsonLauefer.getInt(SQLiteHelper.COLUMN_ZIELZEIT));
+                    if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_RANG))
+                        contentValues.put(SQLiteHelper.COLUMN_RANG, jsonLauefer.getInt(SQLiteHelper.COLUMN_RANG));
+                    contentValues.put(SQLiteHelper.COLUMN_EVENT, jsonLauefer.getInt(SQLiteHelper.COLUMN_EVENT));
+                    if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_STARTLISTE))
+                        contentValues.put(SQLiteHelper.COLUMN_STARTLISTE, jsonLauefer.getInt(SQLiteHelper.COLUMN_STARTLISTE));
+                    if (!jsonLauefer.isNull(SQLiteHelper.COLUMN_RANGLISTE))
+                        contentValues.put(SQLiteHelper.COLUMN_RANGLISTE, jsonLauefer.getInt(SQLiteHelper.COLUMN_RANGLISTE));
+                    Cursor c = daten.getLaeuferById(id);
+                    if (c.getCount() == 0) {
+                        daten.insertLaeufer(contentValues);
+                    } else {
+                        daten.updateLaeufer(contentValues, id);
+                    }
+                    c.close();
                 }
-                c.close();
+                act.reloadList();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            act.reloadList();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        });
     }
 }

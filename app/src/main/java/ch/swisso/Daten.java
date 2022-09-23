@@ -199,7 +199,7 @@ public class Daten {
     }
 
     public Cursor getEventById(int id) {
-        return database.query(SQLiteHelper.TABLE_Events, null, SQLiteHelper.COLUMN_ID + " = " + id, null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
+        return database.query(SQLiteHelper.TABLE_Events, null, SQLiteHelper.COLUMN_ID + " = " + id, null, null, null, null);
     }
 
     public Cursor getEvents() {

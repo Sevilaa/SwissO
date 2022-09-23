@@ -50,7 +50,7 @@ public class SingleListFragment extends Fragment {
         chips.put(view.findViewById(R.id.chip_name_list), SQLiteHelper.COLUMN_NAME);
         chips.put(view.findViewById(R.id.chip_kategorie_list), SQLiteHelper.COLUMN_KATEGORIE);
         if (listFragment.getAct().getFragmentType() == MainActivity.FragmentType.Startliste) {
-            chips.put(view.findViewById(R.id.chip_startnummer_list), SQLiteHelper.COLUMN_REGION);
+            chips.put(view.findViewById(R.id.chip_startnummer_list), SQLiteHelper.COLUMN_STARTNUMMER);
             view.findViewById(R.id.chip_rang_list).setVisibility(View.GONE);
         } else {
             chips.put(view.findViewById(R.id.chip_rang_list), SQLiteHelper.COLUMN_RANG);

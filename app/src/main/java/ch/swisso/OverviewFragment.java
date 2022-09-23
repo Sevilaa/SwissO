@@ -58,9 +58,8 @@ public class OverviewFragment extends MyFragment {
                 showList();
             }
         });
-        if (act.getEvents().size() == 0) {
-            refresh();
-        } else {
+        refresh();
+        if (act.getEvents().size() != 0) {
             showList();
         }
     }
@@ -83,8 +82,10 @@ public class OverviewFragment extends MyFragment {
     }
 
     public void refresh() {
-        act.getParser().sendEventRequest();
-        refreshLayout.setRefreshing(true);
+        if(act.isNetworkAvailable()) {
+            act.getParser().sendEventRequest();
+            refreshLayout.setRefreshing(true);
+        }
     }
 
     public void reloadEvents() {
