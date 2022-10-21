@@ -131,19 +131,17 @@ public class SingleListFragment extends Fragment {
             column = getStringPref(Helper.Keys.sorting_ranglist_column, Helper.Defaults.sorting_ranglist_column);
             ascending = getBoolPref(Helper.Keys.sorting_ranglist_ascending, Helper.Defaults.sorting_ranglist_ascending);
         }
-        if(column.equals(SQLiteHelper.COLUMN_ZIELZEIT)){
+        if (column.equals(SQLiteHelper.COLUMN_ZIELZEIT)) {
             order = "(" + SQLiteHelper.COLUMN_ZIELZEIT + " < 0), " + SQLiteHelper.COLUMN_ZIELZEIT;
-        }
-        else if (column.equals(SQLiteHelper.COLUMN_STARTNUMMER)){
+        } else if (column.equals(SQLiteHelper.COLUMN_STARTNUMMER)) {
             order = column + (ascending ? " ASC" : " DESC");
-        }
-        else {
+        } else {
             order = column + (ascending ? " ASC" : " DESC");
             if (column.equals(SQLiteHelper.COLUMN_KATEGORIE)) {
                 if (startliste) {
                     order += ", " + SQLiteHelper.COLUMN_STARTNUMMER;
                 } else {
-                    order += ", (" + SQLiteHelper.COLUMN_ZIELZEIT + " < 0), " + SQLiteHelper.COLUMN_ZIELZEIT;
+                    order += ", (" + SQLiteHelper.COLUMN_ZIELZEIT + " < 0), " + SQLiteHelper.COLUMN_RANG;
                 }
             }
         }

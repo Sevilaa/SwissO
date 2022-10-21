@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public abstract class Helper {
 
@@ -25,11 +26,12 @@ public abstract class Helper {
 
     @NonNull
     public static Calendar getToday() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear(Calendar.HOUR);
-        calendar.clear(Calendar.MINUTE);
-        calendar.clear(Calendar.SECOND);
-        calendar.clear(Calendar.MILLISECOND);
+        TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        Calendar calendar = Calendar.getInstance(timeZone);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
     }
 
@@ -130,11 +132,11 @@ public abstract class Helper {
     }
 
     public static int getInt(@NonNull JSONObject json, String field) throws JSONException {
-        return  !json.isNull(field) ? json.getInt(field) : Helper.intnull;
+        return !json.isNull(field) ? json.getInt(field) : Helper.intnull;
     }
 
     public static double getDouble(@NonNull JSONObject json, String field) throws JSONException {
-        return  !json.isNull(field) ? json.getDouble(field) : Helper.intnull;
+        return !json.isNull(field) ? json.getDouble(field) : Helper.intnull;
     }
 
     public interface Keys {

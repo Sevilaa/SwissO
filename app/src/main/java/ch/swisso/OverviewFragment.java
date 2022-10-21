@@ -1,5 +1,6 @@
 package ch.swisso;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
@@ -7,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -76,13 +78,24 @@ public class OverviewFragment extends MyFragment {
     }
 
     private void setSucheVisibility(boolean visibile) {
+        InputMethodManager imm = (InputMethodManager) act.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(!visibile){
+            View v = act.getCurrentFocus();
+            if (v != null) {
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        }
         sucheVisible = visibile;
         getView().findViewById(R.id.suche_overview_layout).setVisibility(visibile ? View.VISIBLE : View.GONE);
+        if (visibile) {
+            suche.requestFocus();
+            imm.showSoftInput(suche, InputMethodManager.SHOW_IMPLICIT);
+        }
         showList();
     }
 
     public void refresh() {
-        if(act.isNetworkAvailable()) {
+        if (act.isNetworkAvailable()) {
             act.getParser().sendEventRequest();
             refreshLayout.setRefreshing(true);
         }
@@ -126,6 +139,4 @@ public class OverviewFragment extends MyFragment {
             listView.invalidate();
         }
     }
-
-
 }

@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             selectedEvent = events.get(index);
         } else { // Get the next Event that happens
             for (int i = 0; i < events.size(); i++) {
-                if (selectedEvent == null && events.get(i).getBeginDate() != null && events.get(i).getBeginDate().getTime() >= Helper.getToday().getTimeInMillis()) {
+                if (selectedEvent == null && events.get(i).getBeginDate().getTime() >= Helper.getToday().getTimeInMillis()) {
                     selectedEvent = events.get(i);
                     i = events.size();
                 }
