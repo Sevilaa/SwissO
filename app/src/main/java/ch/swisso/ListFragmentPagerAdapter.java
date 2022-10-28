@@ -31,7 +31,8 @@ public class ListFragmentPagerAdapter extends FragmentStateAdapter {
                 listContent = SingleListFragment.ListContent.alle;
                 break;
         }
-        SingleListFragment subListFragment = new SingleListFragment(listFragment, listContent);
+        SingleListFragment subListFragment = new SingleListFragment();
+        subListFragment.setListContent(listContent);
         singleListFragments[position] = subListFragment;
         return subListFragment;
     }

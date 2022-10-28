@@ -1,6 +1,5 @@
 package ch.swisso;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -25,19 +24,14 @@ import java.util.HashMap;
 
 public class SingleListFragment extends Fragment {
 
-    private final ListFragment listFragment;
-    private final ListContent listContent;
+    private MainActivity act;
+    private ListContent listContent;
 
     private final HashMap<Chip, String> chips = new HashMap<>();
     private SwipeRefreshLayout refreshLayout;
     private TextInputEditText suche;
 
     private boolean sucheVisible = false;
-
-    public SingleListFragment(ListFragment listFragment, ListContent listContent) {
-        this.listContent = listContent;
-        this.listFragment = listFragment;
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,10 +42,11 @@ public class SingleListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        act = (MainActivity) getActivity();
         chips.put(view.findViewById(R.id.chip_club_list), SQLiteHelper.COLUMN_CLUB);
         chips.put(view.findViewById(R.id.chip_name_list), SQLiteHelper.COLUMN_NAME);
         chips.put(view.findViewById(R.id.chip_kategorie_list), SQLiteHelper.COLUMN_KATEGORIE);
-        if (listFragment.getAct().getFragmentType() == MainActivity.FragmentType.Startliste) {
+        if (act.getFragmentType() == MainActivity.FragmentType.Startliste) {
             chips.put(view.findViewById(R.id.chip_startnummer_list), SQLiteHelper.COLUMN_STARTNUMMER);
             view.findViewById(R.id.chip_rang_list).setVisibility(View.GONE);
         } else {
@@ -63,10 +58,7 @@ public class SingleListFragment extends Fragment {
         }
 
         refreshLayout = view.findViewById(R.id.refreshLayout_list);
-        refreshLayout.setOnRefreshListener(() -> {
-            MainActivity act = listFragment.getAct();
-            act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId());
-        });
+        refreshLayout.setOnRefreshListener(() -> act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId()));
 
         suche = view.findViewById(R.id.suche_list);
         suche.addTextChangedListener(new TextWatcher() {
@@ -86,7 +78,6 @@ public class SingleListFragment extends Fragment {
 
     private void setSucheVisibility(boolean visibile) {
         if (getView() != null) {
-            Activity act = listFragment.getAct();
             InputMethodManager imm = (InputMethodManager) act.getSystemService(Context.INPUT_METHOD_SERVICE);
             if (!visibile) {
                 View v = act.getCurrentFocus();
@@ -122,7 +113,7 @@ public class SingleListFragment extends Fragment {
             ListView listView = getView().findViewById(R.id.listView_list);
             if (!laeufer.isEmpty()) {
                 listView.setVisibility(View.VISIBLE);
-                LaeuferAdapter adapter = new LaeuferAdapter(getContext(), listFragment.getAct().getFragmentType(), laeufer);
+                LaeuferAdapter adapter = new LaeuferAdapter(getContext(), act.getFragmentType(), laeufer);
                 listView.setAdapter(adapter);
             } else {
                 listView.setVisibility(View.GONE);
@@ -135,9 +126,9 @@ public class SingleListFragment extends Fragment {
         String column;
         String order;
         boolean ascending;
-        MainActivity.FragmentType fragmentType = listFragment.getAct().getFragmentType();
-        Daten daten = listFragment.getAct().getDaten();
-        boolean startliste = listFragment.getAct().getFragmentType() == MainActivity.FragmentType.Startliste;
+        MainActivity.FragmentType fragmentType = act.getFragmentType();
+        Daten daten = act.getDaten();
+        boolean startliste = act.getFragmentType() == MainActivity.FragmentType.Startliste;
         if (startliste) {
             column = getStringPref(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column);
             ascending = getBoolPref(Helper.Keys.sorting_startlist_ascending, Helper.Defaults.sorting_startlist_ascending);
@@ -160,7 +151,7 @@ public class SingleListFragment extends Fragment {
             }
         }
 
-        Cursor cursor = daten.getFilteredLaeuferByEvent(listFragment.getAct().getSelectedEvent(), fragmentType, listContent, filter, chips, order);
+        Cursor cursor = daten.getFilteredLaeuferByEvent(act.getSelectedEvent(), fragmentType, listContent, filter, chips, order);
         ArrayList<Laeufer> laeuferList = new ArrayList<>();
         if (cursor != null) {
             ArrayList<Laeufer> nullList = new ArrayList<>();
@@ -179,13 +170,17 @@ public class SingleListFragment extends Fragment {
     }
 
     public final boolean getBoolPref(String key, boolean def) {
-        SharedPreferences pref = getContext().getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE);
+        SharedPreferences pref = act.getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE);
         return pref.getBoolean(key, def);
     }
 
     public final String getStringPref(String key, String def) {
-        SharedPreferences pref = getContext().getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE);
+        SharedPreferences pref = act.getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE);
         return pref.getString(key, def);
+    }
+
+    public void setListContent(ListContent content){
+        listContent = content;
     }
 
     public enum ListContent {
