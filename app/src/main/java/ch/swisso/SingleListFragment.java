@@ -1,5 +1,6 @@
 package ch.swisso;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -9,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -83,9 +85,21 @@ public class SingleListFragment extends Fragment {
     }
 
     private void setSucheVisibility(boolean visibile) {
-        sucheVisible = visibile;
         if (getView() != null) {
+            Activity act = listFragment.getAct();
+            InputMethodManager imm = (InputMethodManager) act.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (!visibile) {
+                View v = act.getCurrentFocus();
+                if (v != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+            sucheVisible = visibile;
             getView().findViewById(R.id.suche_list_layout).setVisibility(visibile ? View.VISIBLE : View.GONE);
+            if (visibile) {
+                suche.requestFocus();
+                imm.showSoftInput(suche, InputMethodManager.SHOW_IMPLICIT);
+            }
             loadList();
         }
     }
