@@ -32,39 +32,6 @@ public class Daten {
         dbHelper.close();
     }
 
-    //Table Profil
-
-    /*public int insertProfil(String vorname, String nachname, int si, String category) {
-        ContentValues daten = new ContentValues();
-        daten.put(SQLiteHelper.COLUMN_Vorname, vorname);
-        daten.put(SQLiteHelper.COLUMN_Nachname, nachname);
-        daten.put(SQLiteHelper.COLUMN_SI, si);
-        daten.put(SQLiteHelper.COLUMN_KATEGORIE, category);
-        return (int) database.insert(SQLiteHelper.TABLE_Profil, null, daten);
-    }
-
-    public void updateProfil(int id, String vorname, String nachname, int si, String category) {
-        ContentValues daten = new ContentValues();
-        daten.put(SQLiteHelper.COLUMN_Vorname, vorname);
-        daten.put(SQLiteHelper.COLUMN_Nachname, nachname);
-        daten.put(SQLiteHelper.COLUMN_SI, si);
-        daten.put(SQLiteHelper.COLUMN_KATEGORIE, category);
-        database.update(SQLiteHelper.TABLE_Profil, daten, SQLiteHelper.COLUMN_ID + " = " + id, null);
-    }
-
-    public Cursor getAllProfile() {
-        return database.query(SQLiteHelper.TABLE_Profil, null, null, null, null, null, null);
-    }
-
-    public Profil CreateProfil() {
-        Cursor cursor = getAllProfile();
-        if (cursor.isAfterLast()) {
-            insertProfil("", "", Helper.intnull, "");
-            cursor = getAllProfile();
-        }
-        return new Profil(cursor, this);
-    }*/
-
     //Table Freunde
 
     public int insertFreund(String name) {
@@ -119,8 +86,8 @@ public class Daten {
         database.update(SQLiteHelper.TABLE_Laeufer, contentValues, SQLiteHelper.COLUMN_ID + " = " + id, null);
     }
 
-    public Cursor getLaeuferById(int id) {
-        String where = SQLiteHelper.COLUMN_ID + " = " + id;
+    public Cursor getLaeuferByEvent(int eventId) {
+        String where = SQLiteHelper.COLUMN_EVENT + " = " + eventId;
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, null);
     }
 
@@ -162,44 +129,22 @@ public class Daten {
         return getFilteredLaeuferByEvent(e, type, SingleListFragment.ListContent.alle, null, null, null).getCount();
     }
 
+    public void deleteLaeuferById(int id) {
+        database.delete(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_AUTO_ID, null);
+    }
+
     //Table Events
 
-    public void insertEvent(Event e) {
-        database.insert(SQLiteHelper.TABLE_Events, null, CreateEventContentValues(e));
+    public void insertEvent(ContentValues values) {
+        database.insert(SQLiteHelper.TABLE_Events, null, values);
     }
 
-    public void updateEvent(Event e) {
-        database.update(SQLiteHelper.TABLE_Events, CreateEventContentValues(e), SQLiteHelper.COLUMN_ID + " = " + e.getId(), null);
+    public void updateEvent(ContentValues values, int id) {
+        database.update(SQLiteHelper.TABLE_Events, values, SQLiteHelper.COLUMN_ID + " = " + id, null);
     }
 
-    @NonNull
-    private ContentValues CreateEventContentValues(@NonNull Event e) {
-        ContentValues daten = new ContentValues();
-        daten.put(SQLiteHelper.COLUMN_NAME, e.getName());
-        if (e.getBeginDate() != null)
-            daten.put(SQLiteHelper.COLUMN_BEGIN_DATE, e.getBeginDate().getTime());
-        if (e.getEndDate() != null)
-            daten.put(SQLiteHelper.COLUMN_END_DATE, e.getEndDate().getTime());
-        if (e.getDeadline() != null)
-            daten.put(SQLiteHelper.COLUMN_DEADLINE, e.getDeadline().getTime());
-        daten.put(SQLiteHelper.COLUMN_REGION, e.getRegion());
-        daten.put(SQLiteHelper.COLUMN_CLUB, e.getClub());
-        daten.put(SQLiteHelper.COLUMN_MAP, e.getMap());
-        daten.put(SQLiteHelper.COLUMN_INT_NORD, e.getKoordn());
-        daten.put(SQLiteHelper.COLUMN_INT_EAST, e.getKoorde());
-        daten.put(SQLiteHelper.COLUMN_AUSSCHREIBUNG, UriString(e.getUri(Event.UriArt.Ausschreibung)));
-        daten.put(SQLiteHelper.COLUMN_WEISUNGEN, UriString(e.getUri(Event.UriArt.Weisungen)));
-        daten.put(SQLiteHelper.COLUMN_RANGLISTE, UriString(e.getUri(Event.UriArt.Rangliste)));
-        daten.put(SQLiteHelper.COLUMN_ANMELDUNG, UriString(e.getUri(Event.UriArt.Anmeldung)));
-        daten.put(SQLiteHelper.COLUMN_MUTATION, UriString(e.getUri(Event.UriArt.Mutation)));
-        daten.put(SQLiteHelper.COLUMN_LIVE_RESULTATE, UriString(e.getUri(Event.UriArt.Liveresultate)));
-        daten.put(SQLiteHelper.COLUMN_STARTLISTE, UriString(e.getUri(Event.UriArt.Startliste)));
-        daten.put(SQLiteHelper.COLUMN_TEILNEHMERLISTE, UriString(e.getUri(Event.UriArt.Teilnehmerliste)));
-        return daten;
-    }
-
-    public Cursor getEventById(int id) {
-        return database.query(SQLiteHelper.TABLE_Events, null, SQLiteHelper.COLUMN_ID + " = " + id, null, null, null, null);
+    public void deleteEvent(int id) {
+        database.delete(SQLiteHelper.TABLE_Events, SQLiteHelper.COLUMN_ID + " = " + id, null);
     }
 
     public Cursor getEvents() {
@@ -224,19 +169,5 @@ public class Daten {
         } else {
             return where.substring(0, where.length() - 4); // Remove last OR
         }
-    }
-
-//    public Cursor getTodayEvent() {
-//        Date date = new Date(System.currentTimeMillis());
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.clear(Calendar.HOUR);
-//        calendar.clear(Calendar.MINUTE);
-//        calendar.clear(Calendar.SECOND);
-//        calendar.clear(Calendar.MILLISECOND); //TODO
-//        return database.query(SQLiteHelper.TABLE_Events, null, SQLiteHelper.COLUMN_Date + " = " + today, null, null, null, SQLiteHelper.COLUMN_Date + " ASC;");
-//    }
-
-    private String UriString(Uri uri) {
-        return uri == null ? null : uri.toString();
     }
 }

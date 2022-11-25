@@ -8,9 +8,6 @@ import android.text.format.DateUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -115,28 +112,6 @@ public abstract class Helper {
     public static Date getDate(@NonNull Cursor cursor, String column) {
         int index = cursor.getColumnIndex(column);
         return cursor.isNull(index) ? null : new Date(cursor.getLong(index));
-    }
-
-    @Nullable
-    public static String getString(@NonNull JSONObject json, String field) throws JSONException {
-        return !json.isNull(field) ? json.getString(field) : null;
-    }
-
-    public static Uri getUri(JSONObject json, String field) throws JSONException {
-        return newUri(getString(json, field));
-    }
-
-    @Nullable
-    public static Date getDate(@NonNull JSONObject json, String field) throws JSONException {
-        return !json.isNull(field) ? new Date(json.getLong(field)) : null;
-    }
-
-    public static int getInt(@NonNull JSONObject json, String field) throws JSONException {
-        return !json.isNull(field) ? json.getInt(field) : Helper.intnull;
-    }
-
-    public static double getDouble(@NonNull JSONObject json, String field) throws JSONException {
-        return !json.isNull(field) ? json.getDouble(field) : Helper.intnull;
     }
 
     public interface Keys {

@@ -7,10 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SQLiteHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "SwissO.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     //Tables
-//    public static final String TABLE_Profil = "Profil";
     public static final String TABLE_Freunde = "Freunde";
     public static final String TABLE_Laeufer = "Laeufer";
     public static final String TABLE_Clubs = "Clubs";
@@ -52,19 +51,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ZIELZEIT = "zielzeit";
     public static final String COLUMN_RANG = "rang";
     public static final String COLUMN_EVENT = "event";
-
-    //Table Profil
-//    public static final String COLUMN_Vorname = "first_name";
-//    public static final String COLUMN_Nachname = "surname";
-//    public static final String COLUMN_SI = "sicard";
-
-
-    /*private static final String SQL_Profil = "CREATE TABLE IF NOT EXISTS " + TABLE_Profil + "(" +
-            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            COLUMN_Vorname + " VARCHAR(15)," +
-            COLUMN_Nachname + " VARCHAR(15)," +
-            COLUMN_SI + " INTEGER," +
-            COLUMN_KATEGORIE + " VARCHAR(15))";*/
 
     private static final String SQL_Freunde = "CREATE TABLE IF NOT EXISTS " + TABLE_Freunde + "(" +
             COLUMN_AUTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -119,18 +105,17 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db) {
-//        db.execSQL(SQLiteHelper.SQL_Profil);
-        db.execSQL(SQLiteHelper.SQL_Freunde);
-        db.execSQL(SQLiteHelper.SQL_Clubs);
-        db.execSQL(SQLiteHelper.SQL_Events);
-        db.execSQL(SQLiteHelper.SQL_Laeufer);
+        db.execSQL(SQL_Freunde);
+        db.execSQL(SQL_Clubs);
+        db.execSQL(SQL_Events);
+        db.execSQL(SQL_Laeufer);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        if (oldVersion < 3) {
-//            db.ExecSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_Profil);
-//            db.ExecSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_Laeufer);
-//        }
-//        onCreate(db);
+        if (oldVersion < 2) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_Laeufer);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_Events);
+        }
+        onCreate(db);
     }
 }
