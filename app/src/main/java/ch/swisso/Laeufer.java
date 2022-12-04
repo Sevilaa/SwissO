@@ -1,6 +1,8 @@
 package ch.swisso;
 
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.text.format.DateUtils;
 
 public class Laeufer {
 
@@ -73,6 +75,32 @@ public class Laeufer {
 
     public final int getRang() {
         return rang;
+    }
+
+    public String getRangString(Resources res) {
+        if (rang == Helper.Disqet.AUSSER_KONKURENZ)
+            return res.getString(R.string.aK);
+        if (rang == Helper.intnull)
+            return "";
+        return rang + ".";
+    }
+
+    public String getZielzeitString(Resources res) {
+        if (zielzeit == Helper.Disqet.POSTEN_FALSCH)
+            return res.getString(R.string.postenfalsch);
+        if (zielzeit == Helper.Disqet.DNS)
+            return res.getString(R.string.dns);
+        if (zielzeit == Helper.Disqet.DISQET)
+            return res.getString(R.string.disqet);
+        if (zielzeit == Helper.Disqet.POSTEN_FEHLT)
+            return res.getString(R.string.postenfehlt);
+        if (zielzeit == Helper.Disqet.AUFGEGEBEN)
+            return res.getString(R.string.aufgegeben);
+        if (zielzeit == Helper.Disqet.NICHT_KLASSIERT)
+            return res.getString(R.string.nichtklassiert);
+        if (zielzeit == Helper.Disqet.UEBERZEIT)
+            return res.getString(R.string.ueberzeit);
+        return DateUtils.formatElapsedTime(zielzeit / 1000);
     }
 }
 

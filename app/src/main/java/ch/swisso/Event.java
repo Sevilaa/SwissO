@@ -3,6 +3,8 @@ package ch.swisso;
 import android.database.Cursor;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,59 +55,13 @@ public class Event {
         teilnehmerliste = Helper.getUri(cursor, SQLiteHelper.COLUMN_TEILNEHMERLISTE);
     }
 
-//    public Event(String title, DateTime date, String club, String map, String region, double koordn, double koorde, DateTime deadline,
-//                 String ausschreibung, String weisungen, String anmeldung, String mutation, String startliste, String liveresultate, String rangliste, int portal) {
-//        Title = title;
-//        Date = date;
-//        Club = club;
-//        Map = map;
-//        Region = region;
-//        Koorde = koorde;
-//        Koordn = koordn;
-//        Deadline = deadline;
-//        Ausschreibung = NewUri(ausschreibung);
-//        Weisungen = NewUri(weisungen);
-//        Anmeldung = NewUri(anmeldung);
-//        Mutation = NewUri(mutation);
-//        Startliste = NewUri(startliste);
-//        Liveresultate = NewUri(liveresultate);
-//        Rangliste = NewUri(rangliste);
-//        Eventportal = portal;
-//    }
-
-    public Event(JSONObject json) {
-        try {
-            id = json.getInt(SQLiteHelper.COLUMN_ID);
-            name = Helper.getString(json, SQLiteHelper.COLUMN_NAME);
-            beginDate = Helper.getDate(json, SQLiteHelper.COLUMN_BEGIN_DATE);
-            endDate = Helper.getDate(json, SQLiteHelper.COLUMN_END_DATE);
-            deadline = Helper.getDate(json, SQLiteHelper.COLUMN_DEADLINE);
-            kind = Helper.getInt(json, SQLiteHelper.COLUMN_KIND);
-            region = Helper.getString(json, SQLiteHelper.COLUMN_REGION);
-            club = Helper.getString(json, SQLiteHelper.COLUMN_CLUB);
-            map = Helper.getString(json, SQLiteHelper.COLUMN_MAP);
-            koordn = Helper.getDouble(json, SQLiteHelper.COLUMN_INT_NORD);
-            koorde = Helper.getDouble(json, SQLiteHelper.COLUMN_INT_EAST);
-            ausschreibung = Helper.getUri(json, SQLiteHelper.COLUMN_AUSSCHREIBUNG);
-            weisungen = Helper.getUri(json, SQLiteHelper.COLUMN_WEISUNGEN);
-            rangliste = Helper.getUri(json, SQLiteHelper.COLUMN_RANGLISTE);
-            liveresultate = Helper.getUri(json, SQLiteHelper.COLUMN_LIVE_RESULTATE);
-            startliste = Helper.getUri(json, SQLiteHelper.COLUMN_STARTLISTE);
-            anmeldung = Helper.getUri(json, SQLiteHelper.COLUMN_ANMELDUNG);
-            mutation = Helper.getUri(json, SQLiteHelper.COLUMN_MUTATION);
-            teilnehmerliste = Helper.getUri(json, SQLiteHelper.COLUMN_TEILNEHMERLISTE);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
-    public boolean equals(Object o){
-        if (o == null){
+    public boolean equals(Object o) {
+        if (o == null) {
             return false;
         }
-        if (o instanceof Event){
-            return ((Event)o).getId() == id;
+        if (o instanceof Event) {
+            return ((Event) o).getId() == id;
         }
         return false;
     }
@@ -121,10 +77,6 @@ public class Event {
     public final String getName() {
         return name;
     }
-
-//    private void setName(String value) {
-//        name = value;
-//    }
 
     public final Date getBeginDate() {
         return beginDate;
@@ -158,7 +110,7 @@ public class Event {
         return deadline;
     }
 
-    public Uri getUri(UriArt uriArt) {
+    public Uri getUri(@NonNull UriArt uriArt) {
         switch (uriArt) {
             case Ausschreibung:
                 return ausschreibung;
@@ -184,41 +136,6 @@ public class Event {
         }
         return null;
     }
-
-    /*public final int getEventportal() {
-        return eventportal;
-    }*/
-
-//    public void Merge(Event e) {
-//        Region ??=e.Region;
-//        Club ??=e.Club;
-//        Map ??=e.Map;
-//        Deadline = Deadline == DateTime.MinValue ? e.Deadline : Deadline;
-//        Koorde = Koorde == Helper.intnull ? e.Koorde : Koorde;
-//        Koordn = Koordn == Helper.intnull ? e.Koordn : Koordn;
-//        Ausschreibung ??=e.Ausschreibung;
-//        Weisungen ??=e.Weisungen;
-//        Rangliste ??=e.Rangliste;
-//        Liveresultate ??=e.Liveresultate;
-//        Startliste ??=e.Startliste;
-//        Anmeldung ??=e.Anmeldung;
-//        Mutation ??=e.Mutation;
-//    }
-
-//    public bool Equals(Event e) {
-//        bool b = e.Date.Ticks == Date.Ticks;
-//        b = b && e.Eventportal == Eventportal;
-//        if(Club != null && e.Club != null) {
-//            b = b && Club == e.Club;
-//        }
-//        if(Title.Length >= 5) {
-//            b = b && ((Title[0] == e.Title[0] && Title[1] == e.Title[1]) || (Title[0] == e.Title[4] && Title[1] == e.Title[5]) || (Title[4] == e.Title[0] && Title[5] == e.Title[1]));
-//        }
-//        else {
-//            b = b && (Title[0] == e.Title[0] && Title[1] == e.Title[1]);
-//        }
-//        return b;
-//    }
 
     public enum UriArt {Ausschreibung, Weisungen, Anmeldung, Mutation, Startliste, Rangliste, WKZ, Liveresultate, Teilnehmerliste}
 }
