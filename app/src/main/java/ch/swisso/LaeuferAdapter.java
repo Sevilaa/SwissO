@@ -52,8 +52,8 @@ public class LaeuferAdapter extends ArrayAdapter<Laeufer> {
             }
         }
         else {
-            nummer.setText(Helper.getRang(laeufer.getRang(),  convertView.getResources()));
-            zeit.setText(Helper.getZielzeit(laeufer.getZielzeit(), convertView.getResources()));
+            nummer.setText(laeufer.getRangString(convertView.getResources()));
+            zeit.setText(laeufer.getZielzeitString(convertView.getResources()));
         }
         // Return the completed view to render on screen
         return convertView;

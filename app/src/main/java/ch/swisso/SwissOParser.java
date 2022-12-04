@@ -51,7 +51,9 @@ public class SwissOParser {
                 d.moveToFirst();
                 while (!d.isAfterLast()) {
                     ids.add(Helper.getInt(d, SQLiteHelper.COLUMN_ID));
+                    d.moveToNext();
                 }
+                d.close();
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject jsonEvent = array.getJSONObject(i);
                     ContentValues contentValues = new ContentValues();
@@ -102,7 +104,9 @@ public class SwissOParser {
                 c.moveToFirst();
                 while (!c.isAfterLast()) {
                     ids.add(Helper.getInt(c, SQLiteHelper.COLUMN_ID));
+                    c.moveToNext();
                 }
+                c.close();
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject jsonLauefer = array.getJSONObject(i);
                     ContentValues contentValues = new ContentValues();
@@ -171,5 +175,4 @@ public class SwissOParser {
         }
         values.put(field, (String) null);
     }
-
 }

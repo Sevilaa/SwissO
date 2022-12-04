@@ -1,9 +1,7 @@
 package ch.swisso;
 
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
-import android.text.format.DateUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,32 +28,6 @@ public abstract class Helper {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
-    }
-
-    public static String getZielzeit(int time, Resources res) {
-        if (time == Disqet.POSTEN_FALSCH)
-            return res.getString(R.string.postenfalsch);
-        if (time == Disqet.DNS)
-            return res.getString(R.string.dns);
-        if (time == Disqet.DISQET)
-            return res.getString(R.string.disqet);
-        if (time == Disqet.POSTEN_FEHLT)
-            return res.getString(R.string.postenfehlt);
-        if (time == Disqet.AUFGEGEBEN)
-            return res.getString(R.string.aufgegeben);
-        if (time == Disqet.NICHT_KLASSIERT)
-            return res.getString(R.string.nichtklassiert);
-        if (time == Disqet.UEBERZEIT)
-            return res.getString(R.string.ueberzeit);
-        return DateUtils.formatElapsedTime(time / 1000);
-    }
-
-    public static String getRang(int rang, Resources res) {
-        if (rang == Disqet.AUSSER_KONKURENZ)
-            return res.getString(R.string.aK);
-        if (rang == intnull)
-            return "";
-        return rang + ".";
     }
 
     public static Uri newUri(String s) {
