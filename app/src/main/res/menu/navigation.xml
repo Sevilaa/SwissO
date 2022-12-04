@@ -5,10 +5,10 @@
         android:icon="@drawable/ic_select_home"
         android:title="@string/overview" />
 
-    <item
+<!--    <item
         android:id="@+id/navigation_details"
         android:icon="@drawable/ic_select_info"
-        android:title="@string/details" />
+        android:title="@string/details" />-->
 
     <item
         android:id="@+id/navigation_startliste"

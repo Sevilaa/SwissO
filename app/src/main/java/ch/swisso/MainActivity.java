@@ -91,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
             toolbar.getMenu().findItem(R.id.menu_club_add).setVisible(true);
             toolbar.getMenu().findItem(R.id.menu_friend_add).setVisible(true);
             setToolbarTitle(R.string.profil);
-        } else if (itemId == R.id.navigation_details) {
+   /*     } else if (itemId == R.id.navigation_details) {
             fragment = new DetailsFragment();
-            fragmentType = FragmentType.Details;
+            fragmentType = FragmentType.Details;*/
         } else {
             return false;
         }
