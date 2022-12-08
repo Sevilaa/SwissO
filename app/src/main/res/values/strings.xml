@@ -50,15 +50,12 @@
     <string name="absteigend">Absteigend</string>
     <string name="aufsteigend">Aufsteigend</string>
 
+    <string name="newmessages">Neue Nachricht</string>
+    <string name="gelesen">Weg damit!</string>
 
-    <!--Settings-->
-    <string name="display_header">Anzeige</string>
+    <string name="nointernet">Server nicht erreichbar</string>
 
-    <string name="startlist_title">Startlisten Infos</string>
-    <string name="startlist_summary">Sichtbare Spalten in der Startliste</string>
 
-    <string name="ranglist_title">Ranglisten Infos</string>
-    <string name="ranglist_summary">Sichtbare Spalten in der Rangliste</string>
 
     <string name="postenfehlt">Po. fehl.</string>
     <string name="aufgegeben">Aufgeg.</string>

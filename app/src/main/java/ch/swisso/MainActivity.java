@@ -7,7 +7,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,11 +20,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final ArrayList<Event> events = new ArrayList<>();
     private MyFragment fragment;
     private Daten daten;
     private SwissOParser parser;
     private Event selectedEvent;
-    private final ArrayList<Event> events = new ArrayList<>();
     private FragmentType fragmentType;
     private BottomNavigationView navigation;
     private MaterialToolbar toolbar;
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         initEvents();
 
         setFragment(R.id.navigation_overview);
+
+        parser.sendMessageRequest();
     }
 
     private boolean onOptionItemClicked(int itemId) {
@@ -164,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public final void openEventDetails(Event e, Event.UriArt uriArt) {
+    public final void openEventDetails(Event e, @NonNull Event.UriArt uriArt) {
         selectedEvent = e;
         switch (uriArt) {
             case Rangliste:
@@ -191,7 +195,28 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        boolean available = activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        findViewById(R.id.tv_internet_connection).setVisibility(available ? View.GONE : View.VISIBLE);
+        return available;
+    }
+
+    public void showMessages() {
+        Cursor c = getDaten().getUnreadMessages();
+        if (c.getCount() > 0) {
+            String title = getResources().getString(R.string.newmessages);
+            ArrayList<String> messages = new ArrayList<>();
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                messages.add(Helper.getString(c, SQLiteHelper.COLUMN_MESSAGE));
+                c.moveToNext();
+            }
+            c.close();
+            String content = String.join("\n\n", messages);
+
+            MessageDialog dialog = new MessageDialog();
+            dialog.init(daten, content, title);
+            dialog.show(getSupportFragmentManager(), null);
+        }
     }
 
     public FragmentType getFragmentType() {

@@ -41,8 +41,7 @@ public class ProfilFragment extends MyFragment {
     public void editTextDialogResult(boolean club, String name) {
         if (club) {
             act.getDaten().insertClub(name);
-        }
-        else {
+        } else {
             act.getDaten().insertFreund(name);
         }
         showFriendsAndClubs();
@@ -54,41 +53,37 @@ public class ProfilFragment extends MyFragment {
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             freundeList.setVisibility(View.VISIBLE);
-            String[] anzeigeSpalten = new String[] { SQLiteHelper.COLUMN_NAME };
-            int[] anzeigeViews = new int[] { R.id.listitem_name };
+            String[] anzeigeSpalten = new String[]{SQLiteHelper.COLUMN_NAME};
+            int[] anzeigeViews = new int[]{R.id.listitem_name};
             SimpleCursorAdapter adapter = new SimpleCursorAdapter(act, R.layout.listitem_friendclub, cursor, anzeigeSpalten, anzeigeViews, SimpleCursorAdapter.NO_SELECTION);
             freundeList.setAdapter(adapter);
-        }
-        else {
+        } else {
             freundeList.setVisibility(View.INVISIBLE);
         }
         ListView clubList = getView().findViewById(R.id.profil_clublist);
         cursor = act.getDaten().getAllClubs();
         if (cursor.getCount() > 0) {
             clubList.setVisibility(View.VISIBLE);
-            String[] anzeigeSpalten = new String[] { SQLiteHelper.COLUMN_NAME };
-            int[] anzeigeViews = new int[] { R.id.listitem_name };
+            String[] anzeigeSpalten = new String[]{SQLiteHelper.COLUMN_NAME};
+            int[] anzeigeViews = new int[]{R.id.listitem_name};
             SimpleCursorAdapter adapter = new SimpleCursorAdapter(act, R.layout.listitem_friendclub, cursor, anzeigeSpalten, anzeigeViews, SimpleCursorAdapter.NO_SELECTION);
             clubList.setAdapter(adapter);
-        }
-        else {
+        } else {
             clubList.setVisibility(View.INVISIBLE);
         }
     }
 
-        @Override
+    @Override
     public void reloadEvents() {
-
     }
 
     @Override
     public void reloadList() {
-
     }
 
     @Override
     public boolean onOptionsItemClicked(int itemId) {
-        if(itemId == R.id.menu_friend_add) {
+        if (itemId == R.id.menu_friend_add) {
             new EditTextDialog(false, this).show(getChildFragmentManager(), "friend");
             return true;
         } else if (itemId == R.id.menu_club_add) {

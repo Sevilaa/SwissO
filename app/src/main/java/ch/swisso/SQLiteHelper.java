@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import androidx.annotation.NonNull;
+
 public class SQLiteHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "SwissO.db";
@@ -14,6 +16,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String TABLE_Laeufer = "Laeufer";
     public static final String TABLE_Clubs = "Clubs";
     public static final String TABLE_Events = "Events";
+    public static final String TABLE_Messages = "Messages";
 
     //Primary Key
     public static final String COLUMN_ID = "id";
@@ -52,6 +55,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_RANG = "rang";
     public static final String COLUMN_EVENT = "event";
 
+    //Table Messages
+    public static final String COLUMN_VIEWED = "viewed";
+    public static final String COLUMN_MESSAGE = "message";
+
     private static final String SQL_Freunde = "CREATE TABLE IF NOT EXISTS " + TABLE_Freunde + "(" +
             COLUMN_AUTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             COLUMN_NAME + " VARCHAR(31) NOT NULL)";
@@ -59,6 +66,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     private static final String SQL_Clubs = "CREATE TABLE IF NOT EXISTS " + TABLE_Clubs + "(" +
             COLUMN_AUTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             COLUMN_NAME + " VARCHAR(31) NOT NULL)";
+
+    private static final String SQL_Messages = "CREATE TABLE IF NOT EXISTS " + TABLE_Messages + "(" +
+            COLUMN_ID + " INTEGER PRIMARY KEY," +
+            COLUMN_VIEWED + " INTEGER NOT NULL," +
+            COLUMN_MESSAGE + " TEXT NOT NULL)";
 
     private static final String SQL_Events = "CREATE TABLE IF NOT EXISTS " + TABLE_Events + "(" +
             COLUMN_ID + " INTEGER PRIMARY KEY," +
@@ -104,11 +116,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(@NonNull SQLiteDatabase db) {
         db.execSQL(SQL_Freunde);
         db.execSQL(SQL_Clubs);
         db.execSQL(SQL_Events);
         db.execSQL(SQL_Laeufer);
+        db.execSQL(SQL_Messages);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

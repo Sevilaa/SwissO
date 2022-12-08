@@ -2,6 +2,8 @@ package ch.swisso;
 
 import android.app.Activity;
 
+import androidx.annotation.NonNull;
+
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -15,7 +17,7 @@ public class MyHttpClient {
 
     private final RequestQueue queue;
 
-    public MyHttpClient(Activity act) {
+    public MyHttpClient(@NonNull Activity act) {
 
         // Instantiate the cache
         Cache cache = new DiskBasedCache(act.getCacheDir(), 1024 * 1024); // 1MB cap
@@ -32,13 +34,11 @@ public class MyHttpClient {
 
     public void sendStringRequest(SwissOParser parser, String url, RequestCodes requestCode, int id) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> {
-                    parser.onResult(requestCode, id, response);
-                },
+                response -> parser.onResult(requestCode, id, response),
                 error -> {
                 });
         queue.add(stringRequest);
     }
 
-    public enum RequestCodes {Eventliste, Laeufer}
+    public enum RequestCodes {Eventliste, Laeufer, Messages}
 }

@@ -19,6 +19,8 @@ public abstract class Helper {
     public static final int kind_bike = 3;
     public static final String pref_file = "default_pref";
 
+    public static final int[] blacklistMessages = new int[]{};
+
     @NonNull
     public static Calendar getToday() {
         TimeZone timeZone = TimeZone.getTimeZone("UTC");

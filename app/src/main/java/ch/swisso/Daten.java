@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -169,5 +168,29 @@ public class Daten {
         } else {
             return where.substring(0, where.length() - 4); // Remove last OR
         }
+    }
+
+    //Table Messages
+
+    public Cursor getMessages() {
+        return database.query(SQLiteHelper.TABLE_Messages, null, null, null, null, null, null);
+    }
+
+    public void insertMessage(ContentValues contentValues) {
+        database.insert(SQLiteHelper.TABLE_Messages, null, contentValues);
+    }
+
+    public void deleteMessage(int id) {
+        database.delete(SQLiteHelper.TABLE_Messages, SQLiteHelper.COLUMN_ID + " = " + id, null);
+    }
+
+    public Cursor getUnreadMessages() {
+        return database.query(SQLiteHelper.TABLE_Messages, null, SQLiteHelper.COLUMN_VIEWED + " = " + 0, null, null, null, null);
+    }
+
+    public void updateAsRead() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(SQLiteHelper.COLUMN_VIEWED, 1);
+        database.update(SQLiteHelper.TABLE_Messages, contentValues, null, null);
     }
 }

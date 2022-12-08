@@ -46,7 +46,11 @@ public class OverviewFragment extends MyFragment {
         listView = view.findViewById(R.id.listView_overview);
         suche = view.findViewById(R.id.suche_overview);
 
-        refreshLayout.setOnRefreshListener(this::refresh);
+        refreshLayout.setOnRefreshListener(() -> {
+            if (!act.getParser().sendEventRequest()) {
+                refreshLayout.setRefreshing(false);
+            }
+        });
 
         setSucheVisibility(false);
         suche.addTextChangedListener(new TextWatcher() {
@@ -79,7 +83,7 @@ public class OverviewFragment extends MyFragment {
 
     private void setSucheVisibility(boolean visibile) {
         InputMethodManager imm = (InputMethodManager) act.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(!visibile){
+        if (!visibile) {
             View v = act.getCurrentFocus();
             if (v != null) {
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -95,8 +99,7 @@ public class OverviewFragment extends MyFragment {
     }
 
     public void refresh() {
-        if (act.isNetworkAvailable()) {
-            act.getParser().sendEventRequest();
+        if (act.getParser().sendEventRequest()) {
             refreshLayout.setRefreshing(true);
         }
     }

@@ -23,25 +23,77 @@ public class SwissOParser {
         httpClient = new MyHttpClient(act);
     }
 
-    public void onResult(@NonNull MyHttpClient.RequestCodes requestCode, int id, String result) {
-        switch (requestCode) {
-            case Eventliste:
-                LoadEvents(result);
-                return;
-            case Laeufer:
-                LoadLaeufer(result, id);
+    private static void json2cvInt(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
+        if (json.isNull(field)) {
+            values.put(field, (String) null);
+        } else {
+            values.put(field, json.getInt(field));
         }
     }
 
-    public void sendEventRequest() {
-        httpClient.sendStringRequest(this, "https://api.swisso.severinlaasch.ch/events", MyHttpClient.RequestCodes.Eventliste, -1);
+    private static void json2cvLong(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
+        if (json.isNull(field)) {
+            values.put(field, (String) null);
+        } else {
+            values.put(field, json.getLong(field));
+        }
     }
 
-    public void sendLaeuferRequest(int id) {
-        httpClient.sendStringRequest(this, "https://api.swisso.severinlaasch.ch/laeufer?event_id=" + id, MyHttpClient.RequestCodes.Laeufer, id);
+    private static void json2cvDouble(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
+        if (json.isNull(field)) {
+            values.put(field, (String) null);
+        } else {
+            values.put(field, json.getDouble(field));
+        }
     }
 
-    public void LoadEvents(String json) {
+    private static void json2cvString(@NonNull JSONObject json, @NonNull ContentValues values, String field) throws JSONException {
+        if (!json.isNull(field)) {
+            String s = json.getString(field).trim();
+            if (!s.equals("")) {
+                values.put(field, s);
+                return;
+            }
+        }
+        values.put(field, (String) null);
+    }
+
+    public void onResult(@NonNull MyHttpClient.RequestCodes requestCode, int id, String result) {
+        switch (requestCode) {
+            case Eventliste:
+                loadEvents(result);
+                return;
+            case Laeufer:
+                loadLaeufer(result, id);
+                return;
+            case Messages:
+                loadMessages(result);
+        }
+    }
+
+    public boolean sendEventRequest() {
+        return sendRequest("https://api.swisso.severinlaasch.ch/events", MyHttpClient.RequestCodes.Eventliste, -1);
+    }
+
+    public boolean sendLaeuferRequest(int id) {
+        return sendRequest("https://api.swisso.severinlaasch.ch/laeufer?event_id=" + id, MyHttpClient.RequestCodes.Laeufer, id);
+    }
+
+    public boolean sendMessageRequest() {
+        return sendRequest("http://api.swisso.severinlaasch.ch/messages", MyHttpClient.RequestCodes.Messages, -1);
+    }
+
+    private boolean sendRequest(String url, MyHttpClient.RequestCodes code, int id){
+        if(act.isNetworkAvailable()){
+            httpClient.sendStringRequest(this, url, code, id);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    private void loadEvents(String json) {
         new Handler(Looper.getMainLooper()).post(() -> {
             try {
                 JSONArray array = new JSONArray(json);
@@ -94,7 +146,7 @@ public class SwissOParser {
         });
     }
 
-    public void LoadLaeufer(String json, int eventId) {
+    private void loadLaeufer(String json, int eventId) {
         new Handler(Looper.getMainLooper()).post(() -> {
             try {
                 JSONArray array = new JSONArray(json);
@@ -141,38 +193,44 @@ public class SwissOParser {
         });
     }
 
-    private static void json2cvInt(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
-        if (json.isNull(field)) {
-            values.put(field, (String) null);
-        } else {
-            values.put(field, json.getInt(field));
-        }
-    }
-
-    private static void json2cvLong(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
-        if (json.isNull(field)) {
-            values.put(field, (String) null);
-        } else {
-            values.put(field, json.getLong(field));
-        }
-    }
-
-    private static void json2cvDouble(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
-        if (json.isNull(field)) {
-            values.put(field, (String) null);
-        } else {
-            values.put(field, json.getDouble(field));
-        }
-    }
-
-    private static void json2cvString(@NonNull JSONObject json, @NonNull ContentValues values, String field) throws JSONException {
-        if (!json.isNull(field)) {
-            String s = json.getString(field).trim();
-            if (!s.equals("")) {
-                values.put(field, s);
-                return;
+    private void loadMessages(String json) {
+        try {
+            JSONArray array = new JSONArray(json);
+            Daten daten = act.getDaten();
+            Cursor c = daten.getMessages();
+            ArrayList<Integer> ids = new ArrayList<>();
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                ids.add(Helper.getInt(c, SQLiteHelper.COLUMN_ID));
+                c.moveToNext();
             }
+            c.close();
+            for (int black : Helper.blacklistMessages) {
+                if (!ids.contains(black)) {
+                    ids.add(black);
+                } else {
+                    daten.deleteMessage(black);
+                }
+            }
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonMessage = array.getJSONObject(i);
+                int id = jsonMessage.getInt(SQLiteHelper.COLUMN_ID);
+                if (!ids.contains(id)) {
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SQLiteHelper.COLUMN_ID, id);
+                    contentValues.put(SQLiteHelper.COLUMN_VIEWED, 0);
+                    contentValues.put(SQLiteHelper.COLUMN_MESSAGE, jsonMessage.getString("content"));
+                    daten.insertMessage(contentValues);
+                } else {
+                    ids.remove((Integer) id);
+                }
+            }
+            for (int id : ids) {
+                daten.deleteMessage(id);
+            }
+            act.showMessages();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        values.put(field, (String) null);
     }
 }

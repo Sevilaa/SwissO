@@ -24,10 +24,9 @@ import java.util.HashMap;
 
 public class SingleListFragment extends Fragment {
 
+    private final HashMap<Chip, String> chips = new HashMap<>();
     private MainActivity act;
     private ListContent listContent;
-
-    private final HashMap<Chip, String> chips = new HashMap<>();
     private SwipeRefreshLayout refreshLayout;
     private TextInputEditText suche;
 
@@ -58,7 +57,11 @@ public class SingleListFragment extends Fragment {
         }
 
         refreshLayout = view.findViewById(R.id.refreshLayout_list);
-        refreshLayout.setOnRefreshListener(() -> act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId()));
+        refreshLayout.setOnRefreshListener(() -> {
+            if(!act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId())){
+                setRefreshing(false);
+            }
+        });
 
         suche = view.findViewById(R.id.suche_list);
         suche.addTextChangedListener(new TextWatcher() {
@@ -179,7 +182,7 @@ public class SingleListFragment extends Fragment {
         return pref.getString(key, def);
     }
 
-    public void setListContent(ListContent content){
+    public void setListContent(ListContent content) {
         listContent = content;
     }
 

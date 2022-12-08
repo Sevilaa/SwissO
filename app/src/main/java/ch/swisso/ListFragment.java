@@ -82,9 +82,8 @@ public class ListFragment extends MyFragment {
     }
 
     private void refresh() {
-        if(act.isNetworkAvailable()){
+        if(act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId())){
             adapter.setRefreshing(true, viewPager.getCurrentItem());
-            act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId());
         }
     }
 
