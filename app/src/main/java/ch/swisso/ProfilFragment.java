@@ -6,9 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 import androidx.annotation.NonNull;
+
+import com.google.android.material.button.MaterialButton;
 
 public class ProfilFragment extends MyFragment {
 
@@ -21,20 +22,11 @@ public class ProfilFragment extends MyFragment {
         super.onViewCreated(view, savedInstanceState);
         act = (MainActivity) getActivity();
 
-        ListView freundeList = view.findViewById(R.id.profil_peoplelist);
-        ListView clubList = view.findViewById(R.id.profil_clublist);
-        freundeList.setOnItemLongClickListener((parent, view1, position, id) -> {
-            int itemId = Helper.getInt((Cursor) freundeList.getItemAtPosition(position), SQLiteHelper.COLUMN_AUTO_ID);
-            act.getDaten().deleteFreundById(itemId);
-            showFriendsAndClubs();
-            return true;
-        });
-        clubList.setOnItemLongClickListener((parent, view1, position, id) -> {
-            int itemId = Helper.getInt((Cursor) clubList.getItemAtPosition(position), SQLiteHelper.COLUMN_AUTO_ID);
-            act.getDaten().deleteClubById(itemId);
-            showFriendsAndClubs();
-            return true;
-        });
+        MaterialButton addFriend = view.findViewById(R.id.add_friend);
+        MaterialButton addClub = view.findViewById(R.id.add_club);
+        addFriend.setOnClickListener(v -> new EditTextDialog(false, this).show(getChildFragmentManager(), "friend"));
+        addClub.setOnClickListener(v -> new EditTextDialog(true, this).show(getChildFragmentManager(), "club"));
+
         showFriendsAndClubs();
     }
 
@@ -48,28 +40,25 @@ public class ProfilFragment extends MyFragment {
     }
 
     public void showFriendsAndClubs() {
-        ListView freundeList = getView().findViewById(R.id.profil_peoplelist);
-        Cursor cursor = act.getDaten().getAllFreunde();
-        cursor.moveToFirst();
-        if (cursor.getCount() > 0) {
-            freundeList.setVisibility(View.VISIBLE);
-            String[] anzeigeSpalten = new String[]{SQLiteHelper.COLUMN_NAME};
-            int[] anzeigeViews = new int[]{R.id.listitem_name};
-            SimpleCursorAdapter adapter = new SimpleCursorAdapter(act, R.layout.listitem_friendclub, cursor, anzeigeSpalten, anzeigeViews, SimpleCursorAdapter.NO_SELECTION);
-            freundeList.setAdapter(adapter);
-        } else {
-            freundeList.setVisibility(View.INVISIBLE);
-        }
-        ListView clubList = getView().findViewById(R.id.profil_clublist);
-        cursor = act.getDaten().getAllClubs();
-        if (cursor.getCount() > 0) {
-            clubList.setVisibility(View.VISIBLE);
-            String[] anzeigeSpalten = new String[]{SQLiteHelper.COLUMN_NAME};
-            int[] anzeigeViews = new int[]{R.id.listitem_name};
-            SimpleCursorAdapter adapter = new SimpleCursorAdapter(act, R.layout.listitem_friendclub, cursor, anzeigeSpalten, anzeigeViews, SimpleCursorAdapter.NO_SELECTION);
-            clubList.setAdapter(adapter);
-        } else {
-            clubList.setVisibility(View.INVISIBLE);
+        if(getView() != null) {
+            ListView freundeList = getView().findViewById(R.id.profil_peoplelist);
+            Cursor cursor = act.getDaten().getAllFreunde();
+            if (cursor.getCount() > 0) {
+                freundeList.setVisibility(View.VISIBLE);
+                FriendClubAdapter adapter = new FriendClubAdapter(act, cursor, false, this);
+                freundeList.setAdapter(adapter);
+            } else {
+                freundeList.setVisibility(View.INVISIBLE);
+            }
+            ListView clubList = getView().findViewById(R.id.profil_clublist);
+            cursor = act.getDaten().getAllClubs();
+            if (cursor.getCount() > 0) {
+                clubList.setVisibility(View.VISIBLE);
+                FriendClubAdapter adapter = new FriendClubAdapter(act, cursor, true, this);
+                clubList.setAdapter(adapter);
+            } else {
+                clubList.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -83,13 +72,6 @@ public class ProfilFragment extends MyFragment {
 
     @Override
     public boolean onOptionsItemClicked(int itemId) {
-        if (itemId == R.id.menu_friend_add) {
-            new EditTextDialog(false, this).show(getChildFragmentManager(), "friend");
-            return true;
-        } else if (itemId == R.id.menu_club_add) {
-            new EditTextDialog(true, this).show(getChildFragmentManager(), "club");
-            return true;
-        }
         return false;
     }
 }

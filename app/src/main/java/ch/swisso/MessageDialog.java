@@ -1,11 +1,12 @@
 package ch.swisso;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class MessageDialog extends DialogFragment {
 
@@ -22,7 +23,7 @@ public class MessageDialog extends DialogFragment {
 
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
 
         builder.setTitle(title);
         builder.setMessage(content);

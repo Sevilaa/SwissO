@@ -29,18 +29,4 @@
         app:iconTint="?attr/colorOnSurface"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/menu_friend_add"
-        android:icon="@drawable/ic_baseline_person_add"
-        android:title="@string/friend_add"
-        app:iconTint="?attr/colorOnSurface"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/menu_club_add"
-        android:icon="@drawable/ic_baseline_group_add"
-        android:title="@string/club_add"
-        app:iconTint="?attr/colorOnSurface"
-        app:showAsAction="ifRoom" />
-
 </menu>

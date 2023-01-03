@@ -65,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar.getMenu().findItem(R.id.menu_search).setVisible(false);
         toolbar.getMenu().findItem(R.id.menu_browser).setVisible(false);
         toolbar.getMenu().findItem(R.id.menu_sorting).setVisible(false);
-        toolbar.getMenu().findItem(R.id.menu_club_add).setVisible(false);
-        toolbar.getMenu().findItem(R.id.menu_friend_add).setVisible(false);
         if (itemId == R.id.navigation_overview) {
             fragment = new OverviewFragment();
             fragmentType = FragmentType.Overview;
@@ -92,9 +90,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (itemId == R.id.navigation_profil) {
             fragment = new ProfilFragment();
             fragmentType = FragmentType.Profil;
-            toolbar.getMenu().findItem(R.id.menu_club_add).setVisible(true);
-            toolbar.getMenu().findItem(R.id.menu_friend_add).setVisible(true);
-            setToolbarTitle(R.string.profil);
+            toolbar.setTitle(R.string.profil);
    /*     } else if (itemId == R.id.navigation_details) {
             fragment = new DetailsFragment();
             fragmentType = FragmentType.Details;*/

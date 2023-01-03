@@ -129,7 +129,7 @@ public class Daten {
     }
 
     public void deleteLaeuferById(int id) {
-        database.delete(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_AUTO_ID, null);
+        database.delete(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_ID + " = " + id, null);
     }
 
     //Table Events
