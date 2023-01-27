@@ -133,9 +133,11 @@ public class Event {
                 return liveresultate;
             case Teilnehmerliste:
                 return teilnehmerliste;
+            case Kalender:
+                return Uri.parse("https://swisso.ch"); //Dummy URI to not return null
         }
         return null;
     }
 
-    public enum UriArt {Ausschreibung, Weisungen, Anmeldung, Mutation, Startliste, Rangliste, WKZ, Liveresultate, Teilnehmerliste}
+    public enum UriArt {Ausschreibung, Weisungen, Anmeldung, Mutation, Startliste, Rangliste, WKZ, Liveresultate, Teilnehmerliste, Kalender}
 }

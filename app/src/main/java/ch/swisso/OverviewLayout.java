@@ -54,7 +54,7 @@ public class OverviewLayout extends FrameLayout {
             setTextViewVisible(tv);
         }
 
-        boolean over = Helper.getToday().after(event.getEndDate()) || event.getUri(Event.UriArt.Rangliste) != null;
+        boolean over = Helper.getToday().after(event.getEndDate() != null ? event.getEndDate() : event.getBeginDate()) || event.getUri(Event.UriArt.Rangliste) != null;
         boolean deadlinePassed = Helper.getToday().after(event.getDeadline());
         Event.UriArt[] uris;
         int[] resources;
@@ -64,11 +64,11 @@ public class OverviewLayout extends FrameLayout {
             uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, Event.UriArt.Weisungen, startliste, Event.UriArt.Rangliste, Event.UriArt.WKZ};
             resources = new int[]{R.string.ausschreibung, R.string.weisungen, startlistString, R.string.rangliste, R.string.wkz};
         } else if (deadlinePassed) {
-            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, Event.UriArt.Weisungen, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ, Event.UriArt.Mutation};
-            resources = new int[]{R.string.ausschreibung, R.string.weisungen, startlistString, R.string.liveresult, R.string.wkz, R.string.mutation};
+            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, Event.UriArt.Weisungen, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ, Event.UriArt.Mutation, Event.UriArt.Kalender};
+            resources = new int[]{R.string.ausschreibung, R.string.weisungen, startlistString, R.string.liveresult, R.string.wkz, R.string.mutation, R.string.kalender};
         } else {
-            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, Event.UriArt.Weisungen, Event.UriArt.Anmeldung, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ, Event.UriArt.Mutation};
-            resources = new int[]{R.string.ausschreibung, R.string.weisungen, R.string.anmeldung, startlistString, R.string.liveresult, R.string.wkz, R.string.mutation};
+            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, Event.UriArt.Weisungen, Event.UriArt.Anmeldung, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ, Event.UriArt.Mutation, Event.UriArt.Kalender};
+            resources = new int[]{R.string.ausschreibung, R.string.weisungen, R.string.anmeldung, startlistString, R.string.liveresult, R.string.wkz, R.string.mutation, R.string.kalender};
         }
 
         buttons = new OverviewButton[8];

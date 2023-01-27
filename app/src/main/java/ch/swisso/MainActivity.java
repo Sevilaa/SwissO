@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -173,10 +174,25 @@ public class MainActivity extends AppCompatActivity {
             case Startliste:
                 navigation.setSelectedItemId(R.id.navigation_startliste);
                 break;
+            case Kalender:
+                insertToCalendar(e);
+                break;
             default:
                 openWebBrowser(e.getUri(uriArt));
                 break;
         }
+    }
+
+    public void insertToCalendar(@NonNull Event e) {
+        Intent insertCalendarIntent = new Intent(Intent.ACTION_INSERT);
+        insertCalendarIntent.setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.Events.TITLE, e.getName()) // Simple title
+                .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, e.getBeginDate().getTime()) // Only date part is considered when ALL_DAY is true; Same as DTSTART
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, e.getEndDate() != null ? e.getEndDate().getTime() : e.getBeginDate().getTime()) // Only date part is considered when ALL_DAY is true
+                .putExtra(CalendarContract.Events.EVENT_LOCATION, e.getMap())
+                .putExtra(CalendarContract.Events.DESCRIPTION, e.getUri(Event.UriArt.Ausschreibung).toString());
+        startActivity(insertCalendarIntent);
     }
 
     public void openWebBrowser(Uri uri) {

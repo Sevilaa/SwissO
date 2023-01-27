@@ -1,6 +1,5 @@
 package ch.swisso;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,6 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class SortierDialog extends DialogFragment {
 
@@ -20,8 +21,7 @@ public class SortierDialog extends DialogFragment {
 
     private String selectedColumn;
 
-
-    public SortierDialog(ListFragment listFragment, MainActivity act) {
+    public SortierDialog(ListFragment listFragment, @NonNull MainActivity act) {
         listType = act.getFragmentType();
         this.listFragment = listFragment;
     }
@@ -29,8 +29,8 @@ public class SortierDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        SharedPreferences pref = getContext().getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(listFragment.getAct());
+        SharedPreferences pref = listFragment.getAct().getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE);
         if (listType == MainActivity.FragmentType.Startliste) {
             String saved = pref.getString(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column);
             int selected = 0;
@@ -59,7 +59,7 @@ public class SortierDialog extends DialogFragment {
     }
 
     private void save(boolean aufsteigend) {
-        SharedPreferences.Editor editor = getContext().getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = listFragment.getAct().getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE).edit();
         editor.putBoolean(listType == MainActivity.FragmentType.Startliste ? Helper.Keys.sorting_startlist_ascending : Helper.Keys.sorting_ranglist_ascending, aufsteigend);
         editor.putString(listType == MainActivity.FragmentType.Startliste ? Helper.Keys.sorting_startlist_column : Helper.Keys.sorting_ranglist_column, selectedColumn);
         editor.apply();
