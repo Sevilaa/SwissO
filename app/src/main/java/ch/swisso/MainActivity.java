@@ -190,8 +190,11 @@ public class MainActivity extends AppCompatActivity {
                 .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, e.getBeginDate().getTime()) // Only date part is considered when ALL_DAY is true; Same as DTSTART
                 .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, e.getEndDate() != null ? e.getEndDate().getTime() : e.getBeginDate().getTime()) // Only date part is considered when ALL_DAY is true
-                .putExtra(CalendarContract.Events.EVENT_LOCATION, e.getMap())
-                .putExtra(CalendarContract.Events.DESCRIPTION, e.getUri(Event.UriArt.Ausschreibung).toString());
+                .putExtra(CalendarContract.Events.EVENT_LOCATION, e.getMap());
+        Uri ausschreibung = e.getUri(Event.UriArt.Ausschreibung);
+        if(ausschreibung != null) {
+            insertCalendarIntent.putExtra(CalendarContract.Events.DESCRIPTION, e.getUri(Event.UriArt.Ausschreibung).toString());
+        }
         startActivity(insertCalendarIntent);
     }
 
