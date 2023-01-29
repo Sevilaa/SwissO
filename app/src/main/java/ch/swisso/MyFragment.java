@@ -10,11 +10,7 @@ public abstract class MyFragment extends Fragment {
 
     protected MainActivity act;
 
-    public abstract void reloadEvents();
-
     public abstract void reloadList();
-
-    public abstract boolean onOptionsItemClicked(int itemId);
 
     public MainActivity getAct() {
         return act;

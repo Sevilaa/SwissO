@@ -58,34 +58,34 @@ public class SwissOParser {
         values.put(field, (String) null);
     }
 
-    public void onResult(@NonNull MyHttpClient.RequestCodes requestCode, int id, String result) {
+    public void onResult(@NonNull MyHttpClient.RequestCodes requestCode, int id, String result, MyFragment fragment) {
         switch (requestCode) {
             case Eventliste:
-                loadEvents(result);
+                loadEvents(result, fragment);
                 return;
             case Laeufer:
-                loadLaeufer(result, id);
+                loadLaeufer(result, id, fragment);
                 return;
             case Messages:
                 loadMessages(result);
         }
     }
 
-    public boolean sendEventRequest() {
-        return sendRequest("https://api.swisso.severinlaasch.ch/events", MyHttpClient.RequestCodes.Eventliste, -1);
+    public boolean sendEventRequest(OverviewFragment fragment) {
+        return sendRequest("https://api.swisso.severinlaasch.ch/events", MyHttpClient.RequestCodes.Eventliste, -1, fragment);
     }
 
-    public boolean sendLaeuferRequest(int id) {
-        return sendRequest("https://api.swisso.severinlaasch.ch/laeufer?event_id=" + id, MyHttpClient.RequestCodes.Laeufer, id);
+    public boolean sendLaeuferRequest(int id, ListFragment fragment) {
+        return sendRequest("https://api.swisso.severinlaasch.ch/laeufer?event_id=" + id, MyHttpClient.RequestCodes.Laeufer, id, fragment);
     }
 
     public boolean sendMessageRequest() {
-        return sendRequest("http://api.swisso.severinlaasch.ch/messages", MyHttpClient.RequestCodes.Messages, -1);
+        return sendRequest("http://api.swisso.severinlaasch.ch/messages", MyHttpClient.RequestCodes.Messages, -1, null);
     }
 
-    private boolean sendRequest(String url, MyHttpClient.RequestCodes code, int id){
+    private boolean sendRequest(String url, MyHttpClient.RequestCodes code, int id, MyFragment fragment){
         if(act.isNetworkAvailable()){
-            httpClient.sendStringRequest(this, url, code, id);
+            httpClient.sendStringRequest(this, url, code, id, fragment);
             return true;
         }
         else{
@@ -93,7 +93,7 @@ public class SwissOParser {
         }
     }
 
-    private void loadEvents(String json) {
+    private void loadEvents(String json, MyFragment fragment) {
         new Handler(Looper.getMainLooper()).post(() -> {
             try {
                 JSONArray array = new JSONArray(json);
@@ -139,14 +139,14 @@ public class SwissOParser {
                 for (int id : ids) {
                     daten.deleteEvent(id);
                 }
-                act.initEvents();
+                fragment.reloadList();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         });
     }
 
-    private void loadLaeufer(String json, int eventId) {
+    private void loadLaeufer(String json, int eventId, MyFragment fragment) {
         new Handler(Looper.getMainLooper()).post(() -> {
             try {
                 JSONArray array = new JSONArray(json);
@@ -186,7 +186,7 @@ public class SwissOParser {
                 for (int id : ids) {
                     daten.deleteLaeuferById(id);
                 }
-                act.reloadList();
+                fragment.reloadList();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

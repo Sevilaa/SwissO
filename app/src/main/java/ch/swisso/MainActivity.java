@@ -7,14 +7,18 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 
@@ -25,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private Daten daten;
     private SwissOParser parser;
     private Event selectedEvent;
-    private FragmentType fragmentType;
+    private NavController navController;
     private BottomNavigationView navigation;
     private MaterialToolbar toolbar;
 
@@ -37,73 +41,28 @@ public class MainActivity extends AppCompatActivity {
         parser = new SwissOParser(this);
 
         navigation = findViewById(R.id.bottom_navigation);
-        navigation.setOnItemSelectedListener(item -> setFragment(item.getItemId()));
+
 
         toolbar = findViewById(R.id.topAppBar);
-        toolbar.setOnMenuItemClickListener(item -> onOptionItemClicked(item.getItemId()));
-
+        setSupportActionBar(toolbar);
         initEvents();
 
-        setFragment(R.id.navigation_overview);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        navController = navHostFragment.getNavController();
+        NavigationUI.setupWithNavController(navigation, navController);
+
+        /*navigation.setOnItemSelectedListener(item -> {
+            navController.popBackStack();
+            return NavigationUI.onNavDestinationSelected(item, navController);
+        });*/
+
+        // Add your own reselected listener
+        navigation.setOnItemReselectedListener(item -> navController.popBackStack(item.getItemId(), false));
 
         parser.sendMessageRequest();
     }
 
-    private boolean onOptionItemClicked(int itemId) {
-        return fragment.onOptionsItemClicked(itemId);
-    }
-
-    public void editOptionMenuItem(int itemId, boolean visible) {
-        toolbar.getMenu().findItem(itemId).setVisible(visible);
-    }
-
-    private boolean setFragment(int itemId) {
-        if (selectedEvent == null && itemId != R.id.navigation_overview) {
-            return false;
-        }
-        toolbar.getMenu().findItem(R.id.menu_refresh).setVisible(false);
-        toolbar.getMenu().findItem(R.id.menu_search).setVisible(false);
-        toolbar.getMenu().findItem(R.id.menu_browser).setVisible(false);
-        toolbar.getMenu().findItem(R.id.menu_sorting).setVisible(false);
-        if (itemId == R.id.navigation_overview) {
-            fragment = new OverviewFragment();
-            fragmentType = FragmentType.Overview;
-            toolbar.getMenu().findItem(R.id.menu_refresh).setVisible(true);
-            toolbar.getMenu().findItem(R.id.menu_search).setVisible(true);
-            toolbar.setTitle(R.string.overview);
-        } else if (itemId == R.id.navigation_startliste) {
-            fragment = new ListFragment();
-            fragmentType = FragmentType.Startliste;
-            toolbar.getMenu().findItem(R.id.menu_refresh).setVisible(true);
-            toolbar.getMenu().findItem(R.id.menu_search).setVisible(true);
-            toolbar.getMenu().findItem(R.id.menu_browser).setVisible(true);
-            toolbar.getMenu().findItem(R.id.menu_sorting).setVisible(true);
-            setToolbarTitle(R.string.startlist);
-        } else if (itemId == R.id.navigation_rangliste) {
-            fragment = new ListFragment();
-            fragmentType = FragmentType.Rangliste;
-            toolbar.getMenu().findItem(R.id.menu_refresh).setVisible(true);
-            toolbar.getMenu().findItem(R.id.menu_search).setVisible(true);
-            toolbar.getMenu().findItem(R.id.menu_browser).setVisible(true);
-            toolbar.getMenu().findItem(R.id.menu_sorting).setVisible(true);
-            setToolbarTitle(R.string.rangliste);
-        } else if (itemId == R.id.navigation_profil) {
-            fragment = new ProfilFragment();
-            fragmentType = FragmentType.Profil;
-            toolbar.setTitle(R.string.profil);
-   /*     } else if (itemId == R.id.navigation_details) {
-            fragment = new DetailsFragment();
-            fragmentType = FragmentType.Details;*/
-        } else {
-            return false;
-        }
-        getSupportFragmentManager().beginTransaction().replace(R.id.host_fragment_activity_main, fragment).commit();
-        return true;
-    }
-
-    private void setToolbarTitle(@StringRes int resId) {
-        String title = getString(resId);
-        title += ": " + selectedEvent.getName();
+    public void setToolbarTitle(String title) {
         toolbar.setTitle(title);
     }
 
@@ -132,14 +91,6 @@ public class MainActivity extends AppCompatActivity {
         if (selectedEvent == null && events.size() > 0) {
             selectedEvent = events.get(events.size() - 1);
         }
-
-        if (fragment != null) {
-            fragment.reloadEvents();
-        }
-    }
-
-    public void reloadList() {
-        fragment.reloadList();
     }
 
     public Event getSelectedEvent() {
@@ -168,10 +119,12 @@ public class MainActivity extends AppCompatActivity {
         selectedEvent = e;
         switch (uriArt) {
             case Rangliste:
-                navigation.setSelectedItemId(R.id.navigation_rangliste);
+                navigation.setSelectedItemId(R.id.ranglistFragment);
+                //navController.navigate(R.id.ranglistFragment);
                 break;
             case Startliste:
-                navigation.setSelectedItemId(R.id.navigation_startliste);
+                navigation.setSelectedItemId(R.id.startlistFragment);
+                //navController.navigate(R.id.startlistFragment);
                 break;
             default:
                 openWebBrowser(e.getUri(uriArt));
@@ -213,13 +166,5 @@ public class MainActivity extends AppCompatActivity {
             dialog.init(daten, content, title);
             dialog.show(getSupportFragmentManager(), null);
         }
-    }
-
-    public FragmentType getFragmentType() {
-        return fragmentType;
-    }
-
-    public enum FragmentType {
-        Overview, Startliste, Rangliste, Profil, Details
     }
 }

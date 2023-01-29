@@ -26,6 +26,7 @@ public class SingleListFragment extends Fragment {
 
     private final HashMap<Chip, String> chips = new HashMap<>();
     private MainActivity act;
+    private ListFragment listFragment;
     private ListContent listContent;
     private SwipeRefreshLayout refreshLayout;
     private TextInputEditText suche;
@@ -42,10 +43,11 @@ public class SingleListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         act = (MainActivity) getActivity();
+        listFragment = (ListFragment)getParentFragment();
         chips.put(view.findViewById(R.id.chip_club_list), SQLiteHelper.COLUMN_CLUB);
         chips.put(view.findViewById(R.id.chip_name_list), SQLiteHelper.COLUMN_NAME);
         chips.put(view.findViewById(R.id.chip_kategorie_list), SQLiteHelper.COLUMN_KATEGORIE);
-        if (act.getFragmentType() == MainActivity.FragmentType.Startliste) {
+       if (listFragment.isStartliste()) {
             chips.put(view.findViewById(R.id.chip_startnummer_list), SQLiteHelper.COLUMN_STARTNUMMER);
             view.findViewById(R.id.chip_rang_list).setVisibility(View.GONE);
         } else {
@@ -58,7 +60,7 @@ public class SingleListFragment extends Fragment {
 
         refreshLayout = view.findViewById(R.id.refreshLayout_list);
         refreshLayout.setOnRefreshListener(() -> {
-            if(!act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId())){
+            if(!act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId(), listFragment)){
                 setRefreshing(false);
             }
         });
@@ -116,7 +118,7 @@ public class SingleListFragment extends Fragment {
             ListView listView = getView().findViewById(R.id.listView_list);
             if (!laeufer.isEmpty()) {
                 listView.setVisibility(View.VISIBLE);
-                LaeuferAdapter adapter = new LaeuferAdapter(getContext(), act.getFragmentType(), laeufer);
+                LaeuferAdapter adapter = new LaeuferAdapter(getContext(), listFragment.getListType(), laeufer);
                 listView.setAdapter(adapter);
             } else {
                 listView.setVisibility(View.GONE);
@@ -129,10 +131,9 @@ public class SingleListFragment extends Fragment {
         String column;
         String order;
         boolean ascending;
-        MainActivity.FragmentType fragmentType = act.getFragmentType();
         Daten daten = act.getDaten();
-        boolean startliste = act.getFragmentType() == MainActivity.FragmentType.Startliste;
-        if (startliste) {
+        ListFragment.ListType listType = listFragment.getListType();
+        if (listType == ListFragment.ListType.Startliste) {
             column = getStringPref(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column);
             ascending = getBoolPref(Helper.Keys.sorting_startlist_ascending, Helper.Defaults.sorting_startlist_ascending);
         } else {
@@ -146,7 +147,7 @@ public class SingleListFragment extends Fragment {
         } else {
             order = column + (ascending ? " ASC" : " DESC");
             if (column.equals(SQLiteHelper.COLUMN_KATEGORIE)) {
-                if (startliste) {
+                if (listType == ListFragment.ListType.Startliste) {
                     order += ", " + SQLiteHelper.COLUMN_STARTNUMMER;
                 } else {
                     order += ", (" + SQLiteHelper.COLUMN_ZIELZEIT + " < 0), " + SQLiteHelper.COLUMN_RANG;
@@ -154,7 +155,7 @@ public class SingleListFragment extends Fragment {
             }
         }
 
-        Cursor cursor = daten.getFilteredLaeuferByEvent(act.getSelectedEvent(), fragmentType, listContent, filter, chips, order);
+        Cursor cursor = daten.getFilteredLaeuferByEvent(act.getSelectedEvent(), listType , listContent, filter, chips, order);
         ArrayList<Laeufer> laeuferList = new ArrayList<>();
         if (cursor != null) {
             ArrayList<Laeufer> nullList = new ArrayList<>();

@@ -3,24 +3,27 @@ package ch.swisso;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.MenuProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class ListFragment extends MyFragment {
+public abstract class ListFragment extends MyFragment {
 
     private ListFragmentPagerAdapter adapter;
     private ViewPager2 viewPager;
 
-    @Override
-    public void reloadEvents() {
-        loadList();
-    }
+    private MenuProvider menuProvider;
+
+    private boolean showOpenInBrowserInMenu = false;
 
     @Override
     public void reloadList() {
@@ -36,7 +39,8 @@ public class ListFragment extends MyFragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        act.setToolbarTitle(getString(isStartliste() ? R.string.startlist: R.string.rangliste) + ": " + act.getSelectedEvent().getName());
+        setupMenu();
         adapter = new ListFragmentPagerAdapter(this);
         viewPager = view.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
@@ -56,33 +60,52 @@ public class ListFragment extends MyFragment {
         });
         layoutMediator.attach();
         view.findViewById(R.id.openWebBrowser).setOnClickListener(v -> openInWebBrowser());
-        int count = act.getDaten().getLaeuferCountByEvent(act.getSelectedEvent(), act.getFragmentType());
+        int count = act.getDaten().getLaeuferCountByEvent(act.getSelectedEvent(), getListType());
         refresh();
         if (count != 0) {
             loadList();
         }
     }
 
-    @Override
-    public boolean onOptionsItemClicked(int itemId) {
-        if (itemId == R.id.menu_browser) {
-            openInWebBrowser();
-            return true;
-        } else if (itemId == R.id.menu_sorting) {
-            SortierDialog dialog = new SortierDialog(this, act);
-            dialog.show(act.getSupportFragmentManager(), "sorting");
-            return true;
-        } else if (itemId == R.id.menu_refresh) {
-            refresh();
-            return true;
-        } else if (itemId == R.id.menu_search) {
-            adapter.toggleSearch(viewPager.getCurrentItem());
-        }
-        return false;
+    private void setupMenu(){
+        ListFragment that = this;
+        menuProvider = new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.list, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id == R.id.menu_browser) {
+                    openInWebBrowser();
+                    return true;
+                } else if (id == R.id.menu_sorting) {
+                    SortierDialog dialog = new SortierDialog(that);
+                    dialog.show(act.getSupportFragmentManager(), "sorting");
+                    return true;
+                } else if (id == R.id.menu_refresh) {
+                    refresh();
+                    return true;
+                } else if (id == R.id.menu_search) {
+                    adapter.toggleSearch(viewPager.getCurrentItem());
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onPrepareMenu(@NonNull Menu menu) {
+                menu.findItem(R.id.menu_browser).setVisible(showOpenInBrowserInMenu);
+            }
+        };
+        act.addMenuProvider(menuProvider);
+
     }
 
     private void refresh() {
-        if(act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId())){
+        if (act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId(), this)) {
             adapter.setRefreshing(true, viewPager.getCurrentItem());
         }
     }
@@ -92,7 +115,7 @@ public class ListFragment extends MyFragment {
     }
 
     private Uri getUri() {
-        return act.getFragmentType() == MainActivity.FragmentType.Startliste ? act.getSelectedEvent().getUri(Event.UriArt.Startliste) : act.getSelectedEvent().getUri(Event.UriArt.Rangliste);
+        return act.getSelectedEvent().getUri(isStartliste() ? Event.UriArt.Startliste : Event.UriArt.Rangliste);
     }
 
     public final void loadList() {
@@ -101,8 +124,8 @@ public class ListFragment extends MyFragment {
             getView().findViewById(R.id.tabLayout).setVisibility(View.GONE);
             getView().findViewById(R.id.viewPager).setVisibility(View.GONE);
             getView().findViewById(R.id.openWebBrowser).setVisibility(View.GONE);
-            boolean showOpenInBrowserInMenu = false;
-            int count = act.getDaten().getLaeuferCountByEvent(act.getSelectedEvent(), act.getFragmentType());
+            showOpenInBrowserInMenu = false;
+            int count = act.getDaten().getLaeuferCountByEvent(act.getSelectedEvent(), getListType());
             if (count > 0) {
                 getView().findViewById(R.id.tabLayout).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.viewPager).setVisibility(View.VISIBLE);
@@ -115,7 +138,27 @@ public class ListFragment extends MyFragment {
             } else {
                 getView().findViewById(R.id.no_list).setVisibility(View.VISIBLE);
             }
-            act.editOptionMenuItem(R.id.menu_browser, showOpenInBrowserInMenu);
+            act.invalidateMenu();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        act.removeMenuProvider(menuProvider);
+    }
+
+    public boolean isStartliste(){
+        return getListType() == ListType.Startliste;
+    }
+
+    public boolean isRangliste(){
+        return getListType() == ListType.Rangliste;
+    }
+
+    public abstract ListType getListType();
+
+    public enum ListType {
+        Startliste, Rangliste
     }
 }
