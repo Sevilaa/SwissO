@@ -14,6 +14,8 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.chip.Chip;
@@ -25,6 +27,8 @@ import java.util.HashMap;
 public class SingleListFragment extends Fragment {
 
     private final HashMap<Chip, String> chips = new HashMap<>();
+    private SingleListViewModel singleViewModel;
+    private ListFragment.ListViewModel listViewModel;
     private MainActivity act;
     private ListFragment listFragment;
     private ListContent listContent;
@@ -41,13 +45,20 @@ public class SingleListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         act = (MainActivity) getActivity();
-        listFragment = (ListFragment)getParentFragment();
+        singleViewModel = new ViewModelProvider(this).get(SingleListViewModel.class);
+        if (listContent == null) {
+            listContent = singleViewModel.getListContent();
+        } else {
+            singleViewModel.setListContent(listContent);
+        }
+        listFragment = (ListFragment) getParentFragment();
+        listViewModel = new ViewModelProvider(listFragment).get(ListFragment.ListViewModel.class);
+
         chips.put(view.findViewById(R.id.chip_club_list), SQLiteHelper.COLUMN_CLUB);
         chips.put(view.findViewById(R.id.chip_name_list), SQLiteHelper.COLUMN_NAME);
         chips.put(view.findViewById(R.id.chip_kategorie_list), SQLiteHelper.COLUMN_KATEGORIE);
-       if (listFragment.isStartliste()) {
+        if (listFragment.isStartliste()) {
             chips.put(view.findViewById(R.id.chip_startnummer_list), SQLiteHelper.COLUMN_STARTNUMMER);
             view.findViewById(R.id.chip_rang_list).setVisibility(View.GONE);
         } else {
@@ -60,9 +71,7 @@ public class SingleListFragment extends Fragment {
 
         refreshLayout = view.findViewById(R.id.refreshLayout_list);
         refreshLayout.setOnRefreshListener(() -> {
-            if(!act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId(), listFragment)){
-                setRefreshing(false);
-            }
+            listViewModel.setRefreshing(true);
         });
 
         suche = view.findViewById(R.id.suche_list);
@@ -77,8 +86,15 @@ public class SingleListFragment extends Fragment {
                 loadList();
             }
         });
-        setSucheVisibility(false);
-        loadList();
+
+        listViewModel.getRefreshing().observe(listFragment.getViewLifecycleOwner(), refreshing -> {
+            setRefreshing(refreshing);
+            if(!refreshing){
+                loadList();
+            }
+        });
+
+        listViewModel.getSucheVisible().observe(listFragment.getViewLifecycleOwner(), this::setSucheVisibility);
     }
 
     private void setSucheVisibility(boolean visibile) {
@@ -100,12 +116,10 @@ public class SingleListFragment extends Fragment {
         }
     }
 
-    public void toggleSearch() {
-        setSucheVisibility(!sucheVisible);
-    }
-
-    public void setRefreshing(boolean b) {
-        refreshLayout.setRefreshing(b);
+    private void setRefreshing(boolean b) {
+        if(b != refreshLayout.isRefreshing()) {
+            refreshLayout.setRefreshing(b);
+        }
     }
 
     public final void loadList() {
@@ -155,7 +169,7 @@ public class SingleListFragment extends Fragment {
             }
         }
 
-        Cursor cursor = daten.getFilteredLaeuferByEvent(act.getSelectedEvent(), listType , listContent, filter, chips, order);
+        Cursor cursor = daten.getFilteredLaeuferByEvent(act.getSelectedEvent(), listType, listContent, filter, chips, order);
         ArrayList<Laeufer> laeuferList = new ArrayList<>();
         if (cursor != null) {
             ArrayList<Laeufer> nullList = new ArrayList<>();
@@ -191,5 +205,18 @@ public class SingleListFragment extends Fragment {
         Friends,
         Club,
         alle
+    }
+
+    public static class SingleListViewModel extends ViewModel {
+        private ListContent listContent;
+
+        public ListContent getListContent() {
+            return listContent;
+        }
+
+        public void setListContent(ListContent listContent) {
+            this.listContent = listContent;
+        }
+
     }
 }

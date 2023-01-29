@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.chip.Chip;
@@ -31,6 +32,7 @@ public class OverviewFragment extends MyFragment {
     private ListView listView;
     private TextInputEditText suche;
     private MenuProvider menuProvider;
+    private MainActivity.ActViewModel actViewModel;
 
     private boolean sucheVisible = false;
 
@@ -43,6 +45,8 @@ public class OverviewFragment extends MyFragment {
         super.onViewCreated(view, savedInstanceState);
         act.setToolbarTitle(getString(R.string.overview));
         setupMenu();
+        actViewModel = new ViewModelProvider(act).get(MainActivity.ActViewModel.class);
+
         chips.put(view.findViewById(R.id.chip_club), SQLiteHelper.COLUMN_CLUB);
         chips.put(view.findViewById(R.id.chip_karte), SQLiteHelper.COLUMN_MAP);
         chips.put(view.findViewById(R.id.chip_name), SQLiteHelper.COLUMN_NAME);
@@ -55,9 +59,7 @@ public class OverviewFragment extends MyFragment {
         suche = view.findViewById(R.id.suche_overview);
 
         refreshLayout.setOnRefreshListener(() -> {
-            if (!act.getParser().sendEventRequest(this)) {
-                refreshLayout.setRefreshing(false);
-            }
+            actViewModel.setRefreshingEvents(true);
         });
 
         setSucheVisibility(false);
@@ -72,13 +74,24 @@ public class OverviewFragment extends MyFragment {
                 showList();
             }
         });
-        refresh();
+
+        actViewModel.getRefreshingEvents().observe(act, refreshing -> {
+            if (refreshing != refreshLayout.isRefreshing()) {
+                refreshLayout.setRefreshing(refreshing);
+            }
+            if (!refreshing) {
+                showList();
+            } else {
+                refresh();
+            }
+        });
+
         if (act.getEvents().size() != 0) {
             showList();
         }
     }
 
-    private void setupMenu(){
+    private void setupMenu() {
         menuProvider = new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
@@ -92,7 +105,7 @@ public class OverviewFragment extends MyFragment {
                     setSucheVisibility(!sucheVisible);
                     return true;
                 } else if (id == R.id.menu_refresh) {
-                    refresh();
+                    actViewModel.setRefreshingEvents(true);
                     return true;
                 }
                 return false;
@@ -119,15 +132,14 @@ public class OverviewFragment extends MyFragment {
     }
 
     public void refresh() {
-        if (act.getParser().sendEventRequest(this)) {
-            refreshLayout.setRefreshing(true);
+        if (!act.getParser().sendEventRequest(this)) {
+            actViewModel.setRefreshingEvents(false);
         }
     }
 
     public void reloadList() {
         act.initEvents();
-        showList();
-        refreshLayout.setRefreshing(false);
+        actViewModel.setRefreshingEvents(false);
     }
 
     public void showList() {

@@ -7,29 +7,28 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private final ArrayList<Event> events = new ArrayList<>();
-    private MyFragment fragment;
     private Daten daten;
     private SwissOParser parser;
     private Event selectedEvent;
-    private NavController navController;
     private BottomNavigationView navigation;
     private MaterialToolbar toolbar;
 
@@ -37,27 +36,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActViewModel viewModel = new ViewModelProvider(this).get(ActViewModel.class);
         daten = new Daten(this);
         parser = new SwissOParser(this);
-
-        navigation = findViewById(R.id.bottom_navigation);
-
 
         toolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(toolbar);
         initEvents();
 
+        navigation = findViewById(R.id.bottom_navigation);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        navController = navHostFragment.getNavController();
+        NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(navigation, navController);
 
-        /*navigation.setOnItemSelectedListener(item -> {
-            navController.popBackStack();
-            return NavigationUI.onNavDestinationSelected(item, navController);
-        });*/
-
-        // Add your own reselected listener
-        navigation.setOnItemReselectedListener(item -> navController.popBackStack(item.getItemId(), false));
+        viewModel.setRefreshingEvents(true);
 
         parser.sendMessageRequest();
     }
@@ -120,11 +112,9 @@ public class MainActivity extends AppCompatActivity {
         switch (uriArt) {
             case Rangliste:
                 navigation.setSelectedItemId(R.id.ranglistFragment);
-                //navController.navigate(R.id.ranglistFragment);
                 break;
             case Startliste:
                 navigation.setSelectedItemId(R.id.startlistFragment);
-                //navController.navigate(R.id.startlistFragment);
                 break;
             default:
                 openWebBrowser(e.getUri(uriArt));
@@ -165,6 +155,18 @@ public class MainActivity extends AppCompatActivity {
             MessageDialog dialog = new MessageDialog();
             dialog.init(daten, content, title);
             dialog.show(getSupportFragmentManager(), null);
+        }
+    }
+
+    public static class ActViewModel extends ViewModel {
+        private final MutableLiveData<Boolean> refreshingEvents = new MutableLiveData<>();
+
+        public void setRefreshingEvents(boolean b) {
+            refreshingEvents.setValue(b);
+        }
+
+        public MutableLiveData<Boolean> getRefreshingEvents() {
+            return refreshingEvents;
         }
     }
 }

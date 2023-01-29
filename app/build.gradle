@@ -35,6 +35,7 @@ dependencies {
 
     // Feature module Support
     implementation "androidx.navigation:navigation-dynamic-features-fragment:2.5.3"
+    implementation 'androidx.navigation:navigation-runtime:2.5.3'
 
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:2.5.3"

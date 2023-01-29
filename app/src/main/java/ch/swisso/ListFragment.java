@@ -11,25 +11,23 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public abstract class ListFragment extends MyFragment {
+import java.util.Objects;
 
-    private ListFragmentPagerAdapter adapter;
-    private ViewPager2 viewPager;
+public abstract class ListFragment extends MyFragment {
 
     private MenuProvider menuProvider;
 
     private boolean showOpenInBrowserInMenu = false;
 
-    @Override
-    public void reloadList() {
-        loadList();
-        adapter.setRefreshing(false, viewPager.getCurrentItem());
-    }
+    private ListViewModel viewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,10 +37,22 @@ public abstract class ListFragment extends MyFragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        act.setToolbarTitle(getString(isStartliste() ? R.string.startlist: R.string.rangliste) + ": " + act.getSelectedEvent().getName());
+        act.setToolbarTitle(getString(isStartliste() ? R.string.startlist : R.string.rangliste) + ": " + act.getSelectedEvent().getName());
         setupMenu();
-        adapter = new ListFragmentPagerAdapter(this);
-        viewPager = view.findViewById(R.id.viewPager);
+
+        viewModel = new ViewModelProvider(this).get(ListViewModel.class);
+        viewModel.getRefreshing().observe(getViewLifecycleOwner(), refreshing -> {
+            if (refreshing) {
+                refresh();
+            }
+        });
+
+        if(viewModel.getSucheVisible().getValue() == null){
+            viewModel.getSucheVisible().setValue(false);
+        }
+
+        ListFragmentPagerAdapter adapter = new ListFragmentPagerAdapter(this);
+        ViewPager2 viewPager = view.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
         TabLayoutMediator layoutMediator = new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
@@ -60,14 +70,10 @@ public abstract class ListFragment extends MyFragment {
         });
         layoutMediator.attach();
         view.findViewById(R.id.openWebBrowser).setOnClickListener(v -> openInWebBrowser());
-        int count = act.getDaten().getLaeuferCountByEvent(act.getSelectedEvent(), getListType());
-        refresh();
-        if (count != 0) {
-            loadList();
-        }
+        loadList();
     }
 
-    private void setupMenu(){
+    private void setupMenu() {
         ListFragment that = this;
         menuProvider = new MenuProvider() {
             @Override
@@ -89,7 +95,7 @@ public abstract class ListFragment extends MyFragment {
                     refresh();
                     return true;
                 } else if (id == R.id.menu_search) {
-                    adapter.toggleSearch(viewPager.getCurrentItem());
+                    viewModel.toggleSuche();
                     return true;
                 }
                 return false;
@@ -106,8 +112,14 @@ public abstract class ListFragment extends MyFragment {
 
     private void refresh() {
         if (act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId(), this)) {
-            adapter.setRefreshing(true, viewPager.getCurrentItem());
+            viewModel.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void reloadList() {
+        loadList();
+        viewModel.setRefreshing(false);
     }
 
     private void openInWebBrowser() {
@@ -130,7 +142,6 @@ public abstract class ListFragment extends MyFragment {
                 getView().findViewById(R.id.tabLayout).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.viewPager).setVisibility(View.VISIBLE);
                 showOpenInBrowserInMenu = true;
-                adapter.updateList();
             } else if (getUri() != null) {
                 getView().findViewById(R.id.openWebBrowser).setVisibility(View.VISIBLE);
                 showOpenInBrowserInMenu = true;
@@ -148,11 +159,11 @@ public abstract class ListFragment extends MyFragment {
         act.removeMenuProvider(menuProvider);
     }
 
-    public boolean isStartliste(){
+    public boolean isStartliste() {
         return getListType() == ListType.Startliste;
     }
 
-    public boolean isRangliste(){
+    public boolean isRangliste() {
         return getListType() == ListType.Rangliste;
     }
 
@@ -160,5 +171,33 @@ public abstract class ListFragment extends MyFragment {
 
     public enum ListType {
         Startliste, Rangliste
+    }
+
+    public static class ListViewModel extends ViewModel {
+        private final MutableLiveData<Boolean> sucheVisible = new MutableLiveData<>();
+        private final MutableLiveData<Boolean> refreshing = new MutableLiveData<>();
+
+        public void setRefreshing(boolean b) {
+            if (!Objects.equals(refreshing.getValue(), b)) {
+                refreshing.setValue(b);
+            }
+        }
+
+        public MutableLiveData<Boolean> getRefreshing() {
+            return refreshing;
+        }
+
+        public void toggleSuche() {
+            if (sucheVisible.getValue() == null) {
+                sucheVisible.setValue(true);
+            } else {
+                boolean b = sucheVisible.getValue();
+                sucheVisible.setValue(!b);
+            }
+        }
+
+        public MutableLiveData<Boolean> getSucheVisible() {
+            return sucheVisible;
+        }
     }
 }
