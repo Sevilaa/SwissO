@@ -47,7 +47,9 @@ public abstract class ListFragment extends MyFragment {
             }
         });
 
-        if(viewModel.getSucheVisible().getValue() == null){
+        viewModel.setRefreshing(true);
+
+        if (viewModel.getSucheVisible().getValue() == null) {
             viewModel.getSucheVisible().setValue(false);
         }
 
@@ -70,7 +72,6 @@ public abstract class ListFragment extends MyFragment {
         });
         layoutMediator.attach();
         view.findViewById(R.id.openWebBrowser).setOnClickListener(v -> openInWebBrowser());
-        loadList();
     }
 
     private void setupMenu() {
@@ -111,15 +112,24 @@ public abstract class ListFragment extends MyFragment {
     }
 
     private void refresh() {
-        if (act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId(), this)) {
+        if (!act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId(), this)) {
             viewModel.setRefreshing(false);
+            showFragments();
+            viewModel.triggerList();
         }
     }
 
     @Override
     public void reloadList() {
-        loadList();
+        showFragments();
         viewModel.setRefreshing(false);
+        viewModel.triggerList();
+    }
+
+    public void triggerSingleList() {
+        if (viewModel != null) {
+            viewModel.triggerList();
+        }
     }
 
     private void openInWebBrowser() {
@@ -130,7 +140,7 @@ public abstract class ListFragment extends MyFragment {
         return act.getSelectedEvent().getUri(isStartliste() ? Event.UriArt.Startliste : Event.UriArt.Rangliste);
     }
 
-    public final void loadList() {
+    public final void showFragments() {
         if (getView() != null) {
             getView().findViewById(R.id.no_list).setVisibility(View.GONE);
             getView().findViewById(R.id.tabLayout).setVisibility(View.GONE);
@@ -176,6 +186,7 @@ public abstract class ListFragment extends MyFragment {
     public static class ListViewModel extends ViewModel {
         private final MutableLiveData<Boolean> sucheVisible = new MutableLiveData<>();
         private final MutableLiveData<Boolean> refreshing = new MutableLiveData<>();
+        private final MutableLiveData<Boolean> triggerList = new MutableLiveData<>();
 
         public void setRefreshing(boolean b) {
             if (!Objects.equals(refreshing.getValue(), b)) {
@@ -198,6 +209,19 @@ public abstract class ListFragment extends MyFragment {
 
         public MutableLiveData<Boolean> getSucheVisible() {
             return sucheVisible;
+        }
+
+        public void triggerList() {
+            if (triggerList.getValue() == null) {
+                triggerList.setValue(true);
+            } else {
+                boolean b = triggerList.getValue();
+                triggerList.setValue(!b);
+            }
+        }
+
+        public MutableLiveData<Boolean> getTriggerList() {
+            return triggerList;
         }
     }
 }

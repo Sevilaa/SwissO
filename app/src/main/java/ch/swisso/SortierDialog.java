@@ -63,7 +63,7 @@ public class SortierDialog extends DialogFragment {
         editor.putBoolean(listFragment.isStartliste() ? Helper.Keys.sorting_startlist_ascending : Helper.Keys.sorting_ranglist_ascending, aufsteigend);
         editor.putString(listFragment.isStartliste() ? Helper.Keys.sorting_startlist_column : Helper.Keys.sorting_ranglist_column, selectedColumn);
         editor.apply();
-        listFragment.loadList();
+        listFragment.triggerSingleList();
         dismiss();
     }
 }

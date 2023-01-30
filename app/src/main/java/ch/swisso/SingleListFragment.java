@@ -88,11 +88,11 @@ public class SingleListFragment extends Fragment {
         });
 
         listViewModel.getRefreshing().observe(listFragment.getViewLifecycleOwner(), refreshing -> {
-            setRefreshing(refreshing);
-            if(!refreshing){
-                loadList();
+            if (refreshing != refreshLayout.isRefreshing()) {
+                refreshLayout.setRefreshing(refreshing);
             }
         });
+        listViewModel.getTriggerList().observe(listFragment.getViewLifecycleOwner(), trigger -> loadList());
 
         listViewModel.getSucheVisible().observe(listFragment.getViewLifecycleOwner(), this::setSucheVisibility);
     }
@@ -113,12 +113,6 @@ public class SingleListFragment extends Fragment {
                 imm.showSoftInput(suche, InputMethodManager.SHOW_IMPLICIT);
             }
             loadList();
-        }
-    }
-
-    private void setRefreshing(boolean b) {
-        if(b != refreshLayout.isRefreshing()) {
-            refreshLayout.setRefreshing(b);
         }
     }
 
