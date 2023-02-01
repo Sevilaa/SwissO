@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 public class LaeuferAdapter extends ArrayAdapter<Laeufer> {
 
-    private final MainActivity.FragmentType listType;
+    private final ListFragment.ListType listType;
     
-    public LaeuferAdapter(Context context, MainActivity.FragmentType listType, ArrayList<Laeufer> laeufer) {
+    public LaeuferAdapter(Context context, ListFragment.ListType listType, ArrayList<Laeufer> laeufer) {
         super(context, getLayout(listType), laeufer);
         this.listType = listType;
     }
@@ -29,7 +29,7 @@ public class LaeuferAdapter extends ArrayAdapter<Laeufer> {
             convertView = inflater.inflate(getLayout(listType), parent, false);
         }
         TextView nummer, name, kat, zeit;
-        if (listType == MainActivity.FragmentType.Startliste) {
+        if (listType == ListFragment.ListType.Startliste) {
             nummer = convertView.findViewById(R.id.sl_startnummer);
             name = convertView.findViewById(R.id.sl_name);
             kat = convertView.findViewById(R.id.sl_kat);
@@ -44,7 +44,7 @@ public class LaeuferAdapter extends ArrayAdapter<Laeufer> {
         // Populate the data from the data object into the template view
         name.setText(laeufer.getName());
         kat.setText(laeufer.getCategory());
-        if (listType == MainActivity.FragmentType.Startliste) {
+        if (listType == ListFragment.ListType.Startliste) {
             nummer.setText(laeufer.getStartnummer() != Helper.intnull ? "" + laeufer.getStartnummer() : "");
             if(laeufer.getStartZeit() != Helper.intnull) {
                 String hhmmss = DateUtils.formatElapsedTime(laeufer.getStartZeit() / 1000);
@@ -59,7 +59,7 @@ public class LaeuferAdapter extends ArrayAdapter<Laeufer> {
         return convertView;
     }
 
-    private static int getLayout(MainActivity.FragmentType listType){
-        return listType == MainActivity.FragmentType.Startliste ? R.layout.listitem_startliste : R.layout.listitem_rangliste;
+    private static int getLayout(ListFragment.ListType listType){
+        return listType == ListFragment.ListType.Startliste ? R.layout.listitem_startliste : R.layout.listitem_rangliste;
     }
 }

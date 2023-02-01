@@ -12,17 +12,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class SortierDialog extends DialogFragment {
 
-
-    private final MainActivity.FragmentType listType;
-    private final ListFragment listFragment;
-
     private static final String[] startlistColumns = {SQLiteHelper.COLUMN_STARTNUMMER, SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_KATEGORIE, SQLiteHelper.COLUMN_STARTZEIT};
     private static final String[] ranglistColumns = {SQLiteHelper.COLUMN_RANG, SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_KATEGORIE, SQLiteHelper.COLUMN_ZIELZEIT};
 
+    private final ListFragment listFragment;
+
     private String selectedColumn;
 
-    public SortierDialog(ListFragment listFragment, @NonNull MainActivity act) {
-        listType = act.getFragmentType();
+
+    public SortierDialog(ListFragment listFragment) {
         this.listFragment = listFragment;
     }
 
@@ -31,19 +29,22 @@ public class SortierDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(listFragment.getAct());
         SharedPreferences pref = listFragment.getAct().getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE);
-        if (listType == MainActivity.FragmentType.Startliste) {
+
+
+
+        if (listFragment.isStartliste()) {
             String saved = pref.getString(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column);
             int selected = 0;
-            while(selected < startlistColumns.length && !startlistColumns[selected].equals(saved)){
+            while (selected < startlistColumns.length && !startlistColumns[selected].equals(saved)) {
                 selected++;
             }
             builder.setSingleChoiceItems(R.array.sorting_startlist_entires, selected, (dialog, which) -> selectedColumn = startlistColumns[which]);
             selectedColumn = startlistColumns[selected];
         }
-        if (listType == MainActivity.FragmentType.Rangliste) {
+        if (listFragment.isRangliste()) {
             String saved = pref.getString(Helper.Keys.sorting_ranglist_column, Helper.Defaults.sorting_ranglist_column);
             int selected = 0;
-            while(selected < ranglistColumns.length && !ranglistColumns[selected].equals(saved)){
+            while (selected < ranglistColumns.length && !ranglistColumns[selected].equals(saved)) {
                 selected++;
             }
             builder.setSingleChoiceItems(R.array.sorting_ranglist_entires, selected, (dialog, which) -> selectedColumn = ranglistColumns[which]);
@@ -60,10 +61,10 @@ public class SortierDialog extends DialogFragment {
 
     private void save(boolean aufsteigend) {
         SharedPreferences.Editor editor = listFragment.getAct().getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE).edit();
-        editor.putBoolean(listType == MainActivity.FragmentType.Startliste ? Helper.Keys.sorting_startlist_ascending : Helper.Keys.sorting_ranglist_ascending, aufsteigend);
-        editor.putString(listType == MainActivity.FragmentType.Startliste ? Helper.Keys.sorting_startlist_column : Helper.Keys.sorting_ranglist_column, selectedColumn);
+        editor.putBoolean(listFragment.isStartliste() ? Helper.Keys.sorting_startlist_ascending : Helper.Keys.sorting_ranglist_ascending, aufsteigend);
+        editor.putString(listFragment.isStartliste() ? Helper.Keys.sorting_startlist_column : Helper.Keys.sorting_ranglist_column, selectedColumn);
         editor.apply();
-        listFragment.loadList();
+        listFragment.triggerSingleList();
         dismiss();
     }
 }

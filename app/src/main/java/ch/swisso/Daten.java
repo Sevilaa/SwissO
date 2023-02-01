@@ -90,14 +90,14 @@ public class Daten {
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, null);
     }
 
-    public Cursor getFilteredLaeuferByEvent(@NonNull Event e, MainActivity.FragmentType fragmentType, SingleListFragment.ListContent content, String filter, HashMap<Chip, String> chips, String order) {
+    public Cursor getFilteredLaeuferByEvent(@NonNull Event e, ListFragment.ListType fragmentType, SingleListFragment.ListContent content, String filter, HashMap<Chip, String> chips, String order) {
         String where = SQLiteHelper.COLUMN_EVENT + " = " + e.getId();
         if (filter != null && !filter.trim().isEmpty()) {
             where += " AND (" + getFilterString(filter, chips) + ")";
         }
-        if (fragmentType == MainActivity.FragmentType.Rangliste) {
+        if (fragmentType == ListFragment.ListType.Rangliste) {
             where += " AND " + SQLiteHelper.COLUMN_RANGLISTE + " > 0";
-        } else if (fragmentType == MainActivity.FragmentType.Startliste) {
+        } else if (fragmentType == ListFragment.ListType.Startliste) {
             where += " AND " + SQLiteHelper.COLUMN_STARTLISTE + " > 0";
         }
         if (content != SingleListFragment.ListContent.alle) {
@@ -124,7 +124,7 @@ public class Daten {
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, order);
     }
 
-    public int getLaeuferCountByEvent(Event e, MainActivity.FragmentType type) {
+    public int getLaeuferCountByEvent(Event e, ListFragment.ListType type) {
         return getFilteredLaeuferByEvent(e, type, SingleListFragment.ListContent.alle, null, null, null).getCount();
     }
 

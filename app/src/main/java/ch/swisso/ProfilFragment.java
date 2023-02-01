@@ -20,7 +20,7 @@ public class ProfilFragment extends MyFragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        act = (MainActivity) getActivity();
+        act.setToolbarTitle(getString(R.string.profil));
 
         MaterialButton addFriend = view.findViewById(R.id.add_friend);
         MaterialButton addClub = view.findViewById(R.id.add_club);
@@ -63,15 +63,6 @@ public class ProfilFragment extends MyFragment {
     }
 
     @Override
-    public void reloadEvents() {
-    }
-
-    @Override
     public void reloadList() {
-    }
-
-    @Override
-    public boolean onOptionsItemClicked(int itemId) {
-        return false;
     }
 }

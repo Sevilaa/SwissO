@@ -32,9 +32,9 @@ public class MyHttpClient {
         queue.start();
     }
 
-    public void sendStringRequest(SwissOParser parser, String url, RequestCodes requestCode, int id) {
+    public void sendStringRequest(SwissOParser parser, String url, RequestCodes requestCode, int id, MyFragment fragment) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> parser.onResult(requestCode, id, response),
+                response -> parser.onResult(requestCode, id, response, fragment),
                 error -> {
                 });
         queue.add(stringRequest);

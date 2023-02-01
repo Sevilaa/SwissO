@@ -6,13 +6,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class ListFragmentPagerAdapter extends FragmentStateAdapter {
 
-    private final ListFragment listFragment;
-
-    private final SingleListFragment[] singleListFragments = new SingleListFragment[3];
-
     public ListFragmentPagerAdapter(@NonNull ListFragment fragment) {
         super(fragment);
-        listFragment = fragment;
     }
 
     @NonNull
@@ -33,32 +28,11 @@ public class ListFragmentPagerAdapter extends FragmentStateAdapter {
         }
         SingleListFragment subListFragment = new SingleListFragment();
         subListFragment.setListContent(listContent);
-        singleListFragments[position] = subListFragment;
         return subListFragment;
-    }
-
-    public void updateList() {
-        for (SingleListFragment fragment : singleListFragments) {
-            if (fragment != null) {
-                fragment.loadList();
-            }
-        }
     }
 
     @Override
     public int getItemCount() {
         return 3;
-    }
-
-    public void setRefreshing(boolean b, int position) {
-        if (singleListFragments[position] != null) {
-            singleListFragments[position].setRefreshing(b);
-        }
-    }
-
-    public void toggleSearch(int position) {
-        if (singleListFragments[position] != null) {
-            singleListFragments[position].toggleSearch();
-        }
     }
 }

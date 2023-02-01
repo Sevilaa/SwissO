@@ -1,6 +1,6 @@
 package ch.swisso;
 
-public class DetailsFragment extends MyFragment {
+/*public class DetailsFragment extends MyFragment {
     @Override
     public void reloadEvents() {
 
@@ -15,4 +15,4 @@ public class DetailsFragment extends MyFragment {
     public boolean onOptionsItemClicked(int itemId) {
         return false;
     }
-}
+}*/

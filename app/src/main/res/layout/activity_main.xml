@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,8 +14,9 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:menu="@menu/main"
             app:title="Hi" />
+
+        <!--            app:menu="@menu/main"-->
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -32,13 +32,15 @@
         app:layout_constraintTop_toBottomOf="@id/topAppBarLayout" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/host_fragment_activity_main"
-        android:name="ch.swisso.OverviewFragment"
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintTop_toBottomOf="@id/tv_internet_connection"
-        tools:layout="@layout/fragment_overview" />
+
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
