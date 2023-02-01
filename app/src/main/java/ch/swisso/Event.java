@@ -139,5 +139,21 @@ public class Event {
         return null;
     }
 
+    public String getMapsUrl(@NonNull Maps maps) {
+        switch (maps) {
+            case Google:
+                return "https://maps.google.com/maps?q=" + koordn + "," + koorde + "(WKZ)";
+            case GoogleSat:
+                return getMapsUrl(Maps.Google) + "&t=h";
+            case Swisstopo:
+                return "https://test.map.geo.admin.ch/?lon=" + koorde + "&lat=" + koordn + "&zoom=8&crosshair=marker";
+            case OSM:
+                return "http://www.openstreetmap.org/?mlat=" + koordn + "&mlon=" + koorde + "#map=12/" + koordn + "/" + koorde;
+        }
+        return null;
+    }
+
+    public enum Maps {Google, GoogleSat, Swisstopo, OSM}
+
     public enum UriArt {Ausschreibung, Weisungen, Anmeldung, Mutation, Startliste, Rangliste, WKZ, Liveresultate, Teilnehmerliste, Kalender}
 }
