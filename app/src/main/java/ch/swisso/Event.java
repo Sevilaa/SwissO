@@ -5,9 +5,6 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Date;
 
 public class Event {
@@ -140,17 +137,31 @@ public class Event {
     }
 
     public String getMapsUrl(@NonNull Maps maps) {
-        switch (maps) {
-            case Google:
-                return "https://maps.google.com/maps?q=" + koordn + "," + koorde + "(WKZ)";
-            case GoogleSat:
-                return getMapsUrl(Maps.Google) + "&t=h";
-            case Swisstopo:
-                return "https://test.map.geo.admin.ch/?lon=" + koorde + "&lat=" + koordn + "&zoom=8&crosshair=marker";
-            case OSM:
-                return "http://www.openstreetmap.org/?mlat=" + koordn + "&mlon=" + koorde + "#map=12/" + koordn + "/" + koorde;
+        if (koorde != Helper.intnull) {
+            switch (maps) {
+                case Google:
+                    return "https://maps.google.com/maps?q=" + koordn + "," + koorde + "(WKZ)";
+                case GoogleSat:
+                    return getMapsUrl(Maps.Google) + "&t=h";
+                case Swisstopo:
+                    return "https://test.map.geo.admin.ch/?lon=" + koorde + "&lat=" + koordn + "&zoom=8&crosshair=marker";
+                case OSM:
+                    return "http://www.openstreetmap.org/?mlat=" + koordn + "&mlon=" + koorde + "#map=12/" + koordn + "/" + koorde;
+            }
         }
         return null;
+    }
+
+    public String getCalenderLocation(Maps maps) {
+        String desc = "";
+        if (map != null) {
+            desc += map + " ";
+        }
+        String mapsURL = getMapsUrl(maps);
+        if (mapsURL != null) {
+            desc += getMapsUrl(maps);
+        }
+        return desc;
     }
 
     public enum Maps {Google, GoogleSat, Swisstopo, OSM}
