@@ -13,6 +13,7 @@ Link to Terms and Conditions (if available) of third-party service providers use
 *   [Google Play Services](https://policies.google.com/terms)
 *   [Swiss Orienteering](https://o-l.ch)
 *   [Pico Events](https://picoevents.ch/)
+*   [OL Events](https://portal.ol-events.ch/imprint/)
 
 You should be aware that there are certain things that Severin L will not take responsibility for. Certain functions of the app will require the app to have an active internet connection. The connection can be Wi-Fi or provided by your mobile network provider, but Severin L cannot take responsibility for the app not working at full functionality if you don’t have access to Wi-Fi, and you don’t have any of your data allowance left.
 

@@ -19,6 +19,7 @@ Link to the privacy policy (if available) of third-party service providers used 
 *   [Google Play Services](https://www.google.com/policies/privacy/)
 *   [Swiss Orienteering](https://www.swiss-orienteering.ch/files/20210824_DEF_Datenschutzrichtlinie.pdf)
 *   [Pico Events](https://picoevents.ch/)
+*   [OL Events](https://portal.ol-events.ch/imprint/)
 
 
 **Log Data**
