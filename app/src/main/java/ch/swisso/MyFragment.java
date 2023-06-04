@@ -8,17 +8,17 @@ import androidx.fragment.app.Fragment;
 
 public abstract class MyFragment extends Fragment {
 
-    protected MainActivity act;
+    protected MyActivity act;
 
     public abstract void reloadList();
 
-    public MainActivity getAct() {
+    public MyActivity getAct() {
         return act;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        act = (MainActivity) getActivity();
+        act = (MyActivity) getActivity();
     }
 }

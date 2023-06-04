@@ -29,7 +29,7 @@ public class SingleListFragment extends Fragment {
     private final HashMap<Chip, String> chips = new HashMap<>();
     private SingleListViewModel singleViewModel;
     private ListFragment.ListViewModel listViewModel;
-    private MainActivity act;
+    private EventActivity act;
     private ListFragment listFragment;
     private ListContent listContent;
     private SwipeRefreshLayout refreshLayout;
@@ -45,7 +45,7 @@ public class SingleListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        act = (MainActivity) getActivity();
+        act = (EventActivity) getActivity();
         singleViewModel = new ViewModelProvider(this).get(SingleListViewModel.class);
         if (listContent == null) {
             listContent = singleViewModel.getListContent();
@@ -163,7 +163,7 @@ public class SingleListFragment extends Fragment {
             }
         }
 
-        Cursor cursor = daten.getFilteredLaeuferByEvent(act.getSelectedEvent(), listType, listContent, filter, chips, order);
+        Cursor cursor = daten.getFilteredLaeuferByEvent(act.getEvent().getId(), listType, listContent, filter, chips, order);
         ArrayList<Laeufer> laeuferList = new ArrayList<>();
         if (cursor != null) {
             ArrayList<Laeufer> nullList = new ArrayList<>();

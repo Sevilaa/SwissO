@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@id/overviewFragment"
-        android:icon="@drawable/ic_select_home"
-        android:title="@string/overview" />
-
-<!--    <item
-        android:id="@+id/navigation_details"
+        android:id="@id/detailsFragment"
         android:icon="@drawable/ic_select_info"
-        android:title="@string/details" />-->
+        android:title="@string/details" />
 
     <item
         android:id="@id/startlistFragment"
@@ -19,9 +14,4 @@
         android:id="@id/ranglistFragment"
         android:icon="@drawable/ic_baseline_format_list_numbered"
         android:title="@string/rangliste" />
-
-    <item
-        android:id="@id/profilFragment"
-        android:icon="@drawable/ic_select_person"
-        android:title="@string/profil" />
 </menu>

@@ -90,8 +90,8 @@ public class Daten {
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, null);
     }
 
-    public Cursor getFilteredLaeuferByEvent(@NonNull Event e, ListFragment.ListType fragmentType, SingleListFragment.ListContent content, String filter, HashMap<Chip, String> chips, String order) {
-        String where = SQLiteHelper.COLUMN_EVENT + " = " + e.getId();
+    public Cursor getFilteredLaeuferByEvent(@NonNull int eventID, ListFragment.ListType fragmentType, SingleListFragment.ListContent content, String filter, HashMap<Chip, String> chips, String order) {
+        String where = SQLiteHelper.COLUMN_EVENT + " = " + eventID;
         if (filter != null && !filter.trim().isEmpty()) {
             where += " AND (" + getFilterString(filter, chips) + ")";
         }
@@ -124,8 +124,8 @@ public class Daten {
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, order);
     }
 
-    public int getLaeuferCountByEvent(Event e, ListFragment.ListType type) {
-        return getFilteredLaeuferByEvent(e, type, SingleListFragment.ListContent.alle, null, null, null).getCount();
+    public int getLaeuferCountByEvent(int eventID, ListFragment.ListType type) {
+        return getFilteredLaeuferByEvent(eventID, type, SingleListFragment.ListContent.alle, null, null, null).getCount();
     }
 
     public void deleteLaeuferById(int id) {
@@ -148,6 +148,12 @@ public class Daten {
 
     public Cursor getEvents() {
         return database.query(SQLiteHelper.TABLE_Events, null, null, null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
+    }
+
+    public Event createEventById(int id){
+        Cursor cursor = database.query(SQLiteHelper.TABLE_Events, null, SQLiteHelper.COLUMN_ID + " = " + id, null, null, null, null);
+        cursor.moveToFirst();
+        return new Event(cursor);
     }
 
     public Cursor getEvents(String filter, HashMap<Chip, String> chips) {

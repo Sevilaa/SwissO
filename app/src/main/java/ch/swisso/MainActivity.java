@@ -1,17 +1,12 @@
 package ch.swisso;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
-import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,39 +19,30 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MyActivity {
 
     private final ArrayList<Event> events = new ArrayList<>();
-    private Daten daten;
-    private SwissOParser parser;
     private Event selectedEvent;
-    private BottomNavigationView navigation;
     private MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ActViewModel viewModel = new ViewModelProvider(this).get(ActViewModel.class);
-        daten = new Daten(this);
-        parser = new SwissOParser(this);
+        MainActivity.MainViewModel viewModel = new ViewModelProvider(this).get(MainActivity.MainViewModel.class);
 
         toolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(toolbar);
         initEvents();
 
-        navigation = findViewById(R.id.bottom_navigation);
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        BottomNavigationView navigation = findViewById(R.id.bottom_navigation);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_main);
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(navigation, navController);
 
         viewModel.setRefreshingEvents(true);
 
         parser.sendMessageRequest();
-    }
-
-    public void setToolbarTitle(String title) {
-        toolbar.setTitle(title);
     }
 
     public final void initEvents() {
@@ -94,28 +80,14 @@ public class MainActivity extends AppCompatActivity {
         return events;
     }
 
-    public Daten getDaten() {
-        return daten;
-    }
-
-    public SwissOParser getParser() {
-        return parser;
-    }
-
-    @Override
-    protected void onDestroy() {
-        daten.Close();
-        super.onDestroy();
-    }
-
-    public final void openEventDetails(Event e, @NonNull Event.UriArt uriArt) {
+    public final void openEventDetails(@NonNull Event e, @NonNull Event.UriArt uriArt) {
         selectedEvent = e;
         switch (uriArt) {
             case Rangliste:
-                navigation.setSelectedItemId(R.id.ranglistFragment);
+                startEventActivity(e, R.id.ranglistFragment);
                 break;
             case Startliste:
-                navigation.setSelectedItemId(R.id.startlistFragment);
+                startEventActivity(e, R.id.startlistFragment);
                 break;
             case Kalender:
                 insertToCalendar(e);
@@ -124,6 +96,13 @@ public class MainActivity extends AppCompatActivity {
                 openWebBrowser(e.getUri(uriArt));
                 break;
         }
+    }
+
+    private void startEventActivity(@NonNull Event e, int navigationId){
+        Intent intent = new Intent(this, EventActivity.class);
+        intent.putExtra(Helper.Keys.intent_event, e.getId());
+        intent.putExtra(Helper.Keys.intent_navID, navigationId);
+        startActivity(intent);
     }
 
     public void insertToCalendar(@NonNull Event e) {
@@ -139,23 +118,6 @@ public class MainActivity extends AppCompatActivity {
             insertCalendarIntent.putExtra(CalendarContract.Events.DESCRIPTION, ausschreibung.toString());
         }
         startActivity(insertCalendarIntent);
-    }
-
-    public void openWebBrowser(Uri uri) {
-        if (uri != null) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(uri);
-            startActivity(intent);
-        }
-    }
-
-    public boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        boolean available = activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        findViewById(R.id.tv_internet_connection).setVisibility(available ? View.GONE : View.VISIBLE);
-        return available;
     }
 
     public void showMessages() {
@@ -177,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static class ActViewModel extends ViewModel {
+    public static class MainViewModel extends ViewModel {
         private final MutableLiveData<Boolean> refreshingEvents = new MutableLiveData<>();
 
         public void setRefreshingEvents(boolean b) {

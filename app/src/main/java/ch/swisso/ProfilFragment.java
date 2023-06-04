@@ -20,7 +20,6 @@ public class ProfilFragment extends MyFragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        act.setToolbarTitle(getString(R.string.profil));
 
         MaterialButton addFriend = view.findViewById(R.id.add_friend);
         MaterialButton addClub = view.findViewById(R.id.add_club);
@@ -45,7 +44,7 @@ public class ProfilFragment extends MyFragment {
             Cursor cursor = act.getDaten().getAllFreunde();
             if (cursor.getCount() > 0) {
                 freundeList.setVisibility(View.VISIBLE);
-                FriendClubAdapter adapter = new FriendClubAdapter(act, cursor, false, this);
+                FriendClubAdapter adapter = new FriendClubAdapter((MainActivity) act, cursor, false, this);
                 freundeList.setAdapter(adapter);
             } else {
                 freundeList.setVisibility(View.INVISIBLE);
@@ -54,7 +53,7 @@ public class ProfilFragment extends MyFragment {
             cursor = act.getDaten().getAllClubs();
             if (cursor.getCount() > 0) {
                 clubList.setVisibility(View.VISIBLE);
-                FriendClubAdapter adapter = new FriendClubAdapter(act, cursor, true, this);
+                FriendClubAdapter adapter = new FriendClubAdapter((MainActivity) act, cursor, true, this);
                 clubList.setAdapter(adapter);
             } else {
                 clubList.setVisibility(View.INVISIBLE);

@@ -24,10 +24,10 @@ import java.util.Objects;
 public abstract class ListFragment extends MyFragment {
 
     private MenuProvider menuProvider;
-
     private boolean showOpenInBrowserInMenu = false;
-
     private ListViewModel viewModel;
+
+    private EventActivity act;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,9 +37,8 @@ public abstract class ListFragment extends MyFragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        act.setToolbarTitle(getString(isStartliste() ? R.string.startlist : R.string.rangliste) + ": " + act.getSelectedEvent().getName());
+        act = (EventActivity)getAct();
         setupMenu();
-
         viewModel = new ViewModelProvider(this).get(ListViewModel.class);
         viewModel.getRefreshing().observe(getViewLifecycleOwner(), refreshing -> {
             if (refreshing) {
@@ -112,7 +111,7 @@ public abstract class ListFragment extends MyFragment {
     }
 
     private void refresh() {
-        if (!act.getParser().sendLaeuferRequest(act.getSelectedEvent().getId(), this)) {
+        if (!act.getParser().sendLaeuferRequest(act.getEvent().getId(), this)) {
             viewModel.setRefreshing(false);
             showFragments();
             viewModel.triggerList();
@@ -133,12 +132,12 @@ public abstract class ListFragment extends MyFragment {
     }
 
     private void openInWebBrowser() {
-        act.openWebBrowser(getUri());
+        //act.openWebBrowser(getUri());
     }
-
+/*
     private Uri getUri() {
-        return act.getSelectedEvent().getUri(isStartliste() ? Event.UriArt.Startliste : Event.UriArt.Rangliste);
-    }
+        return event.getUri(isStartliste() ? Event.UriArt.Startliste : Event.UriArt.Rangliste);
+    }*/
 
     public final void showFragments() {
         if (getView() != null) {
@@ -147,15 +146,15 @@ public abstract class ListFragment extends MyFragment {
             getView().findViewById(R.id.viewPager).setVisibility(View.GONE);
             getView().findViewById(R.id.openWebBrowser).setVisibility(View.GONE);
             showOpenInBrowserInMenu = false;
-            int count = act.getDaten().getLaeuferCountByEvent(act.getSelectedEvent(), getListType());
+            int count = act.getDaten().getLaeuferCountByEvent(act.getEvent().getId(), getListType());
             if (count > 0) {
                 getView().findViewById(R.id.tabLayout).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.viewPager).setVisibility(View.VISIBLE);
                 showOpenInBrowserInMenu = true;
-            } else if (getUri() != null) {
+            /*} else if (getUri() != null) {
                 getView().findViewById(R.id.openWebBrowser).setVisibility(View.VISIBLE);
                 showOpenInBrowserInMenu = true;
-                openInWebBrowser();
+                openInWebBrowser();*/
             } else {
                 getView().findViewById(R.id.no_list).setVisibility(View.VISIBLE);
             }

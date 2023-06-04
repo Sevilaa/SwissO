@@ -1,7 +1,12 @@
 package ch.swisso;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -15,12 +20,23 @@ import java.util.ArrayList;
 
 public class SwissOParser {
 
-    private final MainActivity act;
+    private final MyActivity act;
     private final MyHttpClient httpClient;
 
-    public SwissOParser(MainActivity act) {
+    public SwissOParser(MyActivity act) {
         this.act = act;
         httpClient = new MyHttpClient(act);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) act.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+            return networkCapabilities != null;
+        } else {
+            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            return activeNetwork != null && activeNetwork.isAvailable();
+        }
     }
 
     private static void json2cvInt(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
@@ -71,7 +87,7 @@ public class SwissOParser {
         }
     }
 
-    public boolean sendEventRequest(OverviewFragment fragment) {
+    public boolean sendEventRequest(EventListFragment fragment) {
         return sendRequest("https://api.swisso.severinlaasch.ch/events", MyHttpClient.RequestCodes.Eventliste, -1, fragment);
     }
 
@@ -83,12 +99,11 @@ public class SwissOParser {
         return sendRequest("http://api.swisso.severinlaasch.ch/messages", MyHttpClient.RequestCodes.Messages, -1, null);
     }
 
-    private boolean sendRequest(String url, MyHttpClient.RequestCodes code, int id, MyFragment fragment){
-        if(act.isNetworkAvailable()){
+    private boolean sendRequest(String url, MyHttpClient.RequestCodes code, int id, MyFragment fragment) {
+        if (isNetworkAvailable()) {
             httpClient.sendStringRequest(this, url, code, id, fragment);
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -194,43 +209,45 @@ public class SwissOParser {
     }
 
     private void loadMessages(String json) {
-        try {
-            JSONArray array = new JSONArray(json);
-            Daten daten = act.getDaten();
-            Cursor c = daten.getMessages();
-            ArrayList<Integer> ids = new ArrayList<>();
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-                ids.add(Helper.getInt(c, SQLiteHelper.COLUMN_ID));
-                c.moveToNext();
-            }
-            c.close();
-            for (int black : Helper.blacklistMessages) {
-                if (!ids.contains(black)) {
-                    ids.add(black);
-                } else {
-                    daten.deleteMessage(black);
+        if (act instanceof MainActivity) {
+            try {
+                JSONArray array = new JSONArray(json);
+                Daten daten = act.getDaten();
+                Cursor c = daten.getMessages();
+                ArrayList<Integer> ids = new ArrayList<>();
+                c.moveToFirst();
+                while (!c.isAfterLast()) {
+                    ids.add(Helper.getInt(c, SQLiteHelper.COLUMN_ID));
+                    c.moveToNext();
                 }
-            }
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject jsonMessage = array.getJSONObject(i);
-                int id = jsonMessage.getInt(SQLiteHelper.COLUMN_ID);
-                if (!ids.contains(id)) {
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(SQLiteHelper.COLUMN_ID, id);
-                    contentValues.put(SQLiteHelper.COLUMN_VIEWED, 0);
-                    contentValues.put(SQLiteHelper.COLUMN_MESSAGE, jsonMessage.getString("content"));
-                    daten.insertMessage(contentValues);
-                } else {
-                    ids.remove((Integer) id);
+                c.close();
+                for (int black : Helper.blacklistMessages) {
+                    if (!ids.contains(black)) {
+                        ids.add(black);
+                    } else {
+                        daten.deleteMessage(black);
+                    }
                 }
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject jsonMessage = array.getJSONObject(i);
+                    int id = jsonMessage.getInt(SQLiteHelper.COLUMN_ID);
+                    if (!ids.contains(id)) {
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(SQLiteHelper.COLUMN_ID, id);
+                        contentValues.put(SQLiteHelper.COLUMN_VIEWED, 0);
+                        contentValues.put(SQLiteHelper.COLUMN_MESSAGE, jsonMessage.getString("content"));
+                        daten.insertMessage(contentValues);
+                    } else {
+                        ids.remove((Integer) id);
+                    }
+                }
+                for (int id : ids) {
+                    daten.deleteMessage(id);
+                }
+                ((MainActivity)act).showMessages();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            for (int id : ids) {
-                daten.deleteMessage(id);
-            }
-            act.showMessages();
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 }

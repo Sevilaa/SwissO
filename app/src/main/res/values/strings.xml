@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">SwissO</string>
 
-    <string name="overview">Übersicht</string>
-
+    <string name="all_events">Alle Events</string>
+    <string name="favorites">Favoriten</string>
     <string name="details">Details</string>
 
     <string name="ok">OK</string>
@@ -55,7 +55,6 @@
     <string name="gelesen">Weg damit!</string>
 
     <string name="nointernet">Server nicht erreichbar</string>
-
 
 
     <string name="postenfehlt">Po. fehl.</string>

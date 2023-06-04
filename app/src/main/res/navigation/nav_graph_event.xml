@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_event"
+    app:startDestination="@id/detailsFragment">
+
+    <fragment
+        android:id="@+id/ranglistFragment"
+        android:name="ch.swisso.RanglistFragment"
+        android:label="RanglistFragment"
+        tools:layout="@layout/fragment_list"/>
+    <fragment
+        android:id="@+id/startlistFragment"
+        android:name="ch.swisso.StartlistFragment"
+        android:label="StartlistFragment"
+        tools:layout="@layout/fragment_list" />
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="ch.swisso.DetailsFragment"
+        android:label="Details"
+        tools:layout="@layout/fragment_details"/>
+
+</navigation>

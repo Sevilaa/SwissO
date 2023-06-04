@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/favoritesEventListFragment">
+
+
+    <fragment
+        android:id="@+id/allEventListFragment"
+        android:name="ch.swisso.AllEventListFragment"
+        android:label="OverviewFragment"
+        tools:layout="@layout/fragment_event_list"/>
+
+    <fragment
+        android:id="@+id/favoritesEventListFragment"
+        android:name="ch.swisso.FavEventListFragment"
+        android:label="OverviewFragment"
+        tools:layout="@layout/fragment_event_list"/>
+    <fragment
+        android:id="@+id/profilFragment"
+        android:name="ch.swisso.ProfilFragment"
+        android:label="@string/profil"
+        tools:layout="@layout/fragment_profil"/>
+</navigation>

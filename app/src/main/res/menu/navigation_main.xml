@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@id/favoritesEventListFragment"
+        android:icon="@drawable/ic_select_star"
+        android:title="@string/favorites" />
+
+    <item
+        android:id="@id/allEventListFragment"
+        android:icon="@drawable/ic_baseline_list"
+        android:title="@string/all_events" />
+
+    <item
+        android:id="@id/profilFragment"
+        android:icon="@drawable/ic_select_person"
+        android:title="@string/profil" />
+</menu>
