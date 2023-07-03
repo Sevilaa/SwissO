@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class SearchListAdapter extends BaseAdapter {
 
@@ -47,12 +46,12 @@ public class SearchListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private static int getStringFromColumn(String column) {
-        if(column == null){
+    private int getStringFromColumn(String column) {
+        if (column == null) {
             return R.string.empty;
         }
         if (column.equals(SQLiteHelper.COLUMN_NAME)) {
-            return R.string.event;
+            return act instanceof MainActivity ? R.string.event : R.string.name;
         }
         if (column.equals(SQLiteHelper.COLUMN_MAP)) {
             return R.string.karte;
@@ -62,6 +61,12 @@ public class SearchListAdapter extends BaseAdapter {
         }
         if (column.equals(SQLiteHelper.COLUMN_REGION)) {
             return R.string.region;
+        }
+        if (column.equals(SQLiteHelper.COLUMN_STARTNUMMER)) {
+            return R.string.startnummer;
+        }
+        if (column.equals(SQLiteHelper.COLUMN_KATEGORIE)) {
+            return R.string.category;
         }
         return R.string.empty;
     }

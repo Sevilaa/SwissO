@@ -26,6 +26,7 @@ public abstract class ListFragment extends EventFragment {
     private MenuProvider menuProvider;
     private boolean showOpenInBrowserInMenu = false;
     private ListViewModel viewModel;
+    private EventActivity.EventViewModel eventViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,9 +46,7 @@ public abstract class ListFragment extends EventFragment {
 
         viewModel.setRefreshing(true);
 
-        if (viewModel.getSucheVisible().getValue() == null) {
-            viewModel.getSucheVisible().setValue(false);
-        }
+        eventViewModel = new ViewModelProvider(act).get(EventActivity.EventViewModel.class);
 
         ListFragmentPagerAdapter adapter = new ListFragmentPagerAdapter(this);
         ViewPager2 viewPager = view.findViewById(R.id.viewPager);
@@ -84,11 +83,17 @@ public abstract class ListFragment extends EventFragment {
                 if (id == R.id.menu_browser) {
                     openInWebBrowser();
                     return true;
-                } else if (id == R.id.menu_sorting) {
+                }
+                if (id == R.id.menu_sorting) {
                     SortierDialog dialog = new SortierDialog(that);
                     dialog.show(act.getSupportFragmentManager(), "sorting");
                     return true;
-                } else if (id == R.id.menu_refresh) {
+                }
+                if (id == R.id.menu_clearsearch) {
+                    eventViewModel.setSearchText("");
+                    return true;
+                }
+                if (id == R.id.menu_refresh) {
                     refresh();
                     return true;
                 }
@@ -98,6 +103,10 @@ public abstract class ListFragment extends EventFragment {
             @Override
             public void onPrepareMenu(@NonNull Menu menu) {
                 menu.findItem(R.id.menu_browser).setVisible(showOpenInBrowserInMenu);
+                CharSequence cs = act.getSearchBar().getText();
+                if (cs != null) {
+                    menu.findItem(R.id.menu_clearsearch).setVisible(!cs.toString().isEmpty());
+                }
             }
         };
         act.addMenuProvider(menuProvider);
@@ -106,9 +115,7 @@ public abstract class ListFragment extends EventFragment {
 
     private void refresh() {
         if (!act.getParser().sendLaeuferRequest(act.getEvent().getId(), this)) {
-            viewModel.setRefreshing(false);
-            showFragments();
-            viewModel.triggerList();
+            reloadList();
         }
     }
 
@@ -177,7 +184,6 @@ public abstract class ListFragment extends EventFragment {
     }
 
     public static class ListViewModel extends ViewModel {
-        private final MutableLiveData<Boolean> sucheVisible = new MutableLiveData<>();
         private final MutableLiveData<Boolean> refreshing = new MutableLiveData<>();
         private final MutableLiveData<Boolean> triggerList = new MutableLiveData<>();
 
@@ -189,19 +195,6 @@ public abstract class ListFragment extends EventFragment {
 
         public MutableLiveData<Boolean> getRefreshing() {
             return refreshing;
-        }
-
-        public void toggleSuche() {
-            if (sucheVisible.getValue() == null) {
-                sucheVisible.setValue(true);
-            } else {
-                boolean b = sucheVisible.getValue();
-                sucheVisible.setValue(!b);
-            }
-        }
-
-        public MutableLiveData<Boolean> getSucheVisible() {
-            return sucheVisible;
         }
 
         public void triggerList() {

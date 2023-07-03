@@ -15,6 +15,9 @@ public class Daten {
     private final SQLiteHelper dbHelper;
     private SQLiteDatabase database;
 
+    private static final String[] eventSearchColumns = new String[]{SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_CLUB, SQLiteHelper.COLUMN_REGION, SQLiteHelper.COLUMN_MAP};
+    private static final String[] laeuferSearchColumns = new String[]{SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_CLUB, SQLiteHelper.COLUMN_STARTNUMMER, SQLiteHelper.COLUMN_STARTZEIT, SQLiteHelper.COLUMN_KATEGORIE};
+
     public Daten(Activity act) {
         dbHelper = new SQLiteHelper(act);
         Open();
@@ -90,7 +93,7 @@ public class Daten {
     public Cursor getFilteredLaeuferByEvent(int eventID, ListFragment.ListType fragmentType, SingleListFragment.ListContent content, String filter, String order) {
         String where = SQLiteHelper.COLUMN_EVENT + " = " + eventID;
         if (filter != null && !filter.trim().isEmpty()) {
-            where += " AND (" + getFilterString(filter) + ")";
+            where += " AND (" + getFilterString(filter, laeuferSearchColumns) + ")";
         }
         if (fragmentType == ListFragment.ListType.Rangliste) {
             where += " AND " + SQLiteHelper.COLUMN_RANGLISTE + " > 0";
@@ -109,9 +112,9 @@ public class Daten {
             }
             if (list.size() > 0) {
                 StringBuilder builder = new StringBuilder(" AND (");
-                builder.append(col + " LIKE '%" + list.get(0) + "%'");
+                builder.append(col).append(" LIKE '%").append(list.get(0)).append("%'");
                 for (int i = 1; i < list.size(); i++) {
-                    builder.append(" OR " + col + " LIKE '%").append(list.get(i)).append("%'");
+                    builder.append(" OR ").append(col).append(" LIKE '%").append(list.get(i)).append("%'");
                 }
                 where += builder + ")";
             } else {
@@ -119,6 +122,20 @@ public class Daten {
             }
         }
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, order);
+    }
+
+    public HashMap<String, String> getLaeuferSeachSuggestions(String search, int eventID, SingleListFragment.ListContent listContent) { //TODO only list content in suggestions
+        HashMap<String, String> results = new HashMap<>();
+        for (String column : laeuferSearchColumns) {
+            Cursor c = database.query(true, SQLiteHelper.TABLE_Laeufer, new String[]{column}, column + " LIKE '%" + search + "%' AND " + SQLiteHelper.COLUMN_EVENT + " = " + eventID, null, null, null, column, null);
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                results.put(c.getString(0), column);
+                c.moveToNext();
+            }
+            c.close();
+        }
+        return results;
     }
 
     public int getLaeuferCountByEvent(int eventID, ListFragment.ListType type) {
@@ -154,12 +171,11 @@ public class Daten {
     }
 
     public Cursor getEvents(String filter) {
-        return database.query(SQLiteHelper.TABLE_Events, null, getFilterString(filter), null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
+        return database.query(SQLiteHelper.TABLE_Events, null, getFilterString(filter, eventSearchColumns), null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
     }
 
     @NonNull
-    private String getFilterString(String filter) {
-        String[] columns = new String[]{SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_CLUB, SQLiteHelper.COLUMN_REGION, SQLiteHelper.COLUMN_MAP};
+    private String getFilterString(String filter, String[] columns) {
         StringBuilder builder = new StringBuilder();
         builder.append(columns[0]).append(" LIKE '%").append(filter).append("%'");
         for (int i = 1; i < columns.length; i++) {
@@ -168,10 +184,9 @@ public class Daten {
         return builder.toString();
     }
 
-    public HashMap<String, String> getSeachSuggestions(String search, boolean fav) { //TODO only favorites in suggestions
+    public HashMap<String, String> getEventSeachSuggestions(String search, boolean fav) { //TODO only favorites in suggestions
         HashMap<String, String> results = new HashMap<>();
-        String[] columns = new String[]{SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_CLUB, SQLiteHelper.COLUMN_REGION, SQLiteHelper.COLUMN_MAP};
-        for (String column : columns) {
+        for (String column : eventSearchColumns) {
             Cursor c = database.query(true, SQLiteHelper.TABLE_Events, new String[]{column}, column + " LIKE '%" + search + "%'", null, null, null, column, null);
             c.moveToFirst();
             while (!c.isAfterLast()) {

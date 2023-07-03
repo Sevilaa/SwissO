@@ -35,7 +35,7 @@ public class MainActivity extends MyActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MainActivity.MainViewModel viewModel = new ViewModelProvider(this).get(MainActivity.MainViewModel.class);
+        MainViewModel viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         setupSearch(viewModel);
         initEvents();
@@ -77,7 +77,7 @@ public class MainActivity extends MyActivity {
         }
     }
 
-    private void setupSearch(@NonNull MainActivity.MainViewModel viewModel) {
+    private void setupSearch(@NonNull MainViewModel viewModel) {
         searchBar = findViewById(R.id.search_bar_main);
         setSupportActionBar(searchBar);
 
@@ -115,7 +115,7 @@ public class MainActivity extends MyActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String search = s.toString();
-                HashMap<String, String> suggestions = search.isEmpty() ? new HashMap<>() : daten.getSeachSuggestions(search, false);//TODO set fav
+                HashMap<String, String> suggestions = search.isEmpty() ? new HashMap<>() : daten.getEventSeachSuggestions(search, false);//TODO set fav
                 listView.setAdapter(new SearchListAdapter(that, suggestions));
             }
         });

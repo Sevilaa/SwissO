@@ -15,15 +15,12 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.chip.Chip;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SingleListFragment extends Fragment {
 
-    private SingleListViewModel singleViewModel;
     private ListFragment.ListViewModel listViewModel;
+    private EventActivity.EventViewModel eventViewModel;
     private EventActivity act;
     private ListFragment listFragment;
     private ListContent listContent;
@@ -38,7 +35,9 @@ public class SingleListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         act = (EventActivity) getActivity();
-        singleViewModel = new ViewModelProvider(this).get(SingleListViewModel.class);
+        eventViewModel = new ViewModelProvider(act).get(EventActivity.EventViewModel.class);
+
+        SingleListViewModel singleViewModel = new ViewModelProvider(this).get(SingleListViewModel.class);
         if (listContent == null) {
             listContent = singleViewModel.getListContent();
         } else {
@@ -57,12 +56,13 @@ public class SingleListFragment extends Fragment {
                 refreshLayout.setRefreshing(refreshing);
             }
         });
+        eventViewModel.getSearchText().observe(act, s -> loadList());
         listViewModel.getTriggerList().observe(listFragment.getViewLifecycleOwner(), trigger -> loadList());
     }
 
-    public final void loadList() {
+    private void loadList() {
         if (getView() != null) {
-            ArrayList<Laeufer> laeufer = new ArrayList<>(); //getFilteredLaeufer(chips, filter);
+            ArrayList<Laeufer> laeufer = getFilteredLaeufer();
             ListView listView = getView().findViewById(R.id.listView_list);
             if (!laeufer.isEmpty()) {
                 listView.setVisibility(View.VISIBLE);
@@ -75,13 +75,11 @@ public class SingleListFragment extends Fragment {
     }
 
     @NonNull
-    private ArrayList<Laeufer> getFilteredLaeufer(HashMap<Chip, String> chips, String filter) {
+    private ArrayList<Laeufer> getFilteredLaeufer() {
         String column;
         String order;
         boolean ascending;
-        Daten daten = act.getDaten();
-        ListFragment.ListType listType = listFragment.getListType();
-        if (listType == ListFragment.ListType.Startliste) {
+        if (listFragment.isStartliste()) {
             column = getStringPref(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column);
             ascending = getBoolPref(Helper.Keys.sorting_startlist_ascending, Helper.Defaults.sorting_startlist_ascending);
         } else {
@@ -95,7 +93,7 @@ public class SingleListFragment extends Fragment {
         } else {
             order = column + (ascending ? " ASC" : " DESC");
             if (column.equals(SQLiteHelper.COLUMN_KATEGORIE)) {
-                if (listType == ListFragment.ListType.Startliste) {
+                if (listFragment.isStartliste()) {
                     order += ", " + SQLiteHelper.COLUMN_STARTNUMMER;
                 } else {
                     order += ", (" + SQLiteHelper.COLUMN_ZIELZEIT + " < 0), " + SQLiteHelper.COLUMN_RANG;
@@ -103,7 +101,8 @@ public class SingleListFragment extends Fragment {
             }
         }
 
-        Cursor cursor = daten.getFilteredLaeuferByEvent(act.getEvent().getId(), listType, listContent, filter, order);
+        String filter = eventViewModel.getSearchText().getValue();
+        Cursor cursor = act.getDaten().getFilteredLaeuferByEvent(act.getEvent().getId(), listFragment.getListType(), listContent, filter, order);
         ArrayList<Laeufer> laeuferList = new ArrayList<>();
         if (cursor != null) {
             ArrayList<Laeufer> nullList = new ArrayList<>();

@@ -80,6 +80,7 @@ public abstract class EventListFragment extends MainFragment {
                 }
                 if (id == R.id.menu_clearsearch) {
                     actViewModel.setSearchText("");
+                    return true;
                 }
                 return false;
             }
