@@ -6,9 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,10 +87,10 @@ public class Daten {
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, null);
     }
 
-    public Cursor getFilteredLaeuferByEvent(@NonNull int eventID, ListFragment.ListType fragmentType, SingleListFragment.ListContent content, String filter, HashMap<Chip, String> chips, String order) {
+    public Cursor getFilteredLaeuferByEvent(int eventID, ListFragment.ListType fragmentType, SingleListFragment.ListContent content, String filter, String order) {
         String where = SQLiteHelper.COLUMN_EVENT + " = " + eventID;
         if (filter != null && !filter.trim().isEmpty()) {
-            where += " AND (" + getFilterString(filter, chips) + ")";
+            where += " AND (" + getFilterString(filter) + ")";
         }
         if (fragmentType == ListFragment.ListType.Rangliste) {
             where += " AND " + SQLiteHelper.COLUMN_RANGLISTE + " > 0";
@@ -125,7 +122,7 @@ public class Daten {
     }
 
     public int getLaeuferCountByEvent(int eventID, ListFragment.ListType type) {
-        return getFilteredLaeuferByEvent(eventID, type, SingleListFragment.ListContent.alle, null, null, null).getCount();
+        return getFilteredLaeuferByEvent(eventID, type, SingleListFragment.ListContent.alle, null, null).getCount();
     }
 
     public void deleteLaeuferById(int id) {
@@ -150,30 +147,40 @@ public class Daten {
         return database.query(SQLiteHelper.TABLE_Events, null, null, null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
     }
 
-    public Event createEventById(int id){
+    public Event createEventById(int id) {
         Cursor cursor = database.query(SQLiteHelper.TABLE_Events, null, SQLiteHelper.COLUMN_ID + " = " + id, null, null, null, null);
         cursor.moveToFirst();
         return new Event(cursor);
     }
 
-    public Cursor getEvents(String filter, HashMap<Chip, String> chips) {
-        return database.query(SQLiteHelper.TABLE_Events, null, getFilterString(filter, chips), null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
+    public Cursor getEvents(String filter) {
+        return database.query(SQLiteHelper.TABLE_Events, null, getFilterString(filter), null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
     }
 
-    @Nullable
-    private String getFilterString(String filter, @NonNull HashMap<Chip, String> chips) {
+    @NonNull
+    private String getFilterString(String filter) {
+        String[] columns = new String[]{SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_CLUB, SQLiteHelper.COLUMN_REGION, SQLiteHelper.COLUMN_MAP};
         StringBuilder builder = new StringBuilder();
-        for (Chip chip : chips.keySet()) {
-            if (chip.isChecked()) {
-                builder.append(chips.get(chip)).append(" LIKE '%").append(filter).append("%' OR ");
+        builder.append(columns[0]).append(" LIKE '%").append(filter).append("%'");
+        for (int i = 1; i < columns.length; i++) {
+            builder.append(" OR ").append(columns[i]).append(" LIKE '%").append(filter).append("%'");
+        }
+        return builder.toString();
+    }
+
+    public HashMap<String, String> getSeachSuggestions(String search, boolean fav) { //TODO only favorites in suggestions
+        HashMap<String, String> results = new HashMap<>();
+        String[] columns = new String[]{SQLiteHelper.COLUMN_NAME, SQLiteHelper.COLUMN_CLUB, SQLiteHelper.COLUMN_REGION, SQLiteHelper.COLUMN_MAP};
+        for (String column : columns) {
+            Cursor c = database.query(true, SQLiteHelper.TABLE_Events, new String[]{column}, column + " LIKE '%" + search + "%'", null, null, null, column, null);
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                results.put(c.getString(0), column);
+                c.moveToNext();
             }
+            c.close();
         }
-        String where = builder.toString();
-        if (where.isEmpty()) {
-            return null;
-        } else {
-            return where.substring(0, where.length() - 4); // Remove last OR
-        }
+        return results;
     }
 
     //Table Messages

@@ -15,20 +15,14 @@ import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.chip.Chip;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public abstract class EventListFragment extends MyFragment {
+public abstract class EventListFragment extends MainFragment {
 
-    private final HashMap<Chip, String> chips = new HashMap<>();
     private SwipeRefreshLayout refreshLayout;
     private ListView listView;
     private MenuProvider menuProvider;
     private MainActivity.MainViewModel actViewModel;
-
-    private boolean sucheVisible = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_event_list, container, false);
@@ -39,30 +33,10 @@ public abstract class EventListFragment extends MyFragment {
         setupMenu();
         actViewModel = new ViewModelProvider(act).get(MainActivity.MainViewModel.class);
 
-        chips.put(view.findViewById(R.id.chip_club), SQLiteHelper.COLUMN_CLUB);
-        chips.put(view.findViewById(R.id.chip_karte), SQLiteHelper.COLUMN_MAP);
-        chips.put(view.findViewById(R.id.chip_name), SQLiteHelper.COLUMN_NAME);
-        chips.put(view.findViewById(R.id.chip_region), SQLiteHelper.COLUMN_REGION);
-        for (Chip chip : chips.keySet()) {
-            chip.setOnCheckedChangeListener((buttonView, isChecked) -> showList());
-        }
         refreshLayout = view.findViewById(R.id.refreshLayout_overview);
         listView = view.findViewById(R.id.listView_overview);
 
         refreshLayout.setOnRefreshListener(() -> actViewModel.setRefreshingEvents(true));
-
-       /* setSucheVisibility(false);
-        suche.addTextChangedListener(new TextWatcher() {
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            public void afterTextChanged(Editable s) {
-                showList();
-            }
-        });*/
 
         actViewModel.getRefreshingEvents().observe(act, refreshing -> {
             if (refreshing != refreshLayout.isRefreshing()) {
@@ -75,7 +49,9 @@ public abstract class EventListFragment extends MyFragment {
             }
         });
 
-        if (((MainActivity)act).getEvents().size() != 0) {
+        actViewModel.getSearchText().observe(act, s -> showList());
+
+        if (act.getEvents().size() != 0) {
             showList();
         }
     }
@@ -84,18 +60,26 @@ public abstract class EventListFragment extends MyFragment {
         menuProvider = new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.overview, menu);
+                menuInflater.inflate(R.menu.main, menu);
+            }
+
+            @Override
+            public void onPrepareMenu(@NonNull Menu menu) {
+                CharSequence cs = act.getSearchBar().getText();
+                if (cs != null) {
+                    menu.findItem(R.id.menu_clearsearch).setVisible(!cs.toString().isEmpty());
+                }
             }
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
-                if (id == R.id.menu_search) {
-                    //setSucheVisibility(!sucheVisible);
-                    return true;
-                } else if (id == R.id.menu_refresh) {
+                if (id == R.id.menu_refresh) {
                     actViewModel.setRefreshingEvents(true);
                     return true;
+                }
+                if (id == R.id.menu_clearsearch) {
+                    actViewModel.setSearchText("");
                 }
                 return false;
             }
@@ -110,18 +94,17 @@ public abstract class EventListFragment extends MyFragment {
     }
 
     public void reloadList() {
-        ((MainActivity)act).initEvents();
+        act.initEvents();
         actViewModel.setRefreshingEvents(false);
     }
 
     public void showList() {
-        MainActivity act = (MainActivity) super.act;
         if (getView() != null) {
             ArrayList<Event> events;
-            if (sucheVisible) {
+            String searchText = actViewModel.getSearchText().getValue();
+            if (searchText != null && !searchText.isEmpty()) {
                 events = new ArrayList<>();
-                String filter = ""; // suche.getText().toString();
-                Cursor cursor = act.getDaten().getEvents(filter, chips);
+                Cursor cursor = act.getDaten().getEvents(searchText);
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
                     events.add(new Event(cursor));

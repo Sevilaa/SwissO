@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.button.MaterialButton;
 
-public class ProfilFragment extends MyFragment {
+public class ProfilFragment extends MainFragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_profil, container, false);

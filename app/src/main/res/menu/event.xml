@@ -14,4 +14,18 @@
         android:title="@string/refresh"
         app:iconTint="?attr/colorOnSurface"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_browser"
+        android:icon="@drawable/ic_baseline_open_in_browser"
+        android:title="@string/openinbrowser"
+        app:iconTint="?attr/colorOnSurface"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_sorting"
+        android:icon="@drawable/ic_baseline_sort"
+        android:title="@string/sortierung"
+        app:iconTint="?attr/colorOnSurface"
+        app:showAsAction="ifRoom" />
 </menu>

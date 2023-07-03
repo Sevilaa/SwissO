@@ -38,7 +38,8 @@ public class EventActivity extends MyActivity {
         NavigationUI.setupWithNavController(navigation, navController);
 
         if (navigation.getSelectedItemId() != navID) {
-            navigation.setSelectedItemId(navID);
+            navController.popBackStack();
+            navController.navigate(navID);
         }
 
         //EventActivity.EventViewModel viewModel = new ViewModelProvider(this).get(EventActivity.EventViewModel.class);

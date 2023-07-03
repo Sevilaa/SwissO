@@ -42,7 +42,7 @@
     <!--Menu-->
     <string name="refresh">Refresh</string>
     <string name="openinbrowser">In Browser öffnen</string>
-    <string name="search">Suche</string>
+    <string name="clearsearch">Suche zurücksetzen</string>
     <string name="settings">Einstellungen</string>
 
     <string name="noeventselected">Kein Event ausgewählt</string>
@@ -69,10 +69,12 @@
 
     <string name="region">Region</string>
     <string name="karte">Karte</string>
-    <string name="suche">Suche</string>
+    <string name="event">Event</string>
 
     <string name="startnummer">Startnummer</string>
     <string name="rang">Rang</string>
+
+    <string name="empty" />
 
     <string-array name="sorting_startlist_entires">
         <item>Startnummer</item>

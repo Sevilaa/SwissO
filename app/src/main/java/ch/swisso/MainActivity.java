@@ -5,6 +5,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -14,16 +18,18 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.search.SearchBar;
+import com.google.android.material.search.SearchView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends MyActivity {
 
     private final ArrayList<Event> events = new ArrayList<>();
     private Event selectedEvent;
-    private MaterialToolbar toolbar;
+    private SearchBar searchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +37,7 @@ public class MainActivity extends MyActivity {
         setContentView(R.layout.activity_main);
         MainActivity.MainViewModel viewModel = new ViewModelProvider(this).get(MainActivity.MainViewModel.class);
 
-        toolbar = findViewById(R.id.topAppBar);
-        setSupportActionBar(toolbar);
+        setupSearch(viewModel);
         initEvents();
 
         BottomNavigationView navigation = findViewById(R.id.bottom_navigation);
@@ -72,6 +77,50 @@ public class MainActivity extends MyActivity {
         }
     }
 
+    private void setupSearch(@NonNull MainActivity.MainViewModel viewModel) {
+        searchBar = findViewById(R.id.search_bar_main);
+        setSupportActionBar(searchBar);
+
+        viewModel.getSearchText().observe(this, s -> {
+            searchBar.setText(s);
+            invalidateOptionsMenu();
+        });
+
+        SearchView searchView = findViewById(R.id.search_view_main);
+        searchView.setupWithSearchBar(searchBar);
+
+        EditText editText = searchView.getEditText();
+        editText.setOnEditorActionListener((v, actionId, event) -> {
+            viewModel.setSearchText(searchView.getText().toString());
+            searchView.hide();
+            return false;
+        });
+
+        ListView listView = findViewById(R.id.search_list_main);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            String text = (String) listView.getAdapter().getItem(position);
+            viewModel.setSearchText(text);
+            searchView.hide();
+        });
+        MainActivity that = this;
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String search = s.toString();
+                HashMap<String, String> suggestions = search.isEmpty() ? new HashMap<>() : daten.getSeachSuggestions(search, false);//TODO set fav
+                listView.setAdapter(new SearchListAdapter(that, suggestions));
+            }
+        });
+    }
+
     public Event getSelectedEvent() {
         return selectedEvent;
     }
@@ -98,7 +147,7 @@ public class MainActivity extends MyActivity {
         }
     }
 
-    private void startEventActivity(@NonNull Event e, int navigationId){
+    private void startEventActivity(@NonNull Event e, int navigationId) {
         Intent intent = new Intent(this, EventActivity.class);
         intent.putExtra(Helper.Keys.intent_event, e.getId());
         intent.putExtra(Helper.Keys.intent_navID, navigationId);
@@ -114,7 +163,7 @@ public class MainActivity extends MyActivity {
                 .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, e.getEndDate() != null ? e.getEndDate().getTime() : e.getBeginDate().getTime())
                 .putExtra(CalendarContract.Events.EVENT_LOCATION, e.getCalenderLocation(Event.Maps.Google));
         Uri ausschreibung = e.getUri(Event.UriArt.Ausschreibung);
-        if(ausschreibung != null) {
+        if (ausschreibung != null) {
             insertCalendarIntent.putExtra(CalendarContract.Events.DESCRIPTION, ausschreibung.toString());
         }
         startActivity(insertCalendarIntent);
@@ -139,15 +188,28 @@ public class MainActivity extends MyActivity {
         }
     }
 
+    public SearchBar getSearchBar() {
+        return searchBar;
+    }
+
     public static class MainViewModel extends ViewModel {
         private final MutableLiveData<Boolean> refreshingEvents = new MutableLiveData<>();
+        private final MutableLiveData<String> searchText = new MutableLiveData<>();
 
         public void setRefreshingEvents(boolean b) {
             refreshingEvents.setValue(b);
         }
 
+        public void setSearchText(String text) {
+            searchText.setValue(text);
+        }
+
         public MutableLiveData<Boolean> getRefreshingEvents() {
             return refreshingEvents;
+        }
+
+        public MutableLiveData<String> getSearchText() {
+            return searchText;
         }
     }
 }

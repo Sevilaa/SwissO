@@ -21,13 +21,11 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.Objects;
 
-public abstract class ListFragment extends MyFragment {
+public abstract class ListFragment extends EventFragment {
 
     private MenuProvider menuProvider;
     private boolean showOpenInBrowserInMenu = false;
     private ListViewModel viewModel;
-
-    private EventActivity act;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,7 +35,6 @@ public abstract class ListFragment extends MyFragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        act = (EventActivity)getAct();
         setupMenu();
         viewModel = new ViewModelProvider(this).get(ListViewModel.class);
         viewModel.getRefreshing().observe(getViewLifecycleOwner(), refreshing -> {
@@ -78,7 +75,7 @@ public abstract class ListFragment extends MyFragment {
         menuProvider = new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.list, menu);
+                menuInflater.inflate(R.menu.event, menu);
             }
 
             @Override
@@ -93,9 +90,6 @@ public abstract class ListFragment extends MyFragment {
                     return true;
                 } else if (id == R.id.menu_refresh) {
                     refresh();
-                    return true;
-                } else if (id == R.id.menu_search) {
-                    viewModel.toggleSuche();
                     return true;
                 }
                 return false;
@@ -132,12 +126,12 @@ public abstract class ListFragment extends MyFragment {
     }
 
     private void openInWebBrowser() {
-        //act.openWebBrowser(getUri());
+        act.openWebBrowser(getUri());
     }
-/*
+
     private Uri getUri() {
-        return event.getUri(isStartliste() ? Event.UriArt.Startliste : Event.UriArt.Rangliste);
-    }*/
+        return act.getEvent().getUri(isStartliste() ? Event.UriArt.Startliste : Event.UriArt.Rangliste);
+    }
 
     public final void showFragments() {
         if (getView() != null) {
@@ -151,10 +145,10 @@ public abstract class ListFragment extends MyFragment {
                 getView().findViewById(R.id.tabLayout).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.viewPager).setVisibility(View.VISIBLE);
                 showOpenInBrowserInMenu = true;
-            /*} else if (getUri() != null) {
+            } else if (getUri() != null) {
                 getView().findViewById(R.id.openWebBrowser).setVisibility(View.VISIBLE);
                 showOpenInBrowserInMenu = true;
-                openInWebBrowser();*/
+                openInWebBrowser();
             } else {
                 getView().findViewById(R.id.no_list).setVisibility(View.VISIBLE);
             }

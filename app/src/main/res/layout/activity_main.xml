@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/topAppBarLayout"
+    <com.google.android.material.search.SearchBar
+        android:id="@+id/search_bar_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="Hi" />
-
-        <!--            app:menu="@menu/main"-->
-
-    </com.google.android.material.appbar.AppBarLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_internet_connection"
@@ -29,18 +20,18 @@
         android:text="@string/nointernet"
         android:textColor="?attr/colorOnError"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/topAppBarLayout" />
+        app:layout_constraintTop_toBottomOf="@id/search_bar_main"
+        tools:visibility="visible"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment_main"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:defaultNavHost="true"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintTop_toBottomOf="@id/tv_internet_connection"
-
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph_main"/>
+        app:navGraph="@navigation/nav_graph_main" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -48,4 +39,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/navigation_main" />
+
+
+    <com.google.android.material.search.SearchView
+        android:id="@+id/search_view_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_anchor="@id/search_bar_main">
+
+        <ListView
+            android:id="@+id/search_list_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.google.android.material.search.SearchView>
 </androidx.constraintlayout.widget.ConstraintLayout>
