@@ -1,6 +1,7 @@
 package ch.swisso;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
@@ -17,9 +18,7 @@ public class OverviewLayout extends FrameLayout {
 
 
     private Event event;
-
     private OverviewAdapter adapter;
-
     private OverviewButton[] buttons;
     private TextView[] textViews;
 
@@ -91,10 +90,24 @@ public class OverviewLayout extends FrameLayout {
             conti++;
         }
         while (btni < buttons.length) {
-            //buttons[btni].Init(act, R.string.wkz, null, Event.UriArt.WKZ);
             buttons[btni].setVisibility(GONE);
             btni++;
         }
+
+        OnClickListener favOnClickListener = v -> {
+            event.toggleFavorit();
+            ContentValues values = new ContentValues();
+            values.put(SQLiteHelper.COLUMN_FAVORIT, event.isFavorit() ? 1 : 0);
+            act.getDaten().updateEvent(values, event.getId());
+            findViewById(R.id.overview_item_fav_checkbox_enabled).setVisibility(event.isFavorit() ? VISIBLE : GONE);
+            findViewById(R.id.overview_item_fav_checkbox_disabled).setVisibility(event.isFavorit() ? GONE : VISIBLE);
+        };
+
+        findViewById(R.id.overview_item_fav_checkbox_enabled).setOnClickListener(favOnClickListener);
+        findViewById(R.id.overview_item_fav_checkbox_disabled).setOnClickListener(favOnClickListener);
+        findViewById(R.id.overview_item_fav_checkbox_enabled).setVisibility(event.isFavorit() ? VISIBLE : GONE);
+        findViewById(R.id.overview_item_fav_checkbox_disabled).setVisibility(event.isFavorit() ? GONE : VISIBLE);
+
     }
 
     /*internal void SetExpandViewClick() {
@@ -124,11 +137,12 @@ public class OverviewLayout extends FrameLayout {
         }
     }*/
 
+    @NonNull
     private String getDateString(Date date) {
         return date == null ? "" : SimpleDateFormat.getDateInstance(DateFormat.LONG).format(date);
     }
 
-    private void setTextViewVisible(TextView tv) {
+    private void setTextViewVisible(@NonNull TextView tv) {
         String s = tv.getText().toString().trim();
         tv.setVisibility(s.isEmpty() || s.equals("null") ? GONE : VISIBLE);
     }

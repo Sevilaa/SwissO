@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 public class SQLiteHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "SwissO.db";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
 
     //Tables
     public static final String TABLE_Freunde = "Freunde";
@@ -45,6 +45,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_STARTLISTE = "startliste";
     public static final String COLUMN_TEILNEHMERLISTE = "teilnehmerliste";
     public static final String COLUMN_MUTATION = "mutation";
+    public static final String COLUMN_FAVORIT = "favorit";
 
     //Table Laeufer
     public static final String COLUMN_JAHRGANG = "jahrgang";
@@ -95,7 +96,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             COLUMN_RANGLISTE + " TEXT," +
             COLUMN_STARTLISTE + " TEXT," +
             COLUMN_TEILNEHMERLISTE + " TEXT," +
-            COLUMN_MUTATION + " TEXT)";
+            COLUMN_MUTATION + " TEXT," +
+            COLUMN_FAVORIT + " INTEGER NOT NULL)";
 
     private static final String SQL_Laeufer = "CREATE TABLE IF NOT EXISTS " + TABLE_Laeufer + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY,"
@@ -125,7 +127,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
+        if (oldVersion < 3) {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_Laeufer);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_Events);
         }

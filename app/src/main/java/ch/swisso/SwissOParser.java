@@ -148,6 +148,7 @@ public class SwissOParser {
                         daten.updateEvent(contentValues, id);
                         ids.remove((Integer) id);
                     } else {
+                        contentValues.put(SQLiteHelper.COLUMN_FAVORIT, 0);
                         daten.insertEvent(contentValues);
                     }
                 }

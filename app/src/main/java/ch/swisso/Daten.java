@@ -170,12 +170,17 @@ public class Daten {
         return new Event(cursor);
     }
 
-    public Cursor getEvents(String filter) {
-        return database.query(SQLiteHelper.TABLE_Events, null, getFilterString(filter, eventSearchColumns), null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
+    public Cursor getEvents(String filter, boolean onlyFavs) {
+        if(filter != null && !filter.isEmpty()) {
+            return database.query(SQLiteHelper.TABLE_Events, null, "(" + getFilterString(filter, eventSearchColumns) + ")" + (onlyFavs ? " AND " + SQLiteHelper.COLUMN_FAVORIT + " = 1" : ""), null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
+        }
+        else {
+            return database.query(SQLiteHelper.TABLE_Events, null, onlyFavs ? SQLiteHelper.COLUMN_FAVORIT + " = 1" : null, null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
+        }
     }
 
     @NonNull
-    private String getFilterString(String filter, String[] columns) {
+    private String getFilterString(String filter, @NonNull String[] columns) {
         StringBuilder builder = new StringBuilder();
         builder.append(columns[0]).append(" LIKE '%").append(filter).append("%'");
         for (int i = 1; i < columns.length; i++) {
@@ -184,10 +189,10 @@ public class Daten {
         return builder.toString();
     }
 
-    public HashMap<String, String> getEventSeachSuggestions(String search, boolean fav) { //TODO only favorites in suggestions
+    public HashMap<String, String> getEventSeachSuggestions(String search, boolean fav) {
         HashMap<String, String> results = new HashMap<>();
         for (String column : eventSearchColumns) {
-            Cursor c = database.query(true, SQLiteHelper.TABLE_Events, new String[]{column}, column + " LIKE '%" + search + "%'", null, null, null, column, null);
+            Cursor c = database.query(true, SQLiteHelper.TABLE_Events, new String[]{column}, column + " LIKE '%" + search + "%'" + (fav ? " AND " + SQLiteHelper.COLUMN_FAVORIT + " = 1" : ""), null, null, null, column, null);
             c.moveToFirst();
             while (!c.isAfterLast()) {
                 results.put(c.getString(0), column);

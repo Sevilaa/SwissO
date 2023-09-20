@@ -88,6 +88,11 @@ public abstract class Helper {
         return cursor.isNull(index) ? null : new Date(cursor.getLong(index));
     }
 
+    public static boolean getBool(@NonNull Cursor cursor, String column){
+        int index = cursor.getColumnIndex(column);
+        return !cursor.isNull(index) && cursor.getInt(index) > 0;
+    }
+
     public interface Keys {
         String sorting_startlist_column = "sorting_startlist_column";
         String sorting_startlist_ascending = "sorting_startlist_ascending";

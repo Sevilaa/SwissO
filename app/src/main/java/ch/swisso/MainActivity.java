@@ -30,6 +30,7 @@ public class MainActivity extends MyActivity {
     private final ArrayList<Event> events = new ArrayList<>();
     private Event selectedEvent;
     private SearchBar searchBar;
+    private boolean onlyFav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +116,7 @@ public class MainActivity extends MyActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String search = s.toString();
-                HashMap<String, String> suggestions = search.isEmpty() ? new HashMap<>() : daten.getEventSeachSuggestions(search, false);//TODO set fav
+                HashMap<String, String> suggestions = search.isEmpty() ? new HashMap<>() : daten.getEventSeachSuggestions(search, onlyFav);
                 listView.setAdapter(new SearchListAdapter(that, suggestions));
             }
         });
@@ -190,6 +191,10 @@ public class MainActivity extends MyActivity {
 
     public SearchBar getSearchBar() {
         return searchBar;
+    }
+
+    public void setOnlyFav(boolean onlyFav){
+        this.onlyFav = onlyFav;
     }
 
     public static class MainViewModel extends ViewModel {

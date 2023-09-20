@@ -54,6 +54,9 @@ public abstract class EventListFragment extends MainFragment {
         if (act.getEvents().size() != 0) {
             showList();
         }
+
+        act.getSearchBar().setHint(this instanceof FavEventListFragment ? R.string.favorites : R.string.all_events);
+        act.setOnlyFav(this instanceof  FavEventListFragment);
     }
 
     private void setupMenu() {
@@ -103,9 +106,9 @@ public abstract class EventListFragment extends MainFragment {
         if (getView() != null) {
             ArrayList<Event> events;
             String searchText = actViewModel.getSearchText().getValue();
-            if (searchText != null && !searchText.isEmpty()) {
+            if (this instanceof FavEventListFragment || searchText != null && !searchText.isEmpty()) {
                 events = new ArrayList<>();
-                Cursor cursor = act.getDaten().getEvents(searchText);
+                Cursor cursor = act.getDaten().getEvents(searchText, this instanceof FavEventListFragment);
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
                     events.add(new Event(cursor));

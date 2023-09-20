@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ch.swisso.OverviewLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -24,9 +25,10 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textColor="?attr/colorOnSurface"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Säuliämtler OL" />
 
             <TextView
                 android:id="@+id/overview_item_date"
@@ -38,7 +40,8 @@
                 app:drawableTint="?attr/colorOnSurfaceVariant"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/overview_item_title" />
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_title"
+                tools:text="13. März 2023" />
 
             <TextView
                 android:id="@+id/overview_item_map"
@@ -50,7 +53,8 @@
                 app:drawableTint="?attr/colorOnSurfaceVariant"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/overview_item_date" />
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_date"
+                tools:text="Eichmoos" />
 
             <TextView
                 android:id="@+id/overview_item_club"
@@ -62,7 +66,8 @@
                 app:drawableTint="?attr/colorOnSurfaceVariant"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/overview_item_map" />
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_map"
+                tools:text="OLG Säuliamt" />
 
             <TextView
                 android:id="@+id/overview_item_deadline"
@@ -74,7 +79,8 @@
                 app:drawableTint="?attr/colorOnSurfaceVariant"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/overview_item_club" />
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_club"
+                tools:text="12. März 2023" />
 
             <TextView
                 android:id="@+id/overview_item_region"
@@ -86,7 +92,8 @@
                 app:drawableTint="?attr/colorOnSurfaceVariant"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/overview_item_deadline" />
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_deadline"
+                tools:text="ZH/SH" />
 
             <ch.swisso.OverviewButton
                 android:id="@+id/overview_item_button1"
@@ -96,7 +103,8 @@
                 android:maxLines="1"
                 app:layout_constraintEnd_toStartOf="@+id/overview_item_button2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/overview_item_region" />
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_region"
+                tools:text="Ausschreibung" />
 
             <ch.swisso.OverviewButton
                 android:id="@+id/overview_item_button2"
@@ -107,7 +115,8 @@
                 android:maxLines="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/overview_item_button1"
-                app:layout_constraintTop_toTopOf="@id/overview_item_button1" />
+                app:layout_constraintTop_toTopOf="@id/overview_item_button1"
+                tools:text="Ausschreibung" />
 
             <ch.swisso.OverviewButton
                 android:id="@+id/overview_item_button3"
@@ -117,7 +126,8 @@
                 android:maxLines="1"
                 app:layout_constraintEnd_toStartOf="@id/overview_item_button4"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/overview_item_button1" />
+                app:layout_constraintTop_toBottomOf="@id/overview_item_button1"
+                tools:text="Ausschreibung" />
 
             <ch.swisso.OverviewButton
                 android:id="@+id/overview_item_button4"
@@ -128,7 +138,8 @@
                 android:maxLines="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/overview_item_button3"
-                app:layout_constraintTop_toTopOf="@id/overview_item_button3" />
+                app:layout_constraintTop_toTopOf="@id/overview_item_button3"
+                tools:text="Ausschreibung" />
 
             <ch.swisso.OverviewButton
                 android:id="@+id/overview_item_button5"
@@ -138,7 +149,8 @@
                 android:maxLines="1"
                 app:layout_constraintEnd_toStartOf="@id/overview_item_button6"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/overview_item_button3" />
+                app:layout_constraintTop_toBottomOf="@id/overview_item_button3"
+                tools:text="Ausschreibung" />
 
             <ch.swisso.OverviewButton
                 android:id="@+id/overview_item_button6"
@@ -149,7 +161,8 @@
                 android:maxLines="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/overview_item_button5"
-                app:layout_constraintTop_toTopOf="@id/overview_item_button5" />
+                app:layout_constraintTop_toTopOf="@id/overview_item_button5"
+                tools:text="Ausschreibung" />
 
             <ch.swisso.OverviewButton
                 android:id="@+id/overview_item_button7"
@@ -159,7 +172,8 @@
                 android:maxLines="1"
                 app:layout_constraintEnd_toStartOf="@id/overview_item_button8"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/overview_item_button5" />
+                app:layout_constraintTop_toBottomOf="@id/overview_item_button5"
+                tools:text="Ausschreibung" />
 
             <ch.swisso.OverviewButton
                 android:id="@+id/overview_item_button8"
@@ -170,7 +184,29 @@
                 android:maxLines="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/overview_item_button7"
-                app:layout_constraintTop_toTopOf="@id/overview_item_button7" />
+                app:layout_constraintTop_toTopOf="@id/overview_item_button7"
+                tools:text="Ausschreibung" />
+
+            <ImageView
+                android:id="@+id/overview_item_fav_checkbox_disabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/overview_item_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_outline_star"
+                app:tint="?attr/colorOnSurfaceVariant" />
+
+            <ImageView
+                android:id="@+id/overview_item_fav_checkbox_enabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/overview_item_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_star"
+                app:tint="?attr/colorPrimary" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

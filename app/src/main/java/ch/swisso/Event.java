@@ -9,7 +9,6 @@ import java.util.Date;
 
 public class Event {
 
-
     private int id;
     private String name;
     private Date beginDate;
@@ -29,6 +28,7 @@ public class Event {
     private Uri liveresultate;
     private Uri rangliste;
     private Uri teilnehmerliste;
+    private boolean favorit;
 
     public Event(Cursor cursor) {
         id = Helper.getInt(cursor, SQLiteHelper.COLUMN_ID);
@@ -50,6 +50,7 @@ public class Event {
         anmeldung = Helper.getUri(cursor, SQLiteHelper.COLUMN_ANMELDUNG);
         mutation = Helper.getUri(cursor, SQLiteHelper.COLUMN_MUTATION);
         teilnehmerliste = Helper.getUri(cursor, SQLiteHelper.COLUMN_TEILNEHMERLISTE);
+        favorit = Helper.getBool(cursor, SQLiteHelper.COLUMN_FAVORIT);
     }
 
     @Override
@@ -107,6 +108,10 @@ public class Event {
         return deadline;
     }
 
+    public final boolean isFavorit(){
+        return favorit;
+    }
+
     public Uri getUri(@NonNull UriArt uriArt) {
         switch (uriArt) {
             case Ausschreibung:
@@ -123,7 +128,7 @@ public class Event {
                 return rangliste;
             case WKZ:
                 if (koordn != Helper.intnull && koorde != Helper.intnull) {
-                    return Uri.parse("geo:" + koordn + "," + koorde + "?q=" + koordn + "," + koorde + "(WKZ)");
+                    return Uri.parse("geo:" + koordn + "," + koorde + "?q=" + koordn + "," + koorde + "(WKZ " + name + ")");
                 }
                 return null;
             case Liveresultate:
@@ -140,7 +145,7 @@ public class Event {
         if (koorde != Helper.intnull) {
             switch (maps) {
                 case Google:
-                    return "https://maps.google.com/maps?q=" + koordn + "," + koorde + "(WKZ)";
+                    return "https://maps.google.com/maps?q=" + koordn + "," + koorde + "(WKZ " + name + ")";
                 case GoogleSat:
                     return getMapsUrl(Maps.Google) + "&t=h";
                 case Swisstopo:
@@ -162,6 +167,10 @@ public class Event {
             desc += getMapsUrl(maps);
         }
         return desc;
+    }
+
+    public void toggleFavorit(){
+        favorit = !favorit;
     }
 
     public enum Maps {Google, GoogleSat, Swisstopo, OSM}
