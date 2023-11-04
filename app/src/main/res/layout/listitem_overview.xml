@@ -82,19 +82,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/overview_item_club"
                 tools:text="12. März 2023" />
 
-            <TextView
-                android:id="@+id/overview_item_region"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                app:drawableStartCompat="@drawable/ic_baseline_location_city"
-                app:drawableTint="?attr/colorOnSurfaceVariant"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/overview_item_deadline"
-                tools:text="ZH/SH" />
-
             <ch.swisso.OverviewButton
                 android:id="@+id/overview_item_button1"
                 style="@style/Widget.Material3.Button.OutlinedButton"
@@ -103,7 +90,7 @@
                 android:maxLines="1"
                 app:layout_constraintEnd_toStartOf="@+id/overview_item_button2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/overview_item_region"
+                app:layout_constraintTop_toBottomOf="@+id/overview_item_deadline"
                 tools:text="Ausschreibung" />
 
             <ch.swisso.OverviewButton
@@ -207,6 +194,15 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_star"
                 app:tint="?attr/colorPrimary" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/overview_item_deadline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_chevron_right"
+                app:tint="?attr/colorOnSurfaceVariant" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

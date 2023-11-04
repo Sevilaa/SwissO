@@ -133,6 +133,9 @@ public class MainActivity extends MyActivity {
     public final void openEventDetails(@NonNull Event e, @NonNull Event.UriArt uriArt) {
         selectedEvent = e;
         switch (uriArt) {
+            case Details:
+                startEventActivity(e, R.id.detailsFragment);
+                break;
             case Rangliste:
                 startEventActivity(e, R.id.ranglistFragment);
                 break;
@@ -153,21 +156,6 @@ public class MainActivity extends MyActivity {
         intent.putExtra(Helper.Keys.intent_event, e.getId());
         intent.putExtra(Helper.Keys.intent_navID, navigationId);
         startActivity(intent);
-    }
-
-    public void insertToCalendar(@NonNull Event e) {
-        Intent insertCalendarIntent = new Intent(Intent.ACTION_INSERT);
-        insertCalendarIntent.setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.Events.TITLE, e.getName()) // Simple title
-                .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, e.getBeginDate().getTime()) // Only date part is considered when ALL_DAY is true
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, e.getEndDate() != null ? e.getEndDate().getTime() : e.getBeginDate().getTime())
-                .putExtra(CalendarContract.Events.EVENT_LOCATION, e.getCalenderLocation(Event.Maps.Google));
-        Uri ausschreibung = e.getUri(Event.UriArt.Ausschreibung);
-        if (ausschreibung != null) {
-            insertCalendarIntent.putExtra(CalendarContract.Events.DESCRIPTION, ausschreibung.toString());
-        }
-        startActivity(insertCalendarIntent);
     }
 
     public void showMessages() {

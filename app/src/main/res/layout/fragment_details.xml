@@ -1,6 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="10dp">
+
+    <TextView
+        android:id="@+id/details_item_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="?attr/colorOnBackground"
+        app:drawableStartCompat="@drawable/ic_baseline_calendar_today"
+        app:drawableTint="?attr/colorOnBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="13. März 2023" />
+
+    <TextView
+        android:id="@+id/details_item_map"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="?attr/colorOnBackground"
+        app:drawableStartCompat="@drawable/ic_baseline_map"
+        app:drawableTint="?attr/colorOnBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/details_item_date"
+        tools:text="Eichmoos" />
+
+    <TextView
+        android:id="@+id/details_item_club"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="?attr/colorOnBackground"
+        app:drawableStartCompat="@drawable/ic_baseline_group"
+        app:drawableTint="?attr/colorOnBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/details_item_map"
+        tools:text="OLG Säuliamt" />
+
+    <TextView
+        android:id="@+id/details_item_deadline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="?attr/colorOnBackground"
+        app:drawableStartCompat="@drawable/ic_baseline_edit_calendar"
+        app:drawableTint="?attr/colorOnBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/details_item_club"
+        tools:text="12. März 2023" />
+
+    <TextView
+        android:id="@+id/details_item_region"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="?attr/colorOnBackground"
+        app:drawableStartCompat="@drawable/ic_baseline_location_city"
+        app:drawableTint="?attr/colorOnBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/details_item_deadline"
+        tools:text="ZH/SH" />
+
+    <ch.swisso.OverviewButton
+        android:id="@+id/details_item_button1"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@+id/details_item_button2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/details_item_region"
+        tools:text="Ausschreibung" />
+
+    <ch.swisso.OverviewButton
+        android:id="@+id/details_item_button2"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/details_item_button1"
+        app:layout_constraintTop_toTopOf="@id/details_item_button1"
+        tools:text="Ausschreibung" />
+
+    <ch.swisso.OverviewButton
+        android:id="@+id/details_item_button3"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@id/details_item_button4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/details_item_button1"
+        tools:text="Ausschreibung" />
+
+    <ch.swisso.OverviewButton
+        android:id="@+id/details_item_button4"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/details_item_button3"
+        app:layout_constraintTop_toTopOf="@id/details_item_button3"
+        tools:text="Ausschreibung" />
+
+    <ch.swisso.OverviewButton
+        android:id="@+id/details_item_button5"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@id/details_item_button6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/details_item_button3"
+        tools:text="Ausschreibung" />
+
+    <ch.swisso.OverviewButton
+        android:id="@+id/details_item_button6"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/details_item_button5"
+        app:layout_constraintTop_toTopOf="@id/details_item_button5"
+        tools:text="Ausschreibung" />
+
+    <ch.swisso.OverviewButton
+        android:id="@+id/details_item_button7"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@id/details_item_button8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/details_item_button5"
+        tools:text="Ausschreibung" />
+
+    <ch.swisso.OverviewButton
+        android:id="@+id/details_item_button8"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/details_item_button7"
+        app:layout_constraintTop_toTopOf="@id/details_item_button7"
+        tools:text="Ausschreibung" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

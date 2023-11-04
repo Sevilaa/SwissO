@@ -37,7 +37,7 @@ public class OverviewAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(act).inflate(R.layout.listitem_overview, parent, false);
         }
-        ((OverviewLayout)convertView).Init(events.get(position), act, this);
+        ((OverviewLayout)convertView).init(events.get(position), act);
         return convertView;
     }
 }

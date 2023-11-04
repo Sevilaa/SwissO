@@ -16,28 +16,19 @@ import java.util.Date;
 
 public class OverviewLayout extends FrameLayout {
 
-
-    private Event event;
-    private OverviewAdapter adapter;
-    private OverviewButton[] buttons;
-    private TextView[] textViews;
-
     public OverviewLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
     @SuppressLint("SetTextI18n")
-    public void Init(Event e, MainActivity act, OverviewAdapter adapter) {
-        event = e;
-        this.adapter = adapter;
+    public void init(@NonNull Event event, MainActivity act) {
 
         TextView tvtitle = findViewById(R.id.overview_item_title);
         TextView tvdate = findViewById(R.id.overview_item_date);
         TextView tvmap = findViewById(R.id.overview_item_map);
         TextView tvclub = findViewById(R.id.overview_item_club);
         TextView tvdeadline = findViewById(R.id.overview_item_deadline);
-        TextView tvregion = findViewById(R.id.overview_item_region);
-        textViews = new TextView[]{tvtitle, tvdate, tvmap, tvclub, tvdeadline, tvregion};
+        TextView[] textViews = new TextView[]{tvtitle, tvdate, tvmap, tvclub, tvdeadline};
 
         tvtitle.setText(event.getName());
         String date = " " + getDateString(event.getBeginDate());
@@ -48,7 +39,6 @@ public class OverviewLayout extends FrameLayout {
         tvmap.setText(" " + event.getMap());
         tvclub.setText(" " + event.getClub());
         tvdeadline.setText(" " + getDateString(event.getDeadline()));
-        tvregion.setText(" " + event.getRegion());
         for (TextView tv : textViews) {
             setTextViewVisible(tv);
         }
@@ -60,17 +50,17 @@ public class OverviewLayout extends FrameLayout {
         Event.UriArt startliste = event.getUri(Event.UriArt.Startliste) != null ? Event.UriArt.Startliste : Event.UriArt.Teilnehmerliste;
         int startlistString = event.getUri(Event.UriArt.Startliste) != null ? R.string.startlist : R.string.teilnehmer;
         if (over) {
-            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, Event.UriArt.Weisungen, startliste, Event.UriArt.Rangliste, Event.UriArt.WKZ};
-            resources = new int[]{R.string.ausschreibung, R.string.weisungen, startlistString, R.string.rangliste, R.string.wkz};
+            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, startliste, Event.UriArt.Rangliste, Event.UriArt.WKZ};
+            resources = new int[]{R.string.ausschreibung, startlistString, R.string.rangliste, R.string.wkz};
         } else if (deadlinePassed) {
-            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, Event.UriArt.Weisungen, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ, Event.UriArt.Mutation, Event.UriArt.Kalender};
-            resources = new int[]{R.string.ausschreibung, R.string.weisungen, startlistString, R.string.liveresult, R.string.wkz, R.string.mutation, R.string.kalender};
+            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ, Event.UriArt.Kalender};
+            resources = new int[]{R.string.ausschreibung, startlistString, R.string.liveresult, R.string.wkz, R.string.kalender};
         } else {
-            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, Event.UriArt.Weisungen, Event.UriArt.Anmeldung, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ, Event.UriArt.Mutation, Event.UriArt.Kalender};
-            resources = new int[]{R.string.ausschreibung, R.string.weisungen, R.string.anmeldung, startlistString, R.string.liveresult, R.string.wkz, R.string.mutation, R.string.kalender};
+            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ, Event.UriArt.Kalender};
+            resources = new int[]{R.string.ausschreibung, startlistString, R.string.liveresult, R.string.wkz, R.string.kalender};
         }
 
-        buttons = new OverviewButton[8];
+        OverviewButton[] buttons = new OverviewButton[8];
         buttons[0] = findViewById(R.id.overview_item_button1);
         buttons[1] = findViewById(R.id.overview_item_button2);
         buttons[2] = findViewById(R.id.overview_item_button3);
@@ -83,8 +73,8 @@ public class OverviewLayout extends FrameLayout {
         int btni = 0;
         int conti = 0;
         while (conti < uris.length) {
-            if (e.getUri(uris[conti]) != null) {
-                buttons[btni].Init(act, resources[conti], e, uris[conti]);
+            if (event.getUri(uris[conti]) != null) {
+                buttons[btni].init(act, resources[conti], event, uris[conti]);
                 btni++;
             }
             conti++;
@@ -108,34 +98,8 @@ public class OverviewLayout extends FrameLayout {
         findViewById(R.id.overview_item_fav_checkbox_enabled).setVisibility(event.isFavorit() ? VISIBLE : GONE);
         findViewById(R.id.overview_item_fav_checkbox_disabled).setVisibility(event.isFavorit() ? GONE : VISIBLE);
 
+        setOnClickListener(v -> act.openEventDetails(event, Event.UriArt.Details));
     }
-
-    /*internal void SetExpandViewClick() {
-        expandView = (ImageView)findViewById(R.id.overview_item_expand);
-        expandView.Click += (e, sender) => {
-            adapter.ExpandViewClick(this);
-        };
-    }
-
-    public void Expand() {
-        expandView.SetImageResource(Resource.Drawable.ic_arrow_collapse);
-        foreach (OverviewButton btn in btnExpand) {
-            btn.SetVisible();
-        }
-        foreach (TextView tv in tvExpand) {
-            SetTextViewVisible(tv);
-        }
-    }
-
-    public void Collapse() {
-        expandView.SetImageResource(Resource.Drawable.ic_arrow_expand);
-        foreach (OverviewButton btn in btnExpand) {
-            btn.Visibility = ViewStates.Gone;
-        }
-        foreach (TextView tv in tvExpand) {
-            tv.Visibility = ViewStates.Gone;
-        }
-    }*/
 
     @NonNull
     private String getDateString(Date date) {

@@ -175,5 +175,5 @@ public class Event {
 
     public enum Maps {Google, GoogleSat, Swisstopo, OSM}
 
-    public enum UriArt {Ausschreibung, Weisungen, Anmeldung, Mutation, Startliste, Rangliste, WKZ, Liveresultate, Teilnehmerliste, Kalender}
+    public enum UriArt {Details, Ausschreibung, Weisungen, Anmeldung, Mutation, Startliste, Rangliste, WKZ, Liveresultate, Teilnehmerliste, Kalender}
 }

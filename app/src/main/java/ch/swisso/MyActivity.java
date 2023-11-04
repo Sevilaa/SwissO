@@ -52,9 +52,11 @@ public abstract class MyActivity extends AppCompatActivity {
                 .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, e.getEndDate() != null ? e.getEndDate().getTime() : e.getBeginDate().getTime())
                 .putExtra(CalendarContract.Events.EVENT_LOCATION, e.getCalenderLocation(Event.Maps.Google));
         Uri ausschreibung = e.getUri(Event.UriArt.Ausschreibung);
-        if(ausschreibung != null) {
+        if (ausschreibung != null) {
             insertCalendarIntent.putExtra(CalendarContract.Events.DESCRIPTION, ausschreibung.toString());
         }
         startActivity(insertCalendarIntent);
     }
+
+    public abstract void openEventDetails(@NonNull Event e, @NonNull Event.UriArt uriArt);
 }

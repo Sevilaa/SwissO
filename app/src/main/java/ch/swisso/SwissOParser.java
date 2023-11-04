@@ -96,7 +96,7 @@ public class SwissOParser {
     }
 
     public boolean sendMessageRequest() {
-        return sendRequest("http://api.swisso.severinlaasch.ch/messages", MyHttpClient.RequestCodes.Messages, -1, null);
+        return sendRequest("https://api.swisso.severinlaasch.ch/messages", MyHttpClient.RequestCodes.Messages, -1, null);
     }
 
     private boolean sendRequest(String url, MyHttpClient.RequestCodes code, int id, MyFragment fragment) {
@@ -245,7 +245,7 @@ public class SwissOParser {
                 for (int id : ids) {
                     daten.deleteMessage(id);
                 }
-                ((MainActivity)act).showMessages();
+                ((MainActivity) act).showMessages();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

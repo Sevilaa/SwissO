@@ -99,7 +99,7 @@ public class EventActivity extends MyActivity {
     }
 
 
-    public final void openEventDetails(Event e, @NonNull Event.UriArt uriArt) {
+    public final void openEventDetails(@NonNull Event e, @NonNull Event.UriArt uriArt) {
         switch (uriArt) {
             case Rangliste:
                 navigation.setSelectedItemId(R.id.ranglistFragment);
