@@ -5,7 +5,7 @@
     <string name="favorites">Favoriten</string>
     <string name="details">Details</string>
 
-    <string name="ok">OK</string>
+    <string name="okay">OK</string>
     <string name="cancel">Abbrechen</string>
 
     <string name="no_list">Nicht verfügbar</string>
@@ -38,6 +38,12 @@
     <string name="kalender">Kalendereintrag</string>
 
     <string name="schnellfilter">Schnellfilter</string>
+    <string name="laeufersuche">Läufersuche</string>
+
+    <!--Content descriptions-->
+    <string name="set_fav">Als Favorit markieren</string>
+    <string name="remove_fav">Favorit entfernen</string>
+    <string name="open_details">Details öffnen</string>
 
     <!--Menu-->
     <string name="refresh">Refresh</string>

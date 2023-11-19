@@ -31,6 +31,7 @@ public class OverviewLayout extends FrameLayout {
         TextView[] textViews = new TextView[]{tvtitle, tvdate, tvmap, tvclub, tvdeadline};
 
         tvtitle.setText(event.getName());
+        tvtitle.setOnClickListener(v -> tvtitle.setSelected(!tvtitle.isSelected()));
         String date = " " + getDateString(event.getBeginDate());
         if (event.getEndDate() != null) {
             date += " - " + getDateString(event.getEndDate());
@@ -89,14 +90,14 @@ public class OverviewLayout extends FrameLayout {
             ContentValues values = new ContentValues();
             values.put(SQLiteHelper.COLUMN_FAVORIT, event.isFavorit() ? 1 : 0);
             act.getDaten().updateEvent(values, event.getId());
-            findViewById(R.id.overview_item_fav_checkbox_enabled).setVisibility(event.isFavorit() ? VISIBLE : GONE);
-            findViewById(R.id.overview_item_fav_checkbox_disabled).setVisibility(event.isFavorit() ? GONE : VISIBLE);
+            findViewById(R.id.overview_item_fav_checkbox_enabled).setVisibility(event.isFavorit() ? VISIBLE : INVISIBLE);
+            findViewById(R.id.overview_item_fav_checkbox_disabled).setVisibility(event.isFavorit() ? INVISIBLE : VISIBLE);
         };
 
         findViewById(R.id.overview_item_fav_checkbox_enabled).setOnClickListener(favOnClickListener);
         findViewById(R.id.overview_item_fav_checkbox_disabled).setOnClickListener(favOnClickListener);
-        findViewById(R.id.overview_item_fav_checkbox_enabled).setVisibility(event.isFavorit() ? VISIBLE : GONE);
-        findViewById(R.id.overview_item_fav_checkbox_disabled).setVisibility(event.isFavorit() ? GONE : VISIBLE);
+        findViewById(R.id.overview_item_fav_checkbox_enabled).setVisibility(event.isFavorit() ? VISIBLE : INVISIBLE);
+        findViewById(R.id.overview_item_fav_checkbox_disabled).setVisibility(event.isFavorit() ? INVISIBLE : VISIBLE);
 
         setOnClickListener(v -> act.openEventDetails(event, Event.UriArt.Details));
     }

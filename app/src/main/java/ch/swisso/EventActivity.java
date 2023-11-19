@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -52,7 +53,9 @@ public class EventActivity extends MyActivity {
     private void setupSearch(@NonNull EventViewModel viewModel) {
         searchBar = findViewById(R.id.search_bar_event);
         setSupportActionBar(searchBar);
-        searchBar.setHint(event.getName());
+        TextView eventTitle = findViewById(R.id.event_title);
+        eventTitle.setText(event.getName());
+        eventTitle.setOnClickListener(v -> eventTitle.setSelected(!eventTitle.isSelected()));
 
         viewModel.getSearchText().observe(this, s -> {
             searchBar.setText(s);

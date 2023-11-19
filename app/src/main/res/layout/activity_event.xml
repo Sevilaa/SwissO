@@ -9,6 +9,7 @@
         android:id="@+id/search_bar_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/laeufersuche"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -23,15 +24,28 @@
         app:layout_constraintTop_toBottomOf="@id/search_bar_event"
         tools:visibility="visible" />
 
+    <TextView
+        android:id="@+id/event_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="?attr/colorOnBackground"
+        android:padding="8dp"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_internet_connection"
+        tools:text="Säuliämtler OL" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment_event"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation_event"
-        app:layout_constraintTop_toBottomOf="@id/tv_internet_connection"
+        app:layout_constraintTop_toBottomOf="@id/event_title"
         app:navGraph="@navigation/nav_graph_event" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
