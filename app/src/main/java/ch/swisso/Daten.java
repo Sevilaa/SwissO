@@ -4,8 +4,13 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,6 +90,55 @@ public class Daten {
         database.update(SQLiteHelper.TABLE_Laeufer, contentValues, SQLiteHelper.COLUMN_ID + " = " + id, null);
     }
 
+    public boolean updateLaeuferFromJson(String json, int eventId) {
+        database.beginTransaction();
+        try {
+            JSONArray array = new JSONArray(json);
+            Cursor c = getLaeuferByEvent(eventId);
+            ArrayList<Integer> ids = new ArrayList<>();
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                ids.add(Helper.getInt(c, SQLiteHelper.COLUMN_ID));
+                c.moveToNext();
+            }
+            c.close();
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonLauefer = array.getJSONObject(i);
+                ContentValues contentValues = new ContentValues();
+                int id = jsonLauefer.getInt(SQLiteHelper.COLUMN_ID);
+                contentValues.put(SQLiteHelper.COLUMN_ID, id);
+                json2cvString(jsonLauefer, contentValues, SQLiteHelper.COLUMN_NAME);
+                json2cvString(jsonLauefer, contentValues, SQLiteHelper.COLUMN_CLUB);
+                json2cvString(jsonLauefer, contentValues, SQLiteHelper.COLUMN_KATEGORIE);
+                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_RANGLISTE);
+                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_JAHRGANG);
+                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_STARTNUMMER);
+                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_STARTZEIT);
+                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_ZIELZEIT);
+                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_RANG);
+                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_EVENT);
+                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_STARTLISTE);
+                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_RANGLISTE);
+                if (ids.contains(id)) {
+                    updateLaeufer(contentValues, id);
+                    ids.remove((Integer) id);
+                } else {
+                    insertLaeufer(contentValues);
+                }
+            }
+            for (int id : ids) {
+                deleteLaeuferById(id);
+            }
+            database.setTransactionSuccessful();
+        } catch (JSONException e) {
+            Log.e("SwissO", e.getMessage());
+            return false;
+        } finally {
+            database.endTransaction();
+        }
+        return true;
+    }
+
     public Cursor getLaeuferByEvent(int eventId) {
         String where = SQLiteHelper.COLUMN_EVENT + " = " + eventId;
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, null);
@@ -156,6 +210,62 @@ public class Daten {
         database.update(SQLiteHelper.TABLE_Events, values, SQLiteHelper.COLUMN_ID + " = " + id, null);
     }
 
+    public boolean updateEventsFromJson(String json){
+        try {
+            database.beginTransaction();
+            JSONArray array = new JSONArray(json);
+            Cursor d = getEvents();
+            ArrayList<Integer> ids = new ArrayList<>();
+            d.moveToFirst();
+            while (!d.isAfterLast()) {
+                ids.add(Helper.getInt(d, SQLiteHelper.COLUMN_ID));
+                d.moveToNext();
+            }
+            d.close();
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonEvent = array.getJSONObject(i);
+                ContentValues contentValues = new ContentValues();
+                int id = jsonEvent.getInt(SQLiteHelper.COLUMN_ID);
+                contentValues.put(SQLiteHelper.COLUMN_ID, id);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_NAME);
+                json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_BEGIN_DATE);
+                json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_END_DATE);
+                json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_DEADLINE);
+                json2cvInt(jsonEvent, contentValues, SQLiteHelper.COLUMN_KIND);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_REGION);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_CLUB);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_MAP);
+                json2cvDouble(jsonEvent, contentValues, SQLiteHelper.COLUMN_INT_NORD);
+                json2cvDouble(jsonEvent, contentValues, SQLiteHelper.COLUMN_INT_EAST);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_AUSSCHREIBUNG);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_WEISUNGEN);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_RANGLISTE);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_LIVE_RESULTATE);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_STARTLISTE);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_ANMELDUNG);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_MUTATION);
+                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_TEILNEHMERLISTE);
+                if (ids.contains(id)) {
+                    updateEvent(contentValues, id);
+                    ids.remove((Integer) id);
+                } else {
+                    contentValues.put(SQLiteHelper.COLUMN_FAVORIT, 0);
+                    insertEvent(contentValues);
+                }
+            }
+            for (int id : ids) {
+                deleteEvent(id);
+            }
+            database.setTransactionSuccessful();
+        } catch (JSONException e) {
+            Log.e("SwissO", e.getMessage());
+            return false;
+        } finally {
+            database.endTransaction();
+        }
+        return true;
+    }
+
     public void deleteEvent(int id) {
         database.delete(SQLiteHelper.TABLE_Events, SQLiteHelper.COLUMN_ID + " = " + id, null);
     }
@@ -171,10 +281,9 @@ public class Daten {
     }
 
     public Cursor getEvents(String filter, boolean onlyFavs) {
-        if(filter != null && !filter.isEmpty()) {
+        if (filter != null && !filter.isEmpty()) {
             return database.query(SQLiteHelper.TABLE_Events, null, "(" + getFilterString(filter, eventSearchColumns) + ")" + (onlyFavs ? " AND " + SQLiteHelper.COLUMN_FAVORIT + " = 1" : ""), null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
-        }
-        else {
+        } else {
             return database.query(SQLiteHelper.TABLE_Events, null, onlyFavs ? SQLiteHelper.COLUMN_FAVORIT + " = 1" : null, null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
         }
     }
@@ -225,5 +334,42 @@ public class Daten {
         ContentValues contentValues = new ContentValues();
         contentValues.put(SQLiteHelper.COLUMN_VIEWED, 1);
         database.update(SQLiteHelper.TABLE_Messages, contentValues, null, null);
+    }
+
+    // Json to ContentValues functions
+
+    private static void json2cvInt(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
+        if (json.isNull(field)) {
+            values.put(field, (String) null);
+        } else {
+            values.put(field, json.getInt(field));
+        }
+    }
+
+    private static void json2cvLong(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
+        if (json.isNull(field)) {
+            values.put(field, (String) null);
+        } else {
+            values.put(field, json.getLong(field));
+        }
+    }
+
+    private static void json2cvDouble(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
+        if (json.isNull(field)) {
+            values.put(field, (String) null);
+        } else {
+            values.put(field, json.getDouble(field));
+        }
+    }
+
+    private static void json2cvString(@NonNull JSONObject json, @NonNull ContentValues values, String field) throws JSONException {
+        if (!json.isNull(field)) {
+            String s = json.getString(field).trim();
+            if (!s.equals("")) {
+                values.put(field, s);
+                return;
+            }
+        }
+        values.put(field, (String) null);
     }
 }

@@ -17,11 +17,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SwissOParser {
 
     private final MyActivity act;
     private final MyHttpClient httpClient;
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler handler = new Handler(Looper.getMainLooper());
+
+    private interface ProcessedListener {
+        void onProcessed(boolean successful);
+    }
 
     public SwissOParser(MyActivity act) {
         this.act = act;
@@ -37,41 +46,6 @@ public class SwissOParser {
             NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
             return activeNetwork != null && activeNetwork.isAvailable();
         }
-    }
-
-    private static void json2cvInt(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
-        if (json.isNull(field)) {
-            values.put(field, (String) null);
-        } else {
-            values.put(field, json.getInt(field));
-        }
-    }
-
-    private static void json2cvLong(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
-        if (json.isNull(field)) {
-            values.put(field, (String) null);
-        } else {
-            values.put(field, json.getLong(field));
-        }
-    }
-
-    private static void json2cvDouble(@NonNull JSONObject json, ContentValues values, String field) throws JSONException {
-        if (json.isNull(field)) {
-            values.put(field, (String) null);
-        } else {
-            values.put(field, json.getDouble(field));
-        }
-    }
-
-    private static void json2cvString(@NonNull JSONObject json, @NonNull ContentValues values, String field) throws JSONException {
-        if (!json.isNull(field)) {
-            String s = json.getString(field).trim();
-            if (!s.equals("")) {
-                values.put(field, s);
-                return;
-            }
-        }
-        values.put(field, (String) null);
     }
 
     public void onResult(@NonNull MyHttpClient.RequestCodes requestCode, int id, String result, MyFragment fragment) {
@@ -109,104 +83,33 @@ public class SwissOParser {
     }
 
     private void loadEvents(String json, MyFragment fragment) {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            try {
-                JSONArray array = new JSONArray(json);
-                Daten daten = act.getDaten();
-                Cursor d = daten.getEvents();
-                ArrayList<Integer> ids = new ArrayList<>();
-                d.moveToFirst();
-                while (!d.isAfterLast()) {
-                    ids.add(Helper.getInt(d, SQLiteHelper.COLUMN_ID));
-                    d.moveToNext();
-                }
-                d.close();
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject jsonEvent = array.getJSONObject(i);
-                    ContentValues contentValues = new ContentValues();
-                    int id = jsonEvent.getInt(SQLiteHelper.COLUMN_ID);
-                    contentValues.put(SQLiteHelper.COLUMN_ID, id);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_NAME);
-                    json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_BEGIN_DATE);
-                    json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_END_DATE);
-                    json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_DEADLINE);
-                    json2cvInt(jsonEvent, contentValues, SQLiteHelper.COLUMN_KIND);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_REGION);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_CLUB);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_MAP);
-                    json2cvDouble(jsonEvent, contentValues, SQLiteHelper.COLUMN_INT_NORD);
-                    json2cvDouble(jsonEvent, contentValues, SQLiteHelper.COLUMN_INT_EAST);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_AUSSCHREIBUNG);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_WEISUNGEN);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_RANGLISTE);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_LIVE_RESULTATE);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_STARTLISTE);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_ANMELDUNG);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_MUTATION);
-                    json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_TEILNEHMERLISTE);
-                    if (ids.contains(id)) {
-                        daten.updateEvent(contentValues, id);
-                        ids.remove((Integer) id);
-                    } else {
-                        contentValues.put(SQLiteHelper.COLUMN_FAVORIT, 0);
-                        daten.insertEvent(contentValues);
-                    }
-                }
-                for (int id : ids) {
-                    daten.deleteEvent(id);
-                }
+        final ProcessedListener listener = successful -> handler.post(() -> {
+            if (successful) {
                 fragment.reloadList();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         });
+
+        Runnable background = () -> {
+            boolean result = act.getDaten().updateEventsFromJson(json);
+            listener.onProcessed(result);
+        };
+
+        executor.execute(background);
     }
 
     private void loadLaeufer(String json, int eventId, MyFragment fragment) {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            try {
-                JSONArray array = new JSONArray(json);
-                Daten daten = act.getDaten();
-                Cursor c = daten.getLaeuferByEvent(eventId);
-                ArrayList<Integer> ids = new ArrayList<>();
-                c.moveToFirst();
-                while (!c.isAfterLast()) {
-                    ids.add(Helper.getInt(c, SQLiteHelper.COLUMN_ID));
-                    c.moveToNext();
-                }
-                c.close();
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject jsonLauefer = array.getJSONObject(i);
-                    ContentValues contentValues = new ContentValues();
-                    int id = jsonLauefer.getInt(SQLiteHelper.COLUMN_ID);
-                    contentValues.put(SQLiteHelper.COLUMN_ID, id);
-                    json2cvString(jsonLauefer, contentValues, SQLiteHelper.COLUMN_NAME);
-                    json2cvString(jsonLauefer, contentValues, SQLiteHelper.COLUMN_CLUB);
-                    json2cvString(jsonLauefer, contentValues, SQLiteHelper.COLUMN_KATEGORIE);
-                    json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_RANGLISTE);
-                    json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_JAHRGANG);
-                    json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_STARTNUMMER);
-                    json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_STARTZEIT);
-                    json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_ZIELZEIT);
-                    json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_RANG);
-                    json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_EVENT);
-                    json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_STARTLISTE);
-                    json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_RANGLISTE);
-                    if (ids.contains(id)) {
-                        daten.updateLaeufer(contentValues, id);
-                        ids.remove((Integer) id);
-                    } else {
-                        daten.insertLaeufer(contentValues);
-                    }
-                }
-                for (int id : ids) {
-                    daten.deleteLaeuferById(id);
-                }
+        final ProcessedListener listener = successful -> handler.post(() -> {
+            if (successful) {
                 fragment.reloadList();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         });
+
+        Runnable background = () -> {
+            boolean result = act.getDaten().updateLaeuferFromJson(json, eventId);
+            listener.onProcessed(result);
+        };
+
+        executor.execute(background);
     }
 
     private void loadMessages(String json) {
