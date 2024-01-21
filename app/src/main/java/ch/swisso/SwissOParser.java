@@ -62,15 +62,15 @@ public class SwissOParser {
     }
 
     public boolean sendEventRequest(EventListFragment fragment) {
-        return sendRequest("https://api.swisso.severinlaasch.ch/events", MyHttpClient.RequestCodes.Eventliste, -1, fragment);
+        return sendRequest("https://api.swiss-o.ch/events", MyHttpClient.RequestCodes.Eventliste, -1, fragment);
     }
 
     public boolean sendLaeuferRequest(int id, ListFragment fragment) {
-        return sendRequest("https://api.swisso.severinlaasch.ch/laeufer?event_id=" + id, MyHttpClient.RequestCodes.Laeufer, id, fragment);
+        return sendRequest("https://api.swiss-o.ch/laeufer?event_id=" + id, MyHttpClient.RequestCodes.Laeufer, id, fragment);
     }
 
     public boolean sendMessageRequest() {
-        return sendRequest("https://api.swisso.severinlaasch.ch/messages", MyHttpClient.RequestCodes.Messages, -1, null);
+        return sendRequest("https://api.swiss-o.ch/messages", MyHttpClient.RequestCodes.Messages, -1, null);
     }
 
     private boolean sendRequest(String url, MyHttpClient.RequestCodes code, int id, MyFragment fragment) {

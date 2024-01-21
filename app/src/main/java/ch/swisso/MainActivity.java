@@ -2,9 +2,7 @@ package ch.swisso;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -181,7 +179,7 @@ public class MainActivity extends MyActivity {
         return searchBar;
     }
 
-    public void setOnlyFav(boolean onlyFav){
+    public void setOnlyFav(boolean onlyFav) {
         this.onlyFav = onlyFav;
     }
 
