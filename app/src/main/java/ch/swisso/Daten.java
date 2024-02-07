@@ -144,6 +144,17 @@ public class Daten {
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, null);
     }
 
+    public boolean isProvListe(int eventId, boolean startliste){
+        String[] column = new String[]{startliste? SQLiteHelper.COLUMN_STARTLISTE : SQLiteHelper.COLUMN_RANGLISTE};
+        String where = SQLiteHelper.COLUMN_EVENT + " = " + eventId + " AND " + column[0] + " = ";
+        Cursor dev = database.query(true, SQLiteHelper.TABLE_Laeufer, column, where + Helper.ZeitStatus.DEFINITIV, null, null, null,null, null);
+        Cursor prov = database.query(true, SQLiteHelper.TABLE_Laeufer, column, where + Helper.ZeitStatus.PROV, null, null, null,null, null);
+        boolean isLive = dev.getCount() == 0 && prov.getCount() > 0;
+        dev.close();
+        prov.close();
+        return  isLive;
+    }
+
     public Cursor getFilteredLaeuferByEvent(int eventID, ListFragment.ListType fragmentType, SingleListFragment.ListContent content, String filter, String order) {
         String where = SQLiteHelper.COLUMN_EVENT + " = " + eventID;
         if (filter != null && !filter.trim().isEmpty()) {

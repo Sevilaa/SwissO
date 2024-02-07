@@ -11,21 +11,15 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.Objects;
-
 public abstract class ListFragment extends EventFragment {
 
     private MenuProvider menuProvider;
-    private boolean showOpenInBrowserInMenu = false;
-    private ListViewModel viewModel;
     private EventActivity.EventViewModel eventViewModel;
 
     @Override
@@ -37,14 +31,6 @@ public abstract class ListFragment extends EventFragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupMenu();
-        viewModel = new ViewModelProvider(this).get(ListViewModel.class);
-        viewModel.getRefreshing().observe(getViewLifecycleOwner(), refreshing -> {
-            if (refreshing) {
-                refresh();
-            }
-        });
-
-        viewModel.setRefreshing(true);
 
         eventViewModel = new ViewModelProvider(act).get(EventActivity.EventViewModel.class);
 
@@ -66,7 +52,6 @@ public abstract class ListFragment extends EventFragment {
             }
         });
         layoutMediator.attach();
-        view.findViewById(R.id.openWebBrowser).setOnClickListener(v -> openInWebBrowser());
     }
 
     private void setupMenu() {
@@ -81,7 +66,7 @@ public abstract class ListFragment extends EventFragment {
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 if (id == R.id.menu_browser) {
-                    openInWebBrowser();
+                    act.openWebBrowser(getUri());
                     return true;
                 }
                 if (id == R.id.menu_sorting) {
@@ -94,7 +79,7 @@ public abstract class ListFragment extends EventFragment {
                     return true;
                 }
                 if (id == R.id.menu_refresh) {
-                    refresh();
+                    eventViewModel.setRefreshing(true);
                     return true;
                 }
                 return false;
@@ -102,65 +87,16 @@ public abstract class ListFragment extends EventFragment {
 
             @Override
             public void onPrepareMenu(@NonNull Menu menu) {
-                menu.findItem(R.id.menu_browser).setVisible(showOpenInBrowserInMenu);
+                menu.findItem(R.id.menu_browser).setVisible(getUri() != null);
                 CharSequence cs = act.getSearchBar().getText();
-                if (cs != null) {
-                    menu.findItem(R.id.menu_clearsearch).setVisible(!cs.toString().isEmpty());
-                }
+                menu.findItem(R.id.menu_clearsearch).setVisible(!cs.toString().isEmpty());
             }
         };
         act.addMenuProvider(menuProvider);
-
     }
 
-    private void refresh() {
-        if (!act.getParser().sendLaeuferRequest(act.getEvent().getId(), this)) {
-            reloadList();
-        }
-    }
-
-    @Override
-    public void reloadList() {
-        showFragments();
-        viewModel.setRefreshing(false);
-        viewModel.triggerList();
-    }
-
-    public void triggerSingleList() {
-        if (viewModel != null) {
-            viewModel.triggerList();
-        }
-    }
-
-    private void openInWebBrowser() {
-        act.openWebBrowser(getUri());
-    }
-
-    private Uri getUri() {
+    public Uri getUri() {
         return act.getEvent().getUri(isStartliste() ? Event.UriArt.Startliste : Event.UriArt.Rangliste);
-    }
-
-    public final void showFragments() {
-        if (getView() != null) {
-            getView().findViewById(R.id.no_list).setVisibility(View.GONE);
-            getView().findViewById(R.id.tabLayout).setVisibility(View.GONE);
-            getView().findViewById(R.id.viewPager).setVisibility(View.GONE);
-            getView().findViewById(R.id.openWebBrowser).setVisibility(View.GONE);
-            showOpenInBrowserInMenu = false;
-            int count = act.getDaten().getLaeuferCountByEvent(act.getEvent().getId(), getListType());
-            if (count > 0) {
-                getView().findViewById(R.id.tabLayout).setVisibility(View.VISIBLE);
-                getView().findViewById(R.id.viewPager).setVisibility(View.VISIBLE);
-                showOpenInBrowserInMenu = true;
-            } else if (getUri() != null) {
-                getView().findViewById(R.id.openWebBrowser).setVisibility(View.VISIBLE);
-                showOpenInBrowserInMenu = true;
-                openInWebBrowser();
-            } else {
-                getView().findViewById(R.id.no_list).setVisibility(View.VISIBLE);
-            }
-            act.invalidateMenu();
-        }
     }
 
     @Override
@@ -181,33 +117,5 @@ public abstract class ListFragment extends EventFragment {
 
     public enum ListType {
         Startliste, Rangliste
-    }
-
-    public static class ListViewModel extends ViewModel {
-        private final MutableLiveData<Boolean> refreshing = new MutableLiveData<>();
-        private final MutableLiveData<Boolean> triggerList = new MutableLiveData<>();
-
-        public void setRefreshing(boolean b) {
-            if (!Objects.equals(refreshing.getValue(), b)) {
-                refreshing.setValue(b);
-            }
-        }
-
-        public MutableLiveData<Boolean> getRefreshing() {
-            return refreshing;
-        }
-
-        public void triggerList() {
-            if (triggerList.getValue() == null) {
-                triggerList.setValue(true);
-            } else {
-                boolean b = triggerList.getValue();
-                triggerList.setValue(!b);
-            }
-        }
-
-        public MutableLiveData<Boolean> getTriggerList() {
-            return triggerList;
-        }
     }
 }

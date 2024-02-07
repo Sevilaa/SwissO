@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,11 +16,12 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.button.MaterialButton;
+
 import java.util.ArrayList;
 
 public class SingleListFragment extends Fragment {
 
-    private ListFragment.ListViewModel listViewModel;
     private EventActivity.EventViewModel eventViewModel;
     private EventActivity act;
     private ListFragment listFragment;
@@ -44,32 +46,50 @@ public class SingleListFragment extends Fragment {
             singleViewModel.setListContent(listContent);
         }
         listFragment = (ListFragment) getParentFragment();
-        listViewModel = new ViewModelProvider(listFragment).get(ListFragment.ListViewModel.class);
 
         refreshLayout = view.findViewById(R.id.refreshLayout_list);
         refreshLayout.setOnRefreshListener(() -> {
-            listViewModel.setRefreshing(true);
+            eventViewModel.setRefreshing(true);
         });
 
-        listViewModel.getRefreshing().observe(listFragment.getViewLifecycleOwner(), refreshing -> {
+        eventViewModel.getRefreshing().observe(listFragment.getViewLifecycleOwner(), refreshing -> {
             if (refreshing != refreshLayout.isRefreshing()) {
                 refreshLayout.setRefreshing(refreshing);
             }
         });
         eventViewModel.getSearchText().observe(act, s -> loadList());
-        listViewModel.getTriggerList().observe(listFragment.getViewLifecycleOwner(), trigger -> loadList());
+        eventViewModel.getTriggerSingleList().observe(listFragment.getViewLifecycleOwner(), trigger -> loadList());
+
+        MaterialButton openInBrowser = getView().findViewById(R.id.openWebBrowser);
+        openInBrowser.setOnClickListener(view1 -> act.openWebBrowser(listFragment.getUri()));
     }
 
     private void loadList() {
         if (getView() != null) {
-            ArrayList<Laeufer> laeufer = getFilteredLaeufer();
+            TextView noList = getView().findViewById(R.id.no_list);
+            MaterialButton openInBrowser = getView().findViewById(R.id.openWebBrowser);
+            int alle = act.getDaten().getLaeuferCountByEvent(act.getEvent().getId(), listFragment.getListType());
             ListView listView = getView().findViewById(R.id.listView_list);
-            if (!laeufer.isEmpty()) {
-                listView.setVisibility(View.VISIBLE);
-                LaeuferAdapter adapter = new LaeuferAdapter(getContext(), listFragment.getListType(), laeufer);
-                listView.setAdapter(adapter);
-            } else {
+            if (alle > 0) {
+                ArrayList<Laeufer> laeufer = getFilteredLaeufer();
+                openInBrowser.setVisibility(View.GONE);
+                if (!laeufer.isEmpty()) {
+                    listView.setVisibility(View.VISIBLE);
+                    noList.setVisibility(View.GONE);
+                    LaeuferAdapter adapter = new LaeuferAdapter(getContext(), listFragment.getListType(), laeufer);
+                    listView.setAdapter(adapter);
+                } else {
+                    listView.setVisibility(View.GONE);
+                    noList.setVisibility(View.VISIBLE);
+                    noList.setText(listContent == ListContent.Friends ? R.string.no_friends : R.string.no_clubs);
+
+                }
+            } else{
+                boolean hasUri = listFragment.getUri() != null;
                 listView.setVisibility(View.GONE);
+                noList.setVisibility(View.VISIBLE);
+                openInBrowser.setVisibility(hasUri ? View.VISIBLE : View.GONE);
+                noList.setText(hasUri ? R.string.listinbrowser : R.string.no_list);
             }
         }
     }

@@ -119,4 +119,9 @@ public abstract class Helper {
         int NICHT_KLASSIERT = -8;
         int AUSSER_KONKURENZ = 10000;
     }
+
+    public interface ZeitStatus{
+        int PROV = 2;
+        int DEFINITIV = 3;
+    }
 }

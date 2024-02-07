@@ -56,7 +56,7 @@ public abstract class EventListFragment extends MainFragment {
         }
 
         act.getSearchBar().setHint(this instanceof FavEventListFragment ? R.string.favorites : R.string.all_events);
-        act.setOnlyFav(this instanceof  FavEventListFragment);
+        act.setOnlyFav(this instanceof FavEventListFragment);
     }
 
     private void setupMenu() {
@@ -92,14 +92,12 @@ public abstract class EventListFragment extends MainFragment {
     }
 
     public void refresh() {
-        if (!act.getParser().sendEventRequest(this)) {
+        if (!act.getParser().sendEventRequest(() -> {
+            act.initEvents();
+            actViewModel.setRefreshingEvents(false);
+        })) {
             actViewModel.setRefreshingEvents(false);
         }
-    }
-
-    public void reloadList() {
-        act.initEvents();
-        actViewModel.setRefreshingEvents(false);
     }
 
     public void showList() {

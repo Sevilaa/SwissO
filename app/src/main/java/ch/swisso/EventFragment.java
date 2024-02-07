@@ -4,8 +4,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
-public abstract class EventFragment extends  MyFragment{
+public abstract class EventFragment extends Fragment {
 
     protected EventActivity act;
 

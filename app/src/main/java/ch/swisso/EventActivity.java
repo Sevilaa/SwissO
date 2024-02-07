@@ -20,13 +20,14 @@ import com.google.android.material.search.SearchBar;
 import com.google.android.material.search.SearchView;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class EventActivity extends MyActivity {
 
     private Event event;
     private BottomNavigationView navigation;
     private SearchBar searchBar;
-
+    private EventViewModel viewModel;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +37,18 @@ public class EventActivity extends MyActivity {
         int navID = getIntent().getIntExtra(Helper.Keys.intent_navID, R.id.detailsFragment);
         event = daten.createEventById(eventID);
 
-        EventViewModel viewModel = new ViewModelProvider(this).get(EventViewModel.class);
+        viewModel = new ViewModelProvider(this).get(EventViewModel.class);
         setupSearch(viewModel);
+        viewModel.getRefreshing().observe(this, refreshing -> {
+            if (refreshing) {
+                refresh();
+            }
+        });
+        viewModel.getTriggerSingleList().observe(this, trigger -> {
+            navigation.getMenu().findItem(R.id.ranglistFragment).setTitle(daten.isProvListe(event.getId(), false) ? R.string.liveresult : R.string.rangliste);
+            navigation.getMenu().findItem(R.id.startlistFragment).setTitle(daten.isProvListe(event.getId(), true) ? R.string.teilnehmer : R.string.startlist);
+        });
+        viewModel.setRefreshing(true);
 
         navigation = findViewById(R.id.bottom_navigation_event);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_event);
@@ -101,12 +112,19 @@ public class EventActivity extends MyActivity {
         return event;
     }
 
+    public void triggerSingleList() {
+        if (viewModel != null) {
+            viewModel.triggerSingleList();
+        }
+    }
 
     public final void openEventDetails(@NonNull Event e, @NonNull Event.UriArt uriArt) {
         switch (uriArt) {
+            case Liveresultate:
             case Rangliste:
                 navigation.setSelectedItemId(R.id.ranglistFragment);
                 break;
+            case Teilnehmerliste:
             case Startliste:
                 navigation.setSelectedItemId(R.id.startlistFragment);
                 break;
@@ -119,12 +137,25 @@ public class EventActivity extends MyActivity {
         }
     }
 
+    private void refresh() {
+        boolean hasInternet = parser.sendLaeuferRequest(event.getId(), () -> {
+            viewModel.setRefreshing(false);
+            viewModel.triggerSingleList();
+        });
+        if (!hasInternet) {
+            viewModel.triggerSingleList();
+            viewModel.setRefreshing(false);
+        }
+    }
+
     public SearchBar getSearchBar() {
         return searchBar;
     }
 
     public static class EventViewModel extends ViewModel {
         private final MutableLiveData<String> searchText = new MutableLiveData<>();
+        private final MutableLiveData<Boolean> triggerSingleList = new MutableLiveData<>();
+        private final MutableLiveData<Boolean> refreshing = new MutableLiveData<>();
 
         public void setSearchText(String s) {
             searchText.setValue(s);
@@ -132,6 +163,29 @@ public class EventActivity extends MyActivity {
 
         public MutableLiveData<String> getSearchText() {
             return searchText;
+        }
+
+        public void setRefreshing(boolean b) {
+            if (!Objects.equals(refreshing.getValue(), b)) {
+                refreshing.setValue(b);
+            }
+        }
+
+        public MutableLiveData<Boolean> getRefreshing() {
+            return refreshing;
+        }
+
+        public void triggerSingleList() {
+            if (triggerSingleList.getValue() == null) {
+                triggerSingleList.setValue(true);
+            } else {
+                boolean b = triggerSingleList.getValue();
+                triggerSingleList.setValue(!b);
+            }
+        }
+
+        public MutableLiveData<Boolean> getTriggerSingleList() {
+            return triggerSingleList;
         }
     }
 }

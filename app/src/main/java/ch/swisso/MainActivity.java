@@ -134,9 +134,11 @@ public class MainActivity extends MyActivity {
             case Details:
                 startEventActivity(e, R.id.detailsFragment);
                 break;
+            case Liveresultate:
             case Rangliste:
                 startEventActivity(e, R.id.ranglistFragment);
                 break;
+            case Teilnehmerliste:
             case Startliste:
                 startEventActivity(e, R.id.startlistFragment);
                 break;

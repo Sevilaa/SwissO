@@ -89,9 +89,4 @@ public class DetailsFragment extends EventFragment {
         String s = tv.getText().toString().trim();
         tv.setVisibility(s.isEmpty() || s.equals("null") ? View.GONE : View.VISIBLE);
     }
-
-    @Override
-    public void reloadList() {
-
-    }
 }

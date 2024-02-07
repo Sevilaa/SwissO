@@ -60,8 +60,4 @@ public class ProfilFragment extends MainFragment {
             }
         }
     }
-
-    @Override
-    public void reloadList() {
-    }
 }

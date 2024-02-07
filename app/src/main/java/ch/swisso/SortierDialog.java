@@ -30,8 +30,6 @@ public class SortierDialog extends DialogFragment {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(listFragment.getAct());
         SharedPreferences pref = listFragment.getAct().getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE);
 
-
-
         if (listFragment.isStartliste()) {
             String saved = pref.getString(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column);
             int selected = 0;
@@ -64,7 +62,7 @@ public class SortierDialog extends DialogFragment {
         editor.putBoolean(listFragment.isStartliste() ? Helper.Keys.sorting_startlist_ascending : Helper.Keys.sorting_ranglist_ascending, aufsteigend);
         editor.putString(listFragment.isStartliste() ? Helper.Keys.sorting_startlist_column : Helper.Keys.sorting_ranglist_column, selectedColumn);
         editor.apply();
-        listFragment.triggerSingleList();
+        listFragment.getAct().triggerSingleList();
         dismiss();
     }
 }

@@ -48,44 +48,44 @@ public class SwissOParser {
         }
     }
 
-    public void onResult(@NonNull MyHttpClient.RequestCodes requestCode, int id, String result, MyFragment fragment) {
+    public void onResult(@NonNull MyHttpClient.RequestCodes requestCode, int id, String result, OnParserResult onParserResult) {
         switch (requestCode) {
             case Eventliste:
-                loadEvents(result, fragment);
+                loadEvents(result, onParserResult);
                 return;
             case Laeufer:
-                loadLaeufer(result, id, fragment);
+                loadLaeufer(result, id, onParserResult);
                 return;
             case Messages:
                 loadMessages(result);
         }
     }
 
-    public boolean sendEventRequest(EventListFragment fragment) {
-        return sendRequest("https://api.swiss-o.ch/events", MyHttpClient.RequestCodes.Eventliste, -1, fragment);
+    public boolean sendEventRequest(OnParserResult onParserResult) {
+        return sendRequest("https://dev.api.swiss-o.ch/events", MyHttpClient.RequestCodes.Eventliste, -1, onParserResult);
     }
 
-    public boolean sendLaeuferRequest(int id, ListFragment fragment) {
-        return sendRequest("https://api.swiss-o.ch/laeufer?event_id=" + id, MyHttpClient.RequestCodes.Laeufer, id, fragment);
+    public boolean sendLaeuferRequest(int id, OnParserResult onParserResult) {
+        return sendRequest("https://dev.api.swiss-o.ch/laeufer?event_id=" + id, MyHttpClient.RequestCodes.Laeufer, id, onParserResult);
     }
 
     public boolean sendMessageRequest() {
-        return sendRequest("https://api.swiss-o.ch/messages", MyHttpClient.RequestCodes.Messages, -1, null);
+        return sendRequest("https://dev.api.swiss-o.ch/messages", MyHttpClient.RequestCodes.Messages, -1, null);
     }
 
-    private boolean sendRequest(String url, MyHttpClient.RequestCodes code, int id, MyFragment fragment) {
+    private boolean sendRequest(String url, MyHttpClient.RequestCodes code, int id, OnParserResult onParserResult) {
         if (isNetworkAvailable()) {
-            httpClient.sendStringRequest(this, url, code, id, fragment);
+            httpClient.sendStringRequest(this, url, code, id, onParserResult);
             return true;
         } else {
             return false;
         }
     }
 
-    private void loadEvents(String json, MyFragment fragment) {
+    private void loadEvents(String json, OnParserResult onParserResult) {
         final ProcessedListener listener = successful -> handler.post(() -> {
             if (successful) {
-                fragment.reloadList();
+                onParserResult.onParserResult();
             }
         });
 
@@ -97,10 +97,10 @@ public class SwissOParser {
         executor.execute(background);
     }
 
-    private void loadLaeufer(String json, int eventId, MyFragment fragment) {
+    private void loadLaeufer(String json, int eventId, OnParserResult onParserResult) {
         final ProcessedListener listener = successful -> handler.post(() -> {
             if (successful) {
-                fragment.reloadList();
+                onParserResult.onParserResult();
             }
         });
 
@@ -153,5 +153,9 @@ public class SwissOParser {
                 e.printStackTrace();
             }
         }
+    }
+
+    public interface OnParserResult{
+        void onParserResult();
     }
 }

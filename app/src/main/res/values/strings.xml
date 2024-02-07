@@ -8,8 +8,6 @@
     <string name="okay">OK</string>
     <string name="cancel">Abbrechen</string>
 
-    <string name="no_list">Nicht verfügbar</string>
-
     <!-- Profil -->
     <string name="profil">Profil</string>
     <string name="vorname">Vorname</string>
@@ -48,10 +46,13 @@
     <!--Menu-->
     <string name="refresh">Refresh</string>
     <string name="openinbrowser">In Browser öffnen</string>
+    <string name="no_friends">Keiner deiner Freunde in Liste gefunden</string>
+    <string name="no_clubs">Keiner deiner Clubs in Liste gefunden</string>
+    <string name="no_list">Liste (noch) nicht verfügbar</string>
+    <string name="listinbrowser">Liste nur online verfügbar</string>
+
     <string name="clearsearch">Suche zurücksetzen</string>
     <string name="settings">Einstellungen</string>
-
-    <string name="noeventselected">Kein Event ausgewählt</string>
 
     <string name="sortierung">Sortierung</string>
     <string name="absteigend">Absteigend</string>
