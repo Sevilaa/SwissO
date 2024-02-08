@@ -96,7 +96,9 @@ public abstract class ListFragment extends EventFragment {
     }
 
     public Uri getUri() {
-        return act.getEvent().getUri(isStartliste() ? Event.UriArt.Startliste : Event.UriArt.Rangliste);
+        Uri devUri = act.getEvent().getUri(isStartliste() ? Event.UriArt.Startliste : Event.UriArt.Rangliste);
+        Uri provUri = act.getEvent().getUri(isStartliste() ? Event.UriArt.Teilnehmerliste : Event.UriArt.Liveresultate);
+        return devUri != null ? devUri : provUri;
     }
 
     @Override

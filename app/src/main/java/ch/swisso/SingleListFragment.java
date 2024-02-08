@@ -60,7 +60,7 @@ public class SingleListFragment extends Fragment {
         eventViewModel.getSearchText().observe(act, s -> loadList());
         eventViewModel.getTriggerSingleList().observe(listFragment.getViewLifecycleOwner(), trigger -> loadList());
 
-        MaterialButton openInBrowser = getView().findViewById(R.id.openWebBrowser);
+        MaterialButton openInBrowser = view.findViewById(R.id.openWebBrowser);
         openInBrowser.setOnClickListener(view1 -> act.openWebBrowser(listFragment.getUri()));
     }
 
