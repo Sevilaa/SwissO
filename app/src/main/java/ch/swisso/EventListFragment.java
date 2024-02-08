@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public abstract class EventListFragment extends MainFragment {
 
@@ -69,7 +70,7 @@ public abstract class EventListFragment extends MainFragment {
             @Override
             public void onPrepareMenu(@NonNull Menu menu) {
                 CharSequence cs = act.getSearchBar().getText();
-                if (cs != null) {
+                if (!cs.equals("")) {
                     menu.findItem(R.id.menu_clearsearch).setVisible(!cs.toString().isEmpty());
                 }
             }
@@ -118,7 +119,13 @@ public abstract class EventListFragment extends MainFragment {
             if (events.size() > 0) {
                 int selectedIndex = events.indexOf(act.getSelectedEvent());
                 if (selectedIndex == -1) {
-                    selectedIndex = events.size() - 1;
+                    Date beginDate = act.getSelectedEvent().getBeginDate();
+                    for (Event e : events){
+                        if (e.getBeginDate().after(beginDate)){
+                            selectedIndex = events.indexOf(e);
+                            break;
+                        }
+                    }
                 }
                 listView.setVisibility(View.VISIBLE);
                 OverviewAdapter adapter = new OverviewAdapter(act, events);
