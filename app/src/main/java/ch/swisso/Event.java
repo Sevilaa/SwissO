@@ -2,10 +2,15 @@ package ch.swisso;
 
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
+
+import kotlin.text.Charsets;
 
 public class Event {
 
@@ -136,7 +141,7 @@ public class Event {
             case Teilnehmerliste:
                 return teilnehmerliste;
             case Kalender:
-                return Uri.parse("https://swisso.ch"); //Dummy URI to not return null
+                return Uri.parse("https://swiss-o.ch"); //Dummy URI to not return null
         }
         return null;
     }
@@ -145,7 +150,12 @@ public class Event {
         if (koorde != Helper.intnull) {
             switch (maps) {
                 case Google:
-                    return "https://maps.google.com/maps?q=" + koordn + "," + koorde + "(WKZ " + name + ")";
+                    try {
+                        return "https://maps.google.com/maps?q=" + koordn + "," + koorde + URLEncoder.encode("(WKZ " + name + ")", Charsets.UTF_8.name());
+                    } catch (UnsupportedEncodingException e) {
+                        Log.e("SwissO", e.toString());
+                        return "https://maps.google.com/maps?q=" + koordn + "," + koorde + "(WKZ " + name + ")";
+                    }
                 case GoogleSat:
                     return getMapsUrl(Maps.Google) + "&t=h";
                 case Swisstopo:
