@@ -70,9 +70,7 @@ public abstract class EventListFragment extends MainFragment {
             @Override
             public void onPrepareMenu(@NonNull Menu menu) {
                 CharSequence cs = act.getSearchBar().getText();
-                if (!cs.equals("")) {
-                    menu.findItem(R.id.menu_clearsearch).setVisible(!cs.toString().isEmpty());
-                }
+                menu.findItem(R.id.menu_clearsearch).setVisible(!cs.toString().isEmpty());
             }
 
             @Override
@@ -120,8 +118,8 @@ public abstract class EventListFragment extends MainFragment {
                 int selectedIndex = events.indexOf(act.getSelectedEvent());
                 if (selectedIndex == -1) {
                     Date beginDate = act.getSelectedEvent().getBeginDate();
-                    for (Event e : events){
-                        if (e.getBeginDate().after(beginDate)){
+                    for (Event e : events) {
+                        if (e.getBeginDate().after(beginDate)) {
                             selectedIndex = events.indexOf(e);
                             break;
                         }

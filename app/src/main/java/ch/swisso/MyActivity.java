@@ -31,7 +31,7 @@ public abstract class MyActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        daten.Close();
+        daten.close();
         super.onDestroy();
     }
 
