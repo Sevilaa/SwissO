@@ -51,6 +51,9 @@
     <string name="no_list">Liste (noch) nicht verfügbar</string>
     <string name="listinbrowser">Liste nur online verfügbar</string>
 
+    <string name="no_fav">Noch keine Favoriten</string>
+    <string name="showallevents">Alle Events anzeigen</string>
+
     <string name="clearsearch">Suche zurücksetzen</string>
     <string name="settings">Einstellungen</string>
 

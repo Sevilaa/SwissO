@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -71,7 +72,7 @@ public class MainActivity extends MyActivity {
                 }
             }
         }
-        if (selectedEvent == null && events.size() > 0) {
+        if (selectedEvent == null && !events.isEmpty()) {
             selectedEvent = events.get(events.size() - 1);
         }
     }
@@ -149,6 +150,11 @@ public class MainActivity extends MyActivity {
                 openWebBrowser(e.getUri(uriArt));
                 break;
         }
+    }
+
+    public void openFragment(@IdRes int id) {
+        BottomNavigationView navigation = findViewById(R.id.bottom_navigation);
+        navigation.setSelectedItemId(id);
     }
 
     private void startEventActivity(@NonNull Event e, int navigationId) {

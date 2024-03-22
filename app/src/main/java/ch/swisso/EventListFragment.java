@@ -8,7 +8,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
@@ -22,6 +24,8 @@ public abstract class EventListFragment extends MainFragment {
 
     private SwipeRefreshLayout refreshLayout;
     private ListView listView;
+    private TextView noFav;
+    private Button showAllEvents;
     private MenuProvider menuProvider;
     private MainActivity.MainViewModel actViewModel;
 
@@ -36,7 +40,10 @@ public abstract class EventListFragment extends MainFragment {
 
         refreshLayout = view.findViewById(R.id.refreshLayout_overview);
         listView = view.findViewById(R.id.listView_overview);
+        noFav = view.findViewById(R.id.no_fav);
+        showAllEvents = view.findViewById(R.id.showallevents);
 
+        showAllEvents.setOnClickListener(v -> act.openFragment(R.id.allEventListFragment));
         refreshLayout.setOnRefreshListener(() -> actViewModel.setRefreshingEvents(true));
 
         actViewModel.getRefreshingEvents().observe(act, refreshing -> {
@@ -52,7 +59,7 @@ public abstract class EventListFragment extends MainFragment {
 
         actViewModel.getSearchText().observe(act, s -> showList());
 
-        if (act.getEvents().size() != 0) {
+        if (!act.getEvents().isEmpty()) {
             showList();
         }
 
@@ -111,10 +118,11 @@ public abstract class EventListFragment extends MainFragment {
                     events.add(new Event(cursor));
                     cursor.moveToNext();
                 }
+                cursor.close();
             } else {
                 events = act.getEvents();
             }
-            if (events.size() > 0) {
+            if (!events.isEmpty()) {
                 int selectedIndex = events.indexOf(act.getSelectedEvent());
                 if (selectedIndex == -1) {
                     Date beginDate = act.getSelectedEvent().getBeginDate();
@@ -133,6 +141,13 @@ public abstract class EventListFragment extends MainFragment {
                 listView.setVisibility(View.INVISIBLE);
             }
             listView.invalidate();
+            if (this instanceof FavEventListFragment) {
+                Cursor c = act.getDaten().getEvents(null, true);
+                int vis = c.getCount() == 0 ? View.VISIBLE : View.GONE;
+                noFav.setVisibility(vis);
+                showAllEvents.setVisibility(vis);
+                c.close();
+            }
         }
     }
 
