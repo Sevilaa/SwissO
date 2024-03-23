@@ -102,7 +102,7 @@ public class EventActivity extends MyActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String search = s.toString();
-                HashMap<String, String> suggestions = search.isEmpty() ? new HashMap<>() : daten.getLaeuferSeachSuggestions(search, event.getId(), SingleListFragment.ListContent.alle);//TODO set fav
+                HashMap<String, String> suggestions = search.isEmpty() ? new HashMap<>() : daten.getLaeuferSeachSuggestions(search, event.getId());//TODO set fav
                 listView.setAdapter(new SearchListAdapter(that, suggestions));
             }
         });

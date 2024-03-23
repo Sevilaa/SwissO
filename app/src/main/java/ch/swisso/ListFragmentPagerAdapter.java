@@ -6,33 +6,23 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class ListFragmentPagerAdapter extends FragmentStateAdapter {
 
-    public ListFragmentPagerAdapter(@NonNull ListFragment fragment) {
+    private final String[] tabs;
+
+    public ListFragmentPagerAdapter(@NonNull ListFragment fragment, String[] tabs) {
         super(fragment);
+        this.tabs = tabs;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        SingleListFragment.ListContent listContent;
-        switch (position) {
-            case 0:
-                listContent = SingleListFragment.ListContent.Friends;
-                break;
-            case 1:
-                listContent = SingleListFragment.ListContent.Club;
-                break;
-            case 2:
-            default:
-                listContent = SingleListFragment.ListContent.alle;
-                break;
-        }
         SingleListFragment subListFragment = new SingleListFragment();
-        subListFragment.setListContent(listContent);
+        subListFragment.setListContent(tabs[position]);
         return subListFragment;
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return tabs.length;
     }
 }

@@ -16,16 +16,12 @@ public class FriendClubLayout extends ConstraintLayout {
         super(context, attrs);
     }
 
-    public void init(int id, String name, MainActivity act, boolean club, ProfilFragment fragment) {
+    public void init(int id, String name, MainActivity act, ProfilFragment.ProfilList list, ProfilFragment fragment) {
         TextView tv = findViewById(R.id.name_friend_club);
         MaterialButton button = findViewById(R.id.delete_friend_club);
         tv.setText(name);
         button.setOnClickListener(v -> {
-            if (!club) {
-                act.getDaten().deleteFreundById(id);
-            } else {
-                act.getDaten().deleteClubById(id);
-            }
+            act.getDaten().deleteProfilElementById(id, list);
             fragment.showFriendsAndClubs();
         });
     }

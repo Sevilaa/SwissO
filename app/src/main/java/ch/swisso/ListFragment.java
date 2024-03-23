@@ -17,6 +17,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.ArrayList;
+
 public abstract class ListFragment extends EventFragment {
 
     private MenuProvider menuProvider;
@@ -31,10 +33,17 @@ public abstract class ListFragment extends EventFragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupMenu();
-
+        ArrayList<String> kats = act.getDaten().getProfilListList(ProfilFragment.ProfilList.Kat);
+        String[] tabs = new String[kats.size() + 3];
+        tabs[0] = Helper.SingleListTab.tabFreunde;
+        tabs[1] = Helper.SingleListTab.tabClub;
+        tabs[2] = Helper.SingleListTab.tabAlle;
+        for (int i = 0; i < kats.size(); i++) {
+            tabs[i + 3] = kats.get(i);
+        }
         eventViewModel = new ViewModelProvider(act).get(EventActivity.EventViewModel.class);
 
-        ListFragmentPagerAdapter adapter = new ListFragmentPagerAdapter(this);
+        ListFragmentPagerAdapter adapter = new ListFragmentPagerAdapter(this, tabs);
         ViewPager2 viewPager = view.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
@@ -49,6 +58,8 @@ public abstract class ListFragment extends EventFragment {
                 case 2:
                     tab.setText(R.string.alle);
                     break;
+                default:
+                    tab.setText(tabs[position]);
             }
         });
         layoutMediator.attach();

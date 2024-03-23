@@ -14,11 +14,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class EditTextDialog extends DialogFragment {
 
-    private final boolean club;
+    private final ProfilFragment.ProfilList list;
     private final ProfilFragment fragment;
 
-    public EditTextDialog(boolean club, ProfilFragment fragment) {
-        this.club = club;
+    public EditTextDialog(ProfilFragment.ProfilList list, ProfilFragment fragment) {
+        this.list = list;
         this.fragment = fragment;
     }
 
@@ -29,10 +29,10 @@ public class EditTextDialog extends DialogFragment {
         View v = inflater.inflate(R.layout.dialog_edittext, null);
         builder.setView(v);
         EditText et = v.findViewById(R.id.dialog_name);
-        builder.setTitle(club ? R.string.club_add : R.string.friend_add);
+        builder.setTitle(list == ProfilFragment.ProfilList.Club ? R.string.club_add : (list == ProfilFragment.ProfilList.Freund ? R.string.friend_add : R.string.kat_add));
         builder.setPositiveButton(R.string.okay, (dialog, which) -> {
             String name = et.getText().toString();
-            fragment.editTextDialogResult(club, name);
+            fragment.editTextDialogResult(list, name);
             dismiss();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dismiss());

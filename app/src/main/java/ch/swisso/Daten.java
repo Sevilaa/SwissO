@@ -25,10 +25,10 @@ public class Daten {
 
     public Daten(Activity act) {
         dbHelper = new SQLiteHelper(act);
-        Open();
+        open();
     }
 
-    public void Open() {
+    public void open() {
         database = dbHelper.getWritableDatabase();
     }
 
@@ -36,40 +36,36 @@ public class Daten {
         dbHelper.close();
     }
 
-    //Table Freunde
+    //Table Fruende, Clubs, Kats
 
-    public int insertFreund(String name) {
+    public static String getTable(@NonNull ProfilFragment.ProfilList list){
+        switch (list){
+            case Club:
+                return SQLiteHelper.TABLE_Clubs;
+            case Freund:
+                return SQLiteHelper.TABLE_Freunde;
+            case Kat:
+            default:
+                return SQLiteHelper.TABLE_Kats;
+        }
+    }
+
+    public int insertProfilElement(@NonNull String name, ProfilFragment.ProfilList list) {
         ContentValues daten = new ContentValues();
-        daten.put(SQLiteHelper.COLUMN_NAME, name);
-        return (int) database.insert(SQLiteHelper.TABLE_Freunde, null, daten);
+        daten.put(SQLiteHelper.COLUMN_NAME, name.trim());
+        return (int) database.insert(getTable(list), null, daten);
     }
 
-    public Cursor getAllFreunde() {
-        return database.query(SQLiteHelper.TABLE_Freunde, null, null, null, null, null, null);
+    public Cursor getAllProfilElements(ProfilFragment.ProfilList list) {
+        return database.query(getTable(list), null, null, null, null, null, null);
     }
 
-    public void deleteFreundById(int id) {
-        database.delete(SQLiteHelper.TABLE_Freunde, SQLiteHelper.COLUMN_AUTO_ID + " = " + id, null);
+    public void deleteProfilElementById(int id, ProfilFragment.ProfilList list) {
+        database.delete(getTable(list), SQLiteHelper.COLUMN_AUTO_ID + " = " + id, null);
     }
 
-    //Table Clubs
-
-    public int insertClub(String name) {
-        ContentValues daten = new ContentValues();
-        daten.put(SQLiteHelper.COLUMN_NAME, name);
-        return (int) database.insert(SQLiteHelper.TABLE_Clubs, null, daten);
-    }
-
-    public Cursor getAllClubs() {
-        return database.query(SQLiteHelper.TABLE_Clubs, null, null, null, null, null, null);
-    }
-
-    public void deleteClubById(int id) {
-        database.delete(SQLiteHelper.TABLE_Clubs, SQLiteHelper.COLUMN_AUTO_ID + " = " + id, null);
-    }
-
-    public ArrayList<String> getFriendsClubList(boolean club) {
-        Cursor cursor = club ? getAllClubs() : getAllFreunde();
+    public ArrayList<String> getProfilListList(ProfilFragment.ProfilList type) {
+        Cursor cursor = getAllProfilElements(type);
         cursor.moveToFirst();
         ArrayList<String> list = new ArrayList<>();
         while (!cursor.isAfterLast()) {
@@ -131,7 +127,7 @@ public class Daten {
             }
             database.setTransactionSuccessful();
         } catch (JSONException e) {
-            Log.e("SwissO", e != null ? e.getMessage() : e.toString());
+            Log.e("SwissO", "Laeufer Update failed", e);
             return false;
         } finally {
             database.endTransaction();
@@ -155,7 +151,7 @@ public class Daten {
         return isLive;
     }
 
-    public Cursor getFilteredLaeuferByEvent(int eventID, ListFragment.ListType fragmentType, SingleListFragment.ListContent content, String filter, String order) {
+    public Cursor getFilteredLaeuferByEvent(int eventID, ListFragment.ListType fragmentType, String content, String filter, String order) {
         String where = SQLiteHelper.COLUMN_EVENT + " = " + eventID;
         if (filter != null && !filter.trim().isEmpty()) {
             where += " AND (" + getFilterString(filter, laeuferSearchColumns) + ")";
@@ -165,17 +161,17 @@ public class Daten {
         } else if (fragmentType == ListFragment.ListType.Startliste) {
             where += " AND " + SQLiteHelper.COLUMN_STARTLISTE + " > 0";
         }
-        if (content != SingleListFragment.ListContent.alle) {
+        if (content.equals(Helper.SingleListTab.tabFreunde) || content.equals(Helper.SingleListTab.tabClub)) {
             ArrayList<String> list;
             String col;
-            if (content == SingleListFragment.ListContent.Friends) {
-                list = getFriendsClubList(false);
+            if (content.equals(Helper.SingleListTab.tabFreunde)) {
+                list = getProfilListList(ProfilFragment.ProfilList.Freund);
                 col = SQLiteHelper.COLUMN_NAME;
             } else {
-                list = getFriendsClubList(true);
+                list = getProfilListList(ProfilFragment.ProfilList.Club);
                 col = SQLiteHelper.COLUMN_CLUB;
             }
-            if (list.size() > 0) {
+            if (!list.isEmpty()) {
                 StringBuilder builder = new StringBuilder(" AND (");
                 builder.append(col).append(" LIKE '%").append(list.get(0)).append("%'");
                 for (int i = 1; i < list.size(); i++) {
@@ -186,10 +182,13 @@ public class Daten {
                 return null;
             }
         }
+        else if (!content.equals(Helper.SingleListTab.tabAlle)){
+            where += " AND " + SQLiteHelper.COLUMN_KATEGORIE + " = '" + content + "'";
+        }
         return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, order);
     }
 
-    public HashMap<String, String> getLaeuferSeachSuggestions(String search, int eventID, SingleListFragment.ListContent listContent) { //TODO only list content in suggestions
+    public HashMap<String, String> getLaeuferSeachSuggestions(String search, int eventID /*SingleListFragment.ListContent listContent*/) { //TODO only list content in suggestions
         HashMap<String, String> results = new HashMap<>();
         for (String column : laeuferSearchColumns) {
             Cursor c = database.query(true, SQLiteHelper.TABLE_Laeufer, new String[]{column}, column + " LIKE '%" + search + "%' AND " + SQLiteHelper.COLUMN_EVENT + " = " + eventID, null, null, null, column, null);
@@ -204,7 +203,7 @@ public class Daten {
     }
 
     public int getLaeuferCountByEvent(int eventID, ListFragment.ListType type) {
-        return getFilteredLaeuferByEvent(eventID, type, SingleListFragment.ListContent.alle, null, null).getCount();
+        return getFilteredLaeuferByEvent(eventID, type, Helper.SingleListTab.tabAlle, null, null).getCount();
     }
 
     public void deleteLaeuferById(int id) {
@@ -269,7 +268,7 @@ public class Daten {
             }
             database.setTransactionSuccessful();
         } catch (JSONException e) {
-            Log.e("SwissO", e != null ? e.getMessage() : e.toString());
+            Log.e("SwissO", "Event Update failed", e);
             return false;
         } finally {
             database.endTransaction();
@@ -376,7 +375,7 @@ public class Daten {
     private static void json2cvString(@NonNull JSONObject json, @NonNull ContentValues values, String field) throws JSONException {
         if (!json.isNull(field)) {
             String s = json.getString(field).trim();
-            if (!s.equals("")) {
+            if (!s.isEmpty()) {
                 values.put(field, s);
                 return;
             }

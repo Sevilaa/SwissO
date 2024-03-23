@@ -124,4 +124,10 @@ public abstract class Helper {
         int PROV = 2;
         int DEFINITIV = 3;
     }
+
+    public interface SingleListTab{
+        String tabAlle = "Alle";
+        String tabFreunde = "Freunde";
+        String tabClub = "Club";
+    }
 }

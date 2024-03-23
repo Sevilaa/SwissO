@@ -13,11 +13,11 @@ public class FriendClubAdapter extends BaseAdapter {
     private final MainActivity act;
     private final String[] names;
     private final int[] ids;
-    private final boolean club;
+    private final ProfilFragment.ProfilList list;
     private final ProfilFragment fragment;
 
-    public FriendClubAdapter(MainActivity act, @NonNull Cursor c, boolean club, ProfilFragment fragment){
-        this.club = club;
+    public FriendClubAdapter(MainActivity act, @NonNull Cursor c, ProfilFragment.ProfilList list, ProfilFragment fragment){
+        this.list = list;
         this.act = act;
         this.fragment = fragment;
         names = new String[c.getCount()];
@@ -51,7 +51,7 @@ public class FriendClubAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(act).inflate(R.layout.listitem_friendclub, parent, false);
         }
-        ((FriendClubLayout)convertView).init(ids[position], names[position], act, club, fragment);
+        ((FriendClubLayout)convertView).init(ids[position], names[position], act, list, fragment);
         return convertView;
     }
 }

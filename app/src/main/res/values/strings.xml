@@ -15,10 +15,12 @@
     <string name="nachname">Nachname</string>
     <string name="club_add">Club hinzufügen</string>
     <string name="friend_add">Freund hinzufügen</string>
+    <string name="kat_add">Kategorie hinzufügen</string>
     <string name="si_number">SI-Nummer</string>
     <string name="category">Kategorie</string>
     <string name="new_friend">Neuer Freund</string>
     <string name="new_club">Neuer Club</string>
+    <string name="new_kat">Neue Kategorie</string>
 
     <string name="friends">Freunde</string>
     <string name="club">Club</string>
@@ -48,6 +50,7 @@
     <string name="openinbrowser">In Browser öffnen</string>
     <string name="no_friends">Keiner deiner Freunde in Liste gefunden</string>
     <string name="no_clubs">Keiner deiner Clubs in Liste gefunden</string>
+    <string name="no_kat">Keine Läufer in dieser Kategorie gefunden</string>
     <string name="no_list">Liste (noch) nicht verfügbar</string>
     <string name="listinbrowser">Liste nur online verfügbar</string>
 

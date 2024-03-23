@@ -62,15 +62,15 @@ public class SwissOParser {
     }
 
     public boolean sendEventRequest(OnParserResult onParserResult) {
-        return sendRequest("https://dev.api.swiss-o.ch/events", MyHttpClient.RequestCodes.Eventliste, -1, onParserResult);
+        return sendRequest("https://api.swiss-o.ch/events", MyHttpClient.RequestCodes.Eventliste, -1, onParserResult);
     }
 
     public boolean sendLaeuferRequest(int id, OnParserResult onParserResult) {
-        return sendRequest("https://dev.api.swiss-o.ch/laeufer?event_id=" + id, MyHttpClient.RequestCodes.Laeufer, id, onParserResult);
+        return sendRequest("https://api.swiss-o.ch/laeufer?event_id=" + id, MyHttpClient.RequestCodes.Laeufer, id, onParserResult);
     }
 
     public boolean sendMessageRequest() {
-        return sendRequest("https://dev.api.swiss-o.ch/messages", MyHttpClient.RequestCodes.Messages, -1, null);
+        return sendRequest("https://api.swiss-o.ch/messages", MyHttpClient.RequestCodes.Messages, -1, null);
     }
 
     private boolean sendRequest(String url, MyHttpClient.RequestCodes code, int id, OnParserResult onParserResult) {

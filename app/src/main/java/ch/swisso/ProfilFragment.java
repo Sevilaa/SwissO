@@ -23,41 +23,35 @@ public class ProfilFragment extends MainFragment {
 
         MaterialButton addFriend = view.findViewById(R.id.add_friend);
         MaterialButton addClub = view.findViewById(R.id.add_club);
-        addFriend.setOnClickListener(v -> new EditTextDialog(false, this).show(getChildFragmentManager(), "friend"));
-        addClub.setOnClickListener(v -> new EditTextDialog(true, this).show(getChildFragmentManager(), "club"));
+        MaterialButton addKat = view.findViewById(R.id.add_kat);
+        addFriend.setOnClickListener(v -> new EditTextDialog(ProfilList.Freund, this).show(getChildFragmentManager(), "friend"));
+        addClub.setOnClickListener(v -> new EditTextDialog(ProfilList.Club, this).show(getChildFragmentManager(), "club"));
+        addKat.setOnClickListener(v -> new EditTextDialog(ProfilList.Kat, this).show(getChildFragmentManager(), "kat"));
 
         showFriendsAndClubs();
     }
 
-    public void editTextDialogResult(boolean club, String name) {
-        if (club) {
-            act.getDaten().insertClub(name);
-        } else {
-            act.getDaten().insertFreund(name);
-        }
+    public void editTextDialogResult(ProfilList list, String name) {
+        act.getDaten().insertProfilElement(name, list);
         showFriendsAndClubs();
     }
 
     public void showFriendsAndClubs() {
-        if(getView() != null) {
-            ListView freundeList = getView().findViewById(R.id.profil_peoplelist);
-            Cursor cursor = act.getDaten().getAllFreunde();
+        if (getView() == null) return;
+        int[] listViewIds = new int[]{R.id.profil_peoplelist, R.id.profil_clublist, R.id.profil_katlist};
+        ProfilList[] types = new ProfilList[]{ProfilList.Freund, ProfilList.Club, ProfilList.Kat};
+        for (int i = 0; i < types.length; i++) {
+            ListView listView = getView().findViewById(listViewIds[i]);
+            Cursor cursor = act.getDaten().getAllProfilElements(types[i]);
             if (cursor.getCount() > 0) {
-                freundeList.setVisibility(View.VISIBLE);
-                FriendClubAdapter adapter = new FriendClubAdapter((MainActivity) act, cursor, false, this);
-                freundeList.setAdapter(adapter);
+                listView.setVisibility(View.VISIBLE);
+                FriendClubAdapter adapter = new FriendClubAdapter(act, cursor, types[i], this);
+                listView.setAdapter(adapter);
             } else {
-                freundeList.setVisibility(View.INVISIBLE);
-            }
-            ListView clubList = getView().findViewById(R.id.profil_clublist);
-            cursor = act.getDaten().getAllClubs();
-            if (cursor.getCount() > 0) {
-                clubList.setVisibility(View.VISIBLE);
-                FriendClubAdapter adapter = new FriendClubAdapter((MainActivity) act, cursor, true, this);
-                clubList.setAdapter(adapter);
-            } else {
-                clubList.setVisibility(View.INVISIBLE);
+                listView.setVisibility(View.INVISIBLE);
             }
         }
     }
+
+    public enum ProfilList {Freund, Club, Kat}
 }

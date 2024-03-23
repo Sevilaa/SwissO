@@ -25,7 +25,7 @@ public class SingleListFragment extends Fragment {
     private EventActivity.EventViewModel eventViewModel;
     private EventActivity act;
     private ListFragment listFragment;
-    private ListContent listContent;
+    private String listContent;
     private SwipeRefreshLayout refreshLayout;
 
     @Override
@@ -81,7 +81,7 @@ public class SingleListFragment extends Fragment {
                 } else {
                     listView.setVisibility(View.GONE);
                     noList.setVisibility(View.VISIBLE);
-                    noList.setText(listContent == ListContent.Friends ? R.string.no_friends : R.string.no_clubs);
+                    noList.setText(listContent.equals(Helper.SingleListTab.tabFreunde) ? R.string.no_friends : listContent.equals(Helper.SingleListTab.tabClub) ? R.string.no_clubs : R.string.no_kat);
 
                 }
             } else{
@@ -150,25 +150,19 @@ public class SingleListFragment extends Fragment {
         return pref.getString(key, def);
     }
 
-    public void setListContent(ListContent content) {
+    public void setListContent(String content) {
         listContent = content;
     }
 
-    public enum ListContent {
-        Friends,
-        Club,
-        alle
-    }
-
     public static class SingleListViewModel extends ViewModel {
-        private ListContent listContent;
+        private String vmListContent;
 
-        public ListContent getListContent() {
-            return listContent;
+        public String getListContent() {
+            return vmListContent;
         }
 
-        public void setListContent(ListContent listContent) {
-            this.listContent = listContent;
+        public void setListContent(String listContent) {
+            this.vmListContent = listContent;
         }
 
     }
