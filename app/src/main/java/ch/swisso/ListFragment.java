@@ -107,9 +107,7 @@ public abstract class ListFragment extends EventFragment {
     }
 
     public Uri getUri() {
-        Uri devUri = act.getEvent().getUri(isStartliste() ? Event.UriArt.Startliste : Event.UriArt.Rangliste);
-        Uri provUri = act.getEvent().getUri(isStartliste() ? Event.UriArt.Teilnehmerliste : Event.UriArt.Liveresultate);
-        return devUri != null ? devUri : provUri;
+        return act.getEvent().getSelectedUri(this instanceof StartlistFragment);
     }
 
     @Override
@@ -118,17 +116,8 @@ public abstract class ListFragment extends EventFragment {
         act.removeMenuProvider(menuProvider);
     }
 
-    public boolean isStartliste() {
-        return getListType() == ListType.Startliste;
-    }
-
-    public boolean isRangliste() {
-        return getListType() == ListType.Rangliste;
-    }
-
-    public abstract ListType getListType();
-
-    public enum ListType {
-        Startliste, Rangliste
+    public List getList() {
+        Event e = act.getEvent();
+        return this instanceof StartlistFragment ? e.getStartList() : e.getRangList();
     }
 }

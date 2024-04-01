@@ -68,15 +68,14 @@ public class SingleListFragment extends Fragment {
         if (getView() != null) {
             TextView noList = getView().findViewById(R.id.no_list);
             MaterialButton openInBrowser = getView().findViewById(R.id.openWebBrowser);
-            int alle = act.getDaten().getLaeuferCountByEvent(act.getEvent().getId(), listFragment.getListType());
             ListView listView = getView().findViewById(R.id.listView_list);
-            if (alle > 0) {
+            if (listFragment.getList() != null) {
                 ArrayList<Laeufer> laeufer = getFilteredLaeufer();
                 openInBrowser.setVisibility(View.GONE);
                 if (!laeufer.isEmpty()) {
                     listView.setVisibility(View.VISIBLE);
                     noList.setVisibility(View.GONE);
-                    LaeuferAdapter adapter = new LaeuferAdapter(getContext(), listFragment.getListType(), laeufer);
+                    LaeuferAdapter adapter = new LaeuferAdapter(getContext(), listFragment.getList().getListType(), laeufer);
                     listView.setAdapter(adapter);
                 } else {
                     listView.setVisibility(View.GONE);
@@ -99,7 +98,7 @@ public class SingleListFragment extends Fragment {
         String column;
         String order;
         boolean ascending;
-        if (listFragment.isStartliste()) {
+        if (listFragment.getList().isStartliste()) {
             column = getStringPref(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column);
             ascending = getBoolPref(Helper.Keys.sorting_startlist_ascending, Helper.Defaults.sorting_startlist_ascending);
         } else {
@@ -113,7 +112,7 @@ public class SingleListFragment extends Fragment {
         } else {
             order = column + (ascending ? " ASC" : " DESC");
             if (column.equals(SQLiteHelper.COLUMN_KATEGORIE)) {
-                if (listFragment.isStartliste()) {
+                if (listFragment.getList().isStartliste()) {
                     order += ", " + SQLiteHelper.COLUMN_STARTNUMMER;
                 } else {
                     order += ", (" + SQLiteHelper.COLUMN_ZIELZEIT + " < 0), " + SQLiteHelper.COLUMN_RANG;
@@ -122,7 +121,7 @@ public class SingleListFragment extends Fragment {
         }
 
         String filter = eventViewModel.getSearchText().getValue();
-        Cursor cursor = act.getDaten().getFilteredLaeuferByEvent(act.getEvent().getId(), listFragment.getListType(), listContent, filter, order);
+        Cursor cursor = act.getDaten().getFilteredRunnersByList(listFragment.getList().getId(), listContent, filter, order);
         ArrayList<Laeufer> laeuferList = new ArrayList<>();
         if (cursor != null) {
             ArrayList<Laeufer> nullList = new ArrayList<>();

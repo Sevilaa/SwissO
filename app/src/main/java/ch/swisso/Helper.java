@@ -125,6 +125,18 @@ public abstract class Helper {
         int DEFINITIV = 3;
     }
 
+    public interface ListType{
+        int START = 0;
+        int RANG = 1;
+        int TEILNEHMER = 2;
+        int LIVE = 3;
+    }
+
+    public static boolean isStartliste(int listType){
+        return listType == ListType.START || listType == ListType.TEILNEHMER;
+    }
+
+
     public interface SingleListTab{
         String tabAlle = "Alle";
         String tabFreunde = "Freunde";

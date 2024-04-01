@@ -13,10 +13,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     //Tables
     public static final String TABLE_Freunde = "Freunde";
-    public static final String TABLE_Laeufer = "Laeufer";
     public static final String TABLE_Clubs = "Clubs";
     public static final String TABLE_Kats = "Kats";
     public static final String TABLE_Events = "Events";
+    public static final String TABLE_Lists = "Lists";
+    public static final String TABLE_Runners = "Runners";
     public static final String TABLE_Messages = "Messages";
 
     //Primary Key
@@ -48,14 +49,21 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_MUTATION = "mutation";
     public static final String COLUMN_FAVORIT = "favorit";
 
-    //Table Laeufer
+    //Table Lists
+    public static final String COLUMN_LISTTYPE = "listtype";
+    public static final String COLUMN_EVENT = "event";
+
+    //Table Runner
+    public static final String COLUMN_LIST = "list";
     public static final String COLUMN_JAHRGANG = "jahrgang";
     public static final String COLUMN_KATEGORIE = "kategorie";
     public static final String COLUMN_STARTNUMMER = "startnummer";
     public static final String COLUMN_STARTZEIT = "startzeit";
     public static final String COLUMN_ZIELZEIT = "zielzeit";
     public static final String COLUMN_RANG = "rang";
-    public static final String COLUMN_EVENT = "event";
+    public static final String COLUMN_ORT = "ort";
+    public static final String COLUMN_PROV = "prov";
+
 
     //Table Messages
     public static final String COLUMN_VIEWED = "viewed";
@@ -104,19 +112,25 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             COLUMN_MUTATION + " TEXT," +
             COLUMN_FAVORIT + " INTEGER NOT NULL)";
 
-    private static final String SQL_Laeufer = "CREATE TABLE IF NOT EXISTS " + TABLE_Laeufer + " ("
+    private static final String SQL_Lists = "CREATE TABLE IF NOT EXISTS " + TABLE_Lists + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY,"
+            + COLUMN_EVENT + " INTEGER NOT NULL,"
+            + COLUMN_LISTTYPE + " INTEGER NOT NULL)";
+
+
+    private static final String SQL_Runners = "CREATE TABLE IF NOT EXISTS " + TABLE_Runners + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY,"
             + COLUMN_NAME + " VARCHAR(31) NOT NULL,"
+            + COLUMN_LIST + " INTEGER NOT NULL,"
+            + COLUMN_KATEGORIE + " VARCHAR(15) NOT NULL,"
             + COLUMN_JAHRGANG + " INTEGER,"
             + COLUMN_CLUB + " VARCHAR(31),"
-            + COLUMN_KATEGORIE + " VARCHAR(15) NOT NULL,"
+            + COLUMN_ORT + " VARCHAR (31),"
             + COLUMN_STARTNUMMER + " INTEGER,"
             + COLUMN_STARTZEIT + " INTEGER,"
             + COLUMN_ZIELZEIT + " INTEGER,"
             + COLUMN_RANG + " INTEGER,"
-            + COLUMN_EVENT + " INTEGER NOT NULL,"
-            + COLUMN_STARTLISTE + " INTEGER,"
-            + COLUMN_RANGLISTE + " INTEGER)";
+            + COLUMN_PROV + " INTEGER)";
 
 
     public SQLiteHelper(Context context) {
@@ -128,14 +142,17 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_Clubs);
         db.execSQL(SQL_Kats);
         db.execSQL(SQL_Events);
-        db.execSQL(SQL_Laeufer);
+        db.execSQL(SQL_Lists);
+        db.execSQL(SQL_Runners);
         db.execSQL(SQL_Messages);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 3) {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_Laeufer);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_Events);
+        }
+        if (oldVersion < 4) {
+            db.execSQL("DROP TABLE IF EXISTS Laeufer");
         }
         onCreate(db);
     }

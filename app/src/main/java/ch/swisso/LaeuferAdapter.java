@@ -8,19 +8,22 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
 public class LaeuferAdapter extends ArrayAdapter<Laeufer> {
 
-    private final ListFragment.ListType listType;
+    private final int listType;
     
-    public LaeuferAdapter(Context context, ListFragment.ListType listType, ArrayList<Laeufer> laeufer) {
+    public LaeuferAdapter(Context context, int listType, ArrayList<Laeufer> laeufer) {
         super(context, getLayout(listType), laeufer);
         this.listType = listType;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         Laeufer laeufer = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
@@ -29,7 +32,7 @@ public class LaeuferAdapter extends ArrayAdapter<Laeufer> {
             convertView = inflater.inflate(getLayout(listType), parent, false);
         }
         TextView nummer, name, kat, zeit;
-        if (listType == ListFragment.ListType.Startliste) {
+        if (Helper.isStartliste(listType)) {
             nummer = convertView.findViewById(R.id.sl_startnummer);
             name = convertView.findViewById(R.id.sl_name);
             kat = convertView.findViewById(R.id.sl_kat);
@@ -44,7 +47,7 @@ public class LaeuferAdapter extends ArrayAdapter<Laeufer> {
         // Populate the data from the data object into the template view
         name.setText(laeufer.getName());
         kat.setText(laeufer.getCategory());
-        if (listType == ListFragment.ListType.Startliste) {
+        if (Helper.isStartliste(listType)) {
             nummer.setText(laeufer.getStartnummer() != Helper.intnull ? "" + laeufer.getStartnummer() : "");
             if(laeufer.getStartZeit() != Helper.intnull) {
                 String hhmmss = DateUtils.formatElapsedTime(laeufer.getStartZeit() / 1000);
@@ -59,7 +62,7 @@ public class LaeuferAdapter extends ArrayAdapter<Laeufer> {
         return convertView;
     }
 
-    private static int getLayout(ListFragment.ListType listType){
-        return listType == ListFragment.ListType.Startliste ? R.layout.listitem_startliste : R.layout.listitem_rangliste;
+    private static int getLayout(int listType){
+        return Helper.isStartliste(listType) ? R.layout.listitem_startliste : R.layout.listitem_rangliste;
     }
 }

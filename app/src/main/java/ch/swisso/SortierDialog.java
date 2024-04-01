@@ -30,7 +30,7 @@ public class SortierDialog extends DialogFragment {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(listFragment.getAct());
         SharedPreferences pref = listFragment.getAct().getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE);
 
-        if (listFragment.isStartliste()) {
+        if (listFragment instanceof StartlistFragment) {
             String saved = pref.getString(Helper.Keys.sorting_startlist_column, Helper.Defaults.sorting_startlist_column);
             int selected = 0;
             while (selected < startlistColumns.length && !startlistColumns[selected].equals(saved)) {
@@ -39,7 +39,7 @@ public class SortierDialog extends DialogFragment {
             builder.setSingleChoiceItems(R.array.sorting_startlist_entires, selected, (dialog, which) -> selectedColumn = startlistColumns[which]);
             selectedColumn = startlistColumns[selected];
         }
-        if (listFragment.isRangliste()) {
+        else {
             String saved = pref.getString(Helper.Keys.sorting_ranglist_column, Helper.Defaults.sorting_ranglist_column);
             int selected = 0;
             while (selected < ranglistColumns.length && !ranglistColumns[selected].equals(saved)) {
@@ -59,10 +59,10 @@ public class SortierDialog extends DialogFragment {
 
     private void save(boolean aufsteigend) {
         SharedPreferences.Editor editor = listFragment.getAct().getSharedPreferences(Helper.pref_file, Context.MODE_PRIVATE).edit();
-        editor.putBoolean(listFragment.isStartliste() ? Helper.Keys.sorting_startlist_ascending : Helper.Keys.sorting_ranglist_ascending, aufsteigend);
-        editor.putString(listFragment.isStartliste() ? Helper.Keys.sorting_startlist_column : Helper.Keys.sorting_ranglist_column, selectedColumn);
+        editor.putBoolean(listFragment instanceof StartlistFragment ? Helper.Keys.sorting_startlist_ascending : Helper.Keys.sorting_ranglist_ascending, aufsteigend);
+        editor.putString(listFragment instanceof StartlistFragment ? Helper.Keys.sorting_startlist_column : Helper.Keys.sorting_ranglist_column, selectedColumn);
         editor.apply();
-        listFragment.getAct().triggerSingleList();
+        listFragment.getAct().sortingChanged();
         dismiss();
     }
 }

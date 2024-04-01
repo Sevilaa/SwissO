@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -48,13 +49,13 @@ public class SwissOParser {
         }
     }
 
-    public void onResult(@NonNull MyHttpClient.RequestCodes requestCode, int id, String result, OnParserResult onParserResult) {
+    public void onResult(@NonNull MyHttpClient.RequestCodes requestCode, String result, OnParserResult onParserResult) {
         switch (requestCode) {
             case Eventliste:
                 loadEvents(result, onParserResult);
                 return;
-            case Laeufer:
-                loadLaeufer(result, id, onParserResult);
+            case EventDetails:
+                loadEventDetails(result, onParserResult);
                 return;
             case Messages:
                 loadMessages(result);
@@ -62,20 +63,20 @@ public class SwissOParser {
     }
 
     public boolean sendEventRequest(OnParserResult onParserResult) {
-        return sendRequest("https://api.swiss-o.ch/events", MyHttpClient.RequestCodes.Eventliste, -1, onParserResult);
+        return sendRequest("https://api.swiss-o.ch/events", MyHttpClient.RequestCodes.Eventliste, onParserResult);
     }
 
-    public boolean sendLaeuferRequest(int id, OnParserResult onParserResult) {
-        return sendRequest("https://api.swiss-o.ch/laeufer?event_id=" + id, MyHttpClient.RequestCodes.Laeufer, id, onParserResult);
+    public boolean sendEventDetailsRequest(int id, OnParserResult onParserResult) {
+        return sendRequest("https://api.swiss-o.ch/event_details?event_id=" + id, MyHttpClient.RequestCodes.EventDetails, onParserResult);
     }
 
     public boolean sendMessageRequest() {
-        return sendRequest("https://api.swiss-o.ch/messages", MyHttpClient.RequestCodes.Messages, -1, null);
+        return sendRequest("https://api.swiss-o.ch/messages", MyHttpClient.RequestCodes.Messages, null);
     }
 
-    private boolean sendRequest(String url, MyHttpClient.RequestCodes code, int id, OnParserResult onParserResult) {
+    private boolean sendRequest(String url, MyHttpClient.RequestCodes code, OnParserResult onParserResult) {
         if (isNetworkAvailable()) {
-            httpClient.sendStringRequest(this, url, code, id, onParserResult);
+            httpClient.sendStringRequest(this, url, code, onParserResult);
             return true;
         } else {
             return false;
@@ -97,7 +98,7 @@ public class SwissOParser {
         executor.execute(background);
     }
 
-    private void loadLaeufer(String json, int eventId, OnParserResult onParserResult) {
+    private void loadEventDetails(String json, OnParserResult onParserResult) {
         final ProcessedListener listener = successful -> handler.post(() -> {
             if (successful) {
                 onParserResult.onParserResult();
@@ -105,7 +106,7 @@ public class SwissOParser {
         });
 
         Runnable background = () -> {
-            boolean result = act.getDaten().updateLaeuferFromJson(json, eventId);
+            boolean result = act.getDaten().updateRunnersFromJson(json);
             listener.onProcessed(result);
         };
 
@@ -150,7 +151,7 @@ public class SwissOParser {
                 }
                 ((MainActivity) act).showMessages();
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e("SwissO", "Messages loading failed", e);
             }
         }
     }

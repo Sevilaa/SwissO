@@ -45,8 +45,8 @@ public class EventActivity extends MyActivity {
             }
         });
         viewModel.getTriggerSingleList().observe(this, trigger -> {
-            navigation.getMenu().findItem(R.id.ranglistFragment).setTitle(daten.isProvListe(event.getId(), false) ? R.string.liveresult : R.string.rangliste);
-            navigation.getMenu().findItem(R.id.startlistFragment).setTitle(daten.isProvListe(event.getId(), true) ? R.string.teilnehmer : R.string.startlist);
+            navigation.getMenu().findItem(R.id.ranglistFragment).setTitle(event.getRanglistTitle());
+            navigation.getMenu().findItem(R.id.startlistFragment).setTitle(event.getStartlistTitle());
         });
         viewModel.setRefreshing(true);
 
@@ -102,7 +102,7 @@ public class EventActivity extends MyActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String search = s.toString();
-                HashMap<String, String> suggestions = search.isEmpty() ? new HashMap<>() : daten.getLaeuferSeachSuggestions(search, event.getId());//TODO set fav
+                HashMap<String, String> suggestions = search.isEmpty() ? new HashMap<>() : daten.getLaeuferSeachSuggestions(search, event.getId());
                 listView.setAdapter(new SearchListAdapter(that, suggestions));
             }
         });
@@ -112,7 +112,7 @@ public class EventActivity extends MyActivity {
         return event;
     }
 
-    public void triggerSingleList() {
+    public void sortingChanged() {
         if (viewModel != null) {
             viewModel.triggerSingleList();
         }
@@ -138,7 +138,8 @@ public class EventActivity extends MyActivity {
     }
 
     private void refresh() {
-        boolean hasInternet = parser.sendLaeuferRequest(event.getId(), () -> {
+        boolean hasInternet = parser.sendEventDetailsRequest(event.getId(), () -> {
+            event.initLists(daten);
             viewModel.setRefreshing(false);
             viewModel.triggerSingleList();
         });

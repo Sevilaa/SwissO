@@ -8,7 +8,6 @@ import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
@@ -33,13 +32,13 @@ public class MyHttpClient {
         queue.start();
     }
 
-    public void sendStringRequest(SwissOParser parser, String url, RequestCodes requestCode, int id, SwissOParser.OnParserResult onParserResult) {
+    public void sendStringRequest(SwissOParser parser, String url, RequestCodes requestCode, SwissOParser.OnParserResult onParserResult) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> parser.onResult(requestCode, id, response, onParserResult),
+                response -> parser.onResult(requestCode, response, onParserResult),
                 error -> {
                 });
         queue.add(stringRequest);
     }
 
-    public enum RequestCodes {Eventliste, Laeufer, Messages}
+    public enum RequestCodes {Eventliste, EventDetails, Messages}
 }

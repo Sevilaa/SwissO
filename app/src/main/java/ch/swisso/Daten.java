@@ -76,54 +76,66 @@ public class Daten {
         return list;
     }
 
-    //Table Laeufer
+    //Table Lists and Runners
 
-    public void insertLaeufer(ContentValues contentValues) {
-        database.insert(SQLiteHelper.TABLE_Laeufer, null, contentValues);
+    public void insertList(ContentValues contentValues){
+        database.insert(SQLiteHelper.TABLE_Lists, null, contentValues);
     }
 
-    public void updateLaeufer(ContentValues contentValues, int id) {
-        database.update(SQLiteHelper.TABLE_Laeufer, contentValues, SQLiteHelper.COLUMN_ID + " = " + id, null);
+    public void deleteList(int listID){
+        database.delete(SQLiteHelper.TABLE_Runners, SQLiteHelper.COLUMN_LIST + " = " + listID, null);
+        database.delete(SQLiteHelper.TABLE_Lists, SQLiteHelper.COLUMN_ID + " = " + listID, null);
     }
 
-    public boolean updateLaeuferFromJson(String json, int eventId) {
+    public ArrayList<List> createListsByEvent(Event event){
+        Cursor cursor = database.query(SQLiteHelper.TABLE_Lists, null, SQLiteHelper.COLUMN_EVENT + " = " + event.getId(), null, null, null, null);
+        cursor.moveToFirst();
+        ArrayList<List> lists = new ArrayList<>();
+        while (!cursor.isAfterLast()){
+            lists.add(new List(Helper.getInt(cursor, SQLiteHelper.COLUMN_ID), event, Helper.getInt(cursor, SQLiteHelper.COLUMN_LISTTYPE)));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return lists;
+    }
+
+    public void insertRunner(ContentValues contentValues) {
+        database.insert(SQLiteHelper.TABLE_Runners, null, contentValues);
+    }
+
+    public boolean updateRunnersFromJson(String event_details) {
         database.beginTransaction();
         try {
-            JSONArray array = new JSONArray(json);
-            Cursor c = getLaeuferByEvent(eventId);
-            ArrayList<Integer> ids = new ArrayList<>();
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-                ids.add(Helper.getInt(c, SQLiteHelper.COLUMN_ID));
-                c.moveToNext();
-            }
-            c.close();
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject jsonLauefer = array.getJSONObject(i);
-                ContentValues contentValues = new ContentValues();
-                int id = jsonLauefer.getInt(SQLiteHelper.COLUMN_ID);
-                contentValues.put(SQLiteHelper.COLUMN_ID, id);
-                json2cvString(jsonLauefer, contentValues, SQLiteHelper.COLUMN_NAME);
-                json2cvString(jsonLauefer, contentValues, SQLiteHelper.COLUMN_CLUB);
-                json2cvString(jsonLauefer, contentValues, SQLiteHelper.COLUMN_KATEGORIE);
-                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_RANGLISTE);
-                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_JAHRGANG);
-                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_STARTNUMMER);
-                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_STARTZEIT);
-                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_ZIELZEIT);
-                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_RANG);
-                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_EVENT);
-                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_STARTLISTE);
-                json2cvInt(jsonLauefer, contentValues, SQLiteHelper.COLUMN_RANGLISTE);
-                if (ids.contains(id)) {
-                    updateLaeufer(contentValues, id);
-                    ids.remove((Integer) id);
-                } else {
-                    insertLaeufer(contentValues);
+            JSONObject event = new JSONObject(event_details);
+            JSONArray lists = event.getJSONArray("lists");
+            for (int i = 0; i < lists.length(); i++){
+                JSONObject list = lists.getJSONObject(i);
+                int listID = list.getInt(SQLiteHelper.COLUMN_ID);
+                deleteList(listID);
+                ContentValues listValues = new ContentValues();
+                listValues.put(SQLiteHelper.COLUMN_ID, listID);
+                json2cvInt(list, listValues, SQLiteHelper.COLUMN_EVENT);
+                json2cvInt(list, listValues, SQLiteHelper.COLUMN_LISTTYPE);
+                insertList(listValues);
+                JSONArray runners = list.getJSONArray("runners");
+                for (int j = 0; j < runners.length(); j++) {
+                    JSONObject runner = runners.getJSONObject(j);
+                    ContentValues runnerValues = new ContentValues();
+                    int id = runner.getInt(SQLiteHelper.COLUMN_ID);
+                    runnerValues.put(SQLiteHelper.COLUMN_ID, id);
+                    json2cvString(runner, runnerValues, SQLiteHelper.COLUMN_NAME);
+                    json2cvString(runner, runnerValues, SQLiteHelper.COLUMN_CLUB);
+                    json2cvString(runner, runnerValues, SQLiteHelper.COLUMN_KATEGORIE);
+                    json2cvString(runner, runnerValues, SQLiteHelper.COLUMN_ORT);
+                    json2cvInt(runner, runnerValues, SQLiteHelper.COLUMN_JAHRGANG);
+                    json2cvInt(runner, runnerValues, SQLiteHelper.COLUMN_STARTNUMMER);
+                    json2cvInt(runner, runnerValues, SQLiteHelper.COLUMN_STARTZEIT);
+                    json2cvInt(runner, runnerValues, SQLiteHelper.COLUMN_ZIELZEIT);
+                    json2cvInt(runner, runnerValues, SQLiteHelper.COLUMN_RANG);
+                    json2cvInt(runner, runnerValues, SQLiteHelper.COLUMN_LIST);
+                    json2cvInt(runner, runnerValues, SQLiteHelper.COLUMN_PROV);
+                    insertRunner(runnerValues);
                 }
-            }
-            for (int id : ids) {
-                deleteLaeuferById(id);
             }
             database.setTransactionSuccessful();
         } catch (JSONException e) {
@@ -135,31 +147,10 @@ public class Daten {
         return true;
     }
 
-    public Cursor getLaeuferByEvent(int eventId) {
-        String where = SQLiteHelper.COLUMN_EVENT + " = " + eventId;
-        return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, null);
-    }
-
-    public boolean isProvListe(int eventId, boolean startliste) {
-        String[] column = new String[]{startliste ? SQLiteHelper.COLUMN_STARTLISTE : SQLiteHelper.COLUMN_RANGLISTE};
-        String where = SQLiteHelper.COLUMN_EVENT + " = " + eventId + " AND " + column[0] + " = ";
-        Cursor dev = database.query(true, SQLiteHelper.TABLE_Laeufer, column, where + Helper.ZeitStatus.DEFINITIV, null, null, null, null, null);
-        Cursor prov = database.query(true, SQLiteHelper.TABLE_Laeufer, column, where + Helper.ZeitStatus.PROV, null, null, null, null, null);
-        boolean isLive = dev.getCount() == 0 && prov.getCount() > 0;
-        dev.close();
-        prov.close();
-        return isLive;
-    }
-
-    public Cursor getFilteredLaeuferByEvent(int eventID, ListFragment.ListType fragmentType, String content, String filter, String order) {
-        String where = SQLiteHelper.COLUMN_EVENT + " = " + eventID;
+    public Cursor getFilteredRunnersByList(int listId, String content, String filter, String order) {
+        String where = SQLiteHelper.COLUMN_LIST + " = " + listId;
         if (filter != null && !filter.trim().isEmpty()) {
             where += " AND (" + getFilterString(filter, laeuferSearchColumns) + ")";
-        }
-        if (fragmentType == ListFragment.ListType.Rangliste) {
-            where += " AND " + SQLiteHelper.COLUMN_RANGLISTE + " > 0";
-        } else if (fragmentType == ListFragment.ListType.Startliste) {
-            where += " AND " + SQLiteHelper.COLUMN_STARTLISTE + " > 0";
         }
         if (content.equals(Helper.SingleListTab.tabFreunde) || content.equals(Helper.SingleListTab.tabClub)) {
             ArrayList<String> list;
@@ -185,13 +176,13 @@ public class Daten {
         else if (!content.equals(Helper.SingleListTab.tabAlle)){
             where += " AND " + SQLiteHelper.COLUMN_KATEGORIE + " = '" + content + "'";
         }
-        return database.query(SQLiteHelper.TABLE_Laeufer, null, where, null, null, null, order);
+        return database.query(SQLiteHelper.TABLE_Runners, null, where, null, null, null, order);
     }
 
-    public HashMap<String, String> getLaeuferSeachSuggestions(String search, int eventID /*SingleListFragment.ListContent listContent*/) { //TODO only list content in suggestions
+    public HashMap<String, String> getLaeuferSeachSuggestions(String search, int listId) {
         HashMap<String, String> results = new HashMap<>();
         for (String column : laeuferSearchColumns) {
-            Cursor c = database.query(true, SQLiteHelper.TABLE_Laeufer, new String[]{column}, column + " LIKE '%" + search + "%' AND " + SQLiteHelper.COLUMN_EVENT + " = " + eventID, null, null, null, column, null);
+            Cursor c = database.query(true, SQLiteHelper.TABLE_Runners, new String[]{column}, column + " LIKE '%" + search + "%' AND " + SQLiteHelper.COLUMN_LIST + " = " + listId, null, null, null, column, null);
             c.moveToFirst();
             while (!c.isAfterLast()) {
                 results.put(c.getString(0), column);
@@ -200,14 +191,6 @@ public class Daten {
             c.close();
         }
         return results;
-    }
-
-    public int getLaeuferCountByEvent(int eventID, ListFragment.ListType type) {
-        return getFilteredLaeuferByEvent(eventID, type, Helper.SingleListTab.tabAlle, null, null).getCount();
-    }
-
-    public void deleteLaeuferById(int id) {
-        database.delete(SQLiteHelper.TABLE_Laeufer, SQLiteHelper.COLUMN_ID + " = " + id, null);
     }
 
     //Table Events
@@ -287,7 +270,9 @@ public class Daten {
     public Event createEventById(int id) {
         Cursor cursor = database.query(SQLiteHelper.TABLE_Events, null, SQLiteHelper.COLUMN_ID + " = " + id, null, null, null, null);
         cursor.moveToFirst();
-        return new Event(cursor);
+        Event event = new Event(cursor);
+        cursor.close();
+        return event;
     }
 
     public Cursor getEvents(String filter, boolean onlyFavs) {

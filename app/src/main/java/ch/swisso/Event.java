@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
 
 import kotlin.text.Charsets;
@@ -15,25 +16,29 @@ import kotlin.text.Charsets;
 public class Event {
 
     private int id;
-    private String name;
-    private Date beginDate;
-    private Date endDate;
-    private int kind;
-    private String club;
-    private String map;
-    private String region;
-    private double koordn;
-    private double koorde;
-    private Date deadline;
-    private Uri ausschreibung;
-    private Uri weisungen;
-    private Uri anmeldung;
-    private Uri mutation;
-    private Uri startliste;
-    private Uri liveresultate;
-    private Uri rangliste;
-    private Uri teilnehmerliste;
+    private final String name;
+    private final Date beginDate;
+    private final Date endDate;
+    private final int kind;
+    private final String club;
+    private final String map;
+    private final String region;
+    private final double koordn;
+    private final double koorde;
+    private final Date deadline;
+    private final Uri ausschreibung;
+    private final Uri weisungen;
+    private final Uri anmeldung;
+    private final Uri mutation;
+    private final Uri startliste;
+    private final Uri liveresultate;
+    private final Uri rangliste;
+    private final Uri teilnehmerliste;
     private boolean favorit;
+    private List startlist;
+    private List ranglist;
+    private final UriArt selectedRanglistUri;
+    private final UriArt selectedStartlistUri;
 
     public Event(Cursor cursor) {
         id = Helper.getInt(cursor, SQLiteHelper.COLUMN_ID);
@@ -56,6 +61,53 @@ public class Event {
         mutation = Helper.getUri(cursor, SQLiteHelper.COLUMN_MUTATION);
         teilnehmerliste = Helper.getUri(cursor, SQLiteHelper.COLUMN_TEILNEHMERLISTE);
         favorit = Helper.getBool(cursor, SQLiteHelper.COLUMN_FAVORIT);
+        selectedRanglistUri = rangliste == null && liveresultate != null ? UriArt.Liveresultate : UriArt.Rangliste;
+        selectedStartlistUri = startliste == null && teilnehmerliste != null ? UriArt.Teilnehmerliste : UriArt.Startliste;
+    }
+
+    public void initLists(@NonNull Daten daten){
+        ArrayList<List> lists = daten.createListsByEvent(this);
+        for (List l : lists){
+            switch (l.getListType()){
+                case Helper.ListType.START:
+                    startlist = l;
+                    break;
+                case Helper.ListType.RANG:
+                    ranglist = l;
+                    break;
+                case Helper.ListType.TEILNEHMER:
+                    if (startlist == null)
+                        startlist = l;
+                    break;
+                case Helper.ListType.LIVE:
+                    if (ranglist == null)
+                        ranglist = l;
+                    break;
+            }
+        }
+    }
+
+    public int getRanglistTitle(){
+        return rangliste == null && liveresultate != null ? R.string.liveresult : R.string.rangliste;
+    }
+
+    public int getStartlistTitle(){
+        return startliste == null && teilnehmerliste != null ? R.string.teilnehmer : R.string.startlist;
+    }
+
+    public List getStartList(){
+        return startlist;
+    }
+
+    public List getRangList(){
+        return ranglist;
+    }
+
+    public Uri getSelectedUri(boolean isStartliste){
+        if(isStartliste)
+            return getUri(selectedStartlistUri);
+        else
+            return getUri(selectedRanglistUri);
     }
 
     @Override
