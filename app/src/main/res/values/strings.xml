@@ -69,6 +69,10 @@
 
     <string name="nointernet">Server nicht erreichbar</string>
 
+    <string name="account_name">SwissO Kalender</string>
+    <string name="account_type">ch.swisso.local_calendar</string>
+    <string name="cal_fav">SwissO Favoriten</string>
+    <string name="cal_all">SwissO Alle Events</string>
 
     <string name="postenfehlt">Po. fehl.</string>
     <string name="aufgegeben">aufgeg.</string>

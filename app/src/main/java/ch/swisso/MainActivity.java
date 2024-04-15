@@ -26,6 +26,7 @@ import java.util.HashMap;
 
 public class MainActivity extends MyActivity {
 
+    private CalendarManager calManager;
     private final ArrayList<Event> events = new ArrayList<>();
     private Event selectedEvent;
     private SearchBar searchBar;
@@ -48,6 +49,7 @@ public class MainActivity extends MyActivity {
         viewModel.setRefreshingEvents(true);
 
         parser.sendMessageRequest();
+        calManager = new CalendarManager(this);
     }
 
     public final void initEvents() {
