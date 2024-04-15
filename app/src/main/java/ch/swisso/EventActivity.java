@@ -1,5 +1,7 @@
 package ch.swisso;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -33,8 +35,19 @@ public class EventActivity extends MyActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
 
-        int eventID = getIntent().getIntExtra(Helper.Keys.intent_event, 0);
-        int navID = getIntent().getIntExtra(Helper.Keys.intent_navID, R.id.detailsFragment);
+        Intent intent = getIntent();
+        int eventID = intent.getIntExtra(Helper.Keys.intent_event, 0);
+        int navID = intent.getIntExtra(Helper.Keys.intent_navID, R.id.detailsFragment);
+
+        String appLinkAction = intent.getAction();
+        Uri appLinkData = intent.getData();
+        if (Intent.ACTION_VIEW.equals(appLinkAction) && appLinkData != null) {
+            String s = appLinkData.getQueryParameter(Helper.Keys.query_event_details);
+            if (s != null) {
+                eventID = Integer.parseInt(s);
+            }
+        }
+
         event = daten.createEventById(eventID);
 
         viewModel = new ViewModelProvider(this).get(EventViewModel.class);

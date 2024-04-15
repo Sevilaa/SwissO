@@ -100,6 +100,7 @@ public abstract class Helper {
         String sorting_ranglist_ascending = "sorting_ranglist_ascending";
         String intent_event = "event_id";
         String intent_navID = "nav_id";
+        String query_event_details = "event_id";
     }
 
     public interface Defaults {
