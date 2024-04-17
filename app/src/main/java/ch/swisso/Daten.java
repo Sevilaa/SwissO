@@ -36,10 +36,14 @@ public class Daten {
         dbHelper.close();
     }
 
+    public boolean isOpen() {
+        return database.isOpen();
+    }
+
     //Table Fruende, Clubs, Kats
 
-    public static String getTable(@NonNull ProfilFragment.ProfilList list){
-        switch (list){
+    public static String getTable(@NonNull ProfilFragment.ProfilList list) {
+        switch (list) {
             case Club:
                 return SQLiteHelper.TABLE_Clubs;
             case Freund:
@@ -78,20 +82,20 @@ public class Daten {
 
     //Table Lists and Runners
 
-    public void insertList(ContentValues contentValues){
+    public void insertList(ContentValues contentValues) {
         database.insert(SQLiteHelper.TABLE_Lists, null, contentValues);
     }
 
-    public void deleteList(int listID){
+    public void deleteList(int listID) {
         database.delete(SQLiteHelper.TABLE_Runners, SQLiteHelper.COLUMN_LIST + " = " + listID, null);
         database.delete(SQLiteHelper.TABLE_Lists, SQLiteHelper.COLUMN_ID + " = " + listID, null);
     }
 
-    public ArrayList<List> createListsByEvent(Event event){
+    public ArrayList<List> createListsByEvent(@NonNull Event event) {
         Cursor cursor = database.query(SQLiteHelper.TABLE_Lists, null, SQLiteHelper.COLUMN_EVENT + " = " + event.getId(), null, null, null, null);
         cursor.moveToFirst();
         ArrayList<List> lists = new ArrayList<>();
-        while (!cursor.isAfterLast()){
+        while (!cursor.isAfterLast()) {
             lists.add(new List(Helper.getInt(cursor, SQLiteHelper.COLUMN_ID), event, Helper.getInt(cursor, SQLiteHelper.COLUMN_LISTTYPE)));
             cursor.moveToNext();
         }
@@ -108,7 +112,7 @@ public class Daten {
         try {
             JSONObject event = new JSONObject(event_details);
             JSONArray lists = event.getJSONArray("lists");
-            for (int i = 0; i < lists.length(); i++){
+            for (int i = 0; i < lists.length(); i++) {
                 JSONObject list = lists.getJSONObject(i);
                 int listID = list.getInt(SQLiteHelper.COLUMN_ID);
                 deleteList(listID);
@@ -172,8 +176,7 @@ public class Daten {
             } else {
                 return null;
             }
-        }
-        else if (!content.equals(Helper.SingleListTab.tabAlle)){
+        } else if (!content.equals(Helper.SingleListTab.tabAlle)) {
             where += " AND " + SQLiteHelper.COLUMN_KATEGORIE + " = '" + content + "'";
         }
         return database.query(SQLiteHelper.TABLE_Runners, null, where, null, null, null, order);

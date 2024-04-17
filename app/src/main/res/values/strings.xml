@@ -92,6 +92,8 @@
     <string name="startnummer">Startnummer</string>
     <string name="rang">Rang</string>
 
+    <string name="cal_permission_denied">Events werden nicht im Kalender angezeigt</string>
+
     <string name="empty" />
 
     <string-array name="sorting_startlist_entires">

@@ -80,8 +80,13 @@ public class SwissOParser {
         });
 
         Runnable background = () -> {
-            boolean result = act.getDaten().updateEventsFromJson(json);
-            listener.onProcessed(result);
+            if(act.getDaten().isOpen()) {
+                boolean result = act.getDaten().updateEventsFromJson(json);
+                listener.onProcessed(result);
+            }
+            else{
+                listener.onProcessed(false);
+            }
         };
 
         executor.execute(background);
@@ -95,8 +100,13 @@ public class SwissOParser {
         });
 
         Runnable background = () -> {
-            boolean result = act.getDaten().updateRunnersFromJson(json);
-            listener.onProcessed(result);
+            if(act.getDaten().isOpen()) {
+                boolean result = act.getDaten().updateRunnersFromJson(json);
+                listener.onProcessed(result);
+            }
+            else{
+                listener.onProcessed(false);
+            }
         };
 
         executor.execute(background);
@@ -107,38 +117,40 @@ public class SwissOParser {
             try {
                 JSONArray array = new JSONArray(json);
                 Daten daten = act.getDaten();
-                Cursor c = daten.getMessages();
-                ArrayList<Integer> ids = new ArrayList<>();
-                c.moveToFirst();
-                while (!c.isAfterLast()) {
-                    ids.add(Helper.getInt(c, SQLiteHelper.COLUMN_ID));
-                    c.moveToNext();
-                }
-                c.close();
-                for (int black : Helper.blacklistMessages) {
-                    if (!ids.contains(black)) {
-                        ids.add(black);
-                    } else {
-                        daten.deleteMessage(black);
+                if (daten.isOpen()) {
+                    Cursor c = daten.getMessages();
+                    ArrayList<Integer> ids = new ArrayList<>();
+                    c.moveToFirst();
+                    while (!c.isAfterLast()) {
+                        ids.add(Helper.getInt(c, SQLiteHelper.COLUMN_ID));
+                        c.moveToNext();
                     }
-                }
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject jsonMessage = array.getJSONObject(i);
-                    int id = jsonMessage.getInt(SQLiteHelper.COLUMN_ID);
-                    if (!ids.contains(id)) {
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(SQLiteHelper.COLUMN_ID, id);
-                        contentValues.put(SQLiteHelper.COLUMN_VIEWED, 0);
-                        contentValues.put(SQLiteHelper.COLUMN_MESSAGE, jsonMessage.getString("content"));
-                        daten.insertMessage(contentValues);
-                    } else {
-                        ids.remove((Integer) id);
+                    c.close();
+                    for (int black : Helper.blacklistMessages) {
+                        if (!ids.contains(black)) {
+                            ids.add(black);
+                        } else {
+                            daten.deleteMessage(black);
+                        }
                     }
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject jsonMessage = array.getJSONObject(i);
+                        int id = jsonMessage.getInt(SQLiteHelper.COLUMN_ID);
+                        if (!ids.contains(id)) {
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(SQLiteHelper.COLUMN_ID, id);
+                            contentValues.put(SQLiteHelper.COLUMN_VIEWED, 0);
+                            contentValues.put(SQLiteHelper.COLUMN_MESSAGE, jsonMessage.getString("content"));
+                            daten.insertMessage(contentValues);
+                        } else {
+                            ids.remove((Integer) id);
+                        }
+                    }
+                    for (int id : ids) {
+                        daten.deleteMessage(id);
+                    }
+                    ((MainActivity) act).showMessages();
                 }
-                for (int id : ids) {
-                    daten.deleteMessage(id);
-                }
-                ((MainActivity) act).showMessages();
             } catch (JSONException e) {
                 Log.e("SwissO", "Messages loading failed", e);
             }

@@ -37,40 +37,34 @@ public class CalendarManager {
     private static final int IDX_ALL_EVENTS = 0;
     private static final int IDX_FAV_EVENTS = 1;
 
-    private boolean updating = false;
+    private final ActivityResultLauncher<String> permissionRequester;
 
     public CalendarManager(MyActivity activity) {
         act = activity;
+        permissionRequester = act.registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                checkPermissions();
+            } else {
+                Toast.makeText(act, R.string.cal_permission_denied, Toast.LENGTH_SHORT).show();
+            }
+        });
         checkPermissions();
     }
 
     private void checkPermissions() {
         if (!(ContextCompat.checkSelfPermission(act, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED)) {
-            ActivityResultLauncher<String> resultLauncher = act.registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    checkPermissions();
-                } else {
-                    Toast.makeText(act, "Events werden nicht im Kalender angezeigt", Toast.LENGTH_SHORT).show(); //TODO
-                }
-            });
-            resultLauncher.launch(Manifest.permission.READ_CALENDAR);
+            permissionRequester.launch(Manifest.permission.READ_CALENDAR);
             return;
         }
         if (!(ContextCompat.checkSelfPermission(act, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED)) {
-            ActivityResultLauncher<String> resultLauncher = act.registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    checkPermissions();
-                } else {
-                    Toast.makeText(act, "Events werden nicht im Kalender angezeigt", Toast.LENGTH_SHORT).show(); //TODO
-                }
-            });
-            resultLauncher.launch(Manifest.permission.WRITE_CALENDAR);
+            permissionRequester.launch(Manifest.permission.WRITE_CALENDAR);
             return;
         }
         setupCals();
     }
 
     private void setupCals() {
+        boolean initialSetup = false;
         AccountManager accountManager = AccountManager.get(act);
         Account[] accounts = accountManager.getAccountsByType(act.getString(R.string.account_type));
         if (accounts.length == 0) {
@@ -106,11 +100,15 @@ public class CalendarManager {
                 values.put(Calendars.SYNC_EVENTS, 1);
                 Uri result = cr.insert(asSyncAdapter(Calendars.CONTENT_URI), values);
                 calIds[i] = Long.parseLong(result.getLastPathSegment());
+                initialSetup = true;
             } else {
                 cursor.moveToFirst();
                 calIds[i] = cursor.getLong(0);
             }
             cursor.close();
+        }
+        if (initialSetup && act instanceof MainActivity) {
+            updateEvents(((MainActivity) act).getEvents());
         }
     }
 
@@ -121,17 +119,13 @@ public class CalendarManager {
                 .appendQueryParameter(Calendars.ACCOUNT_TYPE, account.type).build();
     }
 
-    public void updateEvents(ArrayList<Event> events) {
-        if (!updating) {
-            updating = true;
+    public void updateEvents(@NonNull ArrayList<Event> events) {
+        if (!events.isEmpty()) {
             final Helper.ProcessedListener listener = successful -> handler.post(() -> {
-                if (successful) {
-                    updating = false;
-                }
             });
 
             Runnable background = () -> {
-                asyncUpdateEvents(events);
+                asyncUpdateEvents(new ArrayList<>(events));
                 listener.onProcessed(true);
             };
 
@@ -139,11 +133,13 @@ public class CalendarManager {
         }
     }
 
-    public void updateFavEvent(Event event){
-        updateEvent(event, calIds[IDX_FAV_EVENTS]);
+    public void updateFavEvent(Event event) {
+        if (calIds != null) {
+            updateEvent(event, calIds[IDX_FAV_EVENTS]);
+        }
     }
 
-    private void asyncUpdateEvents(ArrayList<Event> events){
+    private void asyncUpdateEvents(ArrayList<Event> events) {
         if (calIds != null) {
             ArrayList<String> checkedIds = new ArrayList<>();
             ArrayList<String> checkedFavIds = new ArrayList<>();
@@ -158,7 +154,7 @@ public class CalendarManager {
             String[] ids = new String[2];
             ids[IDX_ALL_EVENTS] = String.join(", ", checkedIds);
             ids[IDX_FAV_EVENTS] = String.join(", ", checkedFavIds);
-            for(int i = 0; i < calIds.length; i++){
+            for (int i = 0; i < calIds.length; i++) {
                 act.getContentResolver().delete(asSyncAdapter(Events.CONTENT_URI), Events.CALENDAR_ID + " = " + calIds[i] + " AND " + Events._SYNC_ID + " NOT IN (" + ids[i] + ")", null);
             }
         }
