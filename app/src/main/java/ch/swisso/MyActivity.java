@@ -1,9 +1,11 @@
 package ch.swisso;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,12 +15,14 @@ public abstract class MyActivity extends AppCompatActivity {
 
     protected Daten daten;
     protected SwissOParser parser;
+    protected CalendarManager calManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         daten = new Daten(this);
         parser = new SwissOParser(this);
+        calManager = new CalendarManager(this);
     }
 
     public Daten getDaten() {
@@ -27,6 +31,10 @@ public abstract class MyActivity extends AppCompatActivity {
 
     public SwissOParser getParser() {
         return parser;
+    }
+
+    public CalendarManager getCalendarManager() {
+        return calManager;
     }
 
     @Override
@@ -43,17 +51,24 @@ public abstract class MyActivity extends AppCompatActivity {
         }
     }
 
+    public void toggleFav(@NonNull Event event) {
+        event.toggleFavorit();
+        ContentValues values = new ContentValues();
+        values.put(SQLiteHelper.COLUMN_FAVORIT, event.isFavorit() ? 1 : 0);
+        daten.updateEvent(values, event.getId());
+        calManager.updateFavEvent(event);
+    }
+
     public void insertToCalendar(@NonNull Event e) {
         Intent insertCalendarIntent = new Intent(Intent.ACTION_INSERT);
-        insertCalendarIntent.setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.Events.TITLE, e.getName()) // Simple title
+        insertCalendarIntent.setData(Events.CONTENT_URI)
+                .putExtra(Events.TITLE, e.getName()) // Simple title
                 .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, e.getBeginDate().getTime()) // Only date part is considered when ALL_DAY is true
                 .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, e.getEndDate() != null ? e.getEndDate().getTime() : e.getBeginDate().getTime())
-                .putExtra(CalendarContract.Events.EVENT_LOCATION, e.getCalenderLocation(Event.Maps.Google));
-        Uri ausschreibung = e.getUri(Event.UriArt.Ausschreibung);
-        if (ausschreibung != null) {
-            insertCalendarIntent.putExtra(CalendarContract.Events.DESCRIPTION, ausschreibung.toString());
+                .putExtra(Events.DESCRIPTION, getString(R.string.open_in_swisso_app) + " " + e.getDeeplinkUrl());
+        if (e.getMap() != null) {
+            insertCalendarIntent.putExtra(Events.EVENT_LOCATION, e.getMap());
         }
         startActivity(insertCalendarIntent);
     }

@@ -4,12 +4,13 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Calendars;
 import android.provider.CalendarContract.Events;
@@ -21,28 +22,24 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CalendarManager {
 
-    public static final String[] EVENT_PROJECTION = new String[]{
-            CalendarContract.Calendars._ID,                           // 0
-            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
-            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
-            Calendars.CALENDAR_ACCESS_LEVEL                  // 3
-    };
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
-    private static final int PROJECTION_ID_INDEX = 0;
-    private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
-    private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
-    private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
-
-
-    private final MainActivity act;
+    private final MyActivity act;
     private Account account;
+    private long[] calIds;
+    private static final int IDX_ALL_EVENTS = 0;
+    private static final int IDX_FAV_EVENTS = 1;
 
+    private boolean updating = false;
 
-    public CalendarManager(MainActivity activity) {
+    public CalendarManager(MyActivity activity) {
         act = activity;
         checkPermissions();
     }
@@ -70,10 +67,10 @@ public class CalendarManager {
             resultLauncher.launch(Manifest.permission.WRITE_CALENDAR);
             return;
         }
-        init();
+        setupCals();
     }
 
-    private void init() {
+    private void setupCals() {
         AccountManager accountManager = AccountManager.get(act);
         Account[] accounts = accountManager.getAccountsByType(act.getString(R.string.account_type));
         if (accounts.length == 0) {
@@ -86,9 +83,11 @@ public class CalendarManager {
         } else {
             account = accounts[0];
         }
-        String[] calNames = new String[]{act.getString(R.string.cal_fav), act.getString(R.string.cal_all)};
+        calIds = new long[2];
+        String[] calNames = new String[calIds.length];
+        calNames[IDX_FAV_EVENTS] = act.getString(R.string.cal_fav);
+        calNames[IDX_ALL_EVENTS] = act.getString(R.string.cal_all);
         int[] colors = new int[]{Color.LTGRAY, Color.DKGRAY};
-        long[] calIDs = new long[2];
         for (int i = 0; i < calNames.length; i++) {
             ContentResolver cr = act.getContentResolver();
             Uri calQuery = CalendarContract.Calendars.CONTENT_URI;
@@ -106,72 +105,13 @@ public class CalendarManager {
                 values.put(Calendars.VISIBLE, 1);
                 values.put(Calendars.SYNC_EVENTS, 1);
                 Uri result = cr.insert(asSyncAdapter(Calendars.CONTENT_URI), values);
-                calIDs[i] = Long.parseLong(result.getLastPathSegment());
+                calIds[i] = Long.parseLong(result.getLastPathSegment());
             } else {
                 cursor.moveToFirst();
-                calIDs[i] = cursor.getLong(0);
+                calIds[i] = cursor.getLong(0);
             }
             cursor.close();
         }
-
-        Log.e("SwissO", "Ids: " + calIDs[0] + " " + calIDs[1]);
-
-        queryCals();
-    }
-
-
-    private void queryCals() {
-        ContentResolver cr = act.getContentResolver();
-        Uri uri = CalendarContract.Calendars.CONTENT_URI;
-        Cursor cursor = cr.query(uri, EVENT_PROJECTION, null, null, null);
-        cursor.moveToFirst();
-        while (cursor.moveToNext()) {
-            long calID = 0;
-            String displayName = null;
-            String accountName = null;
-            String ownerName = null;
-            // Get the field values
-            calID = cursor.getLong(PROJECTION_ID_INDEX);
-            displayName = cursor.getString(PROJECTION_DISPLAY_NAME_INDEX);
-            accountName = cursor.getString(PROJECTION_ACCOUNT_NAME_INDEX);
-            ownerName = cursor.getString(PROJECTION_OWNER_ACCOUNT_INDEX);
-
-            Log.e("SwissO", "" + calID + " " + displayName + "  " + accountName + " " + ownerName);
-        }
-        cursor.close();
-
-        ContentValues v = new ContentValues();
-        v.put(CalendarContract.Calendars.VISIBLE, 1);
-        v.put(CalendarContract.Calendars.SYNC_EVENTS, 1);
-        Uri update = ContentUris.withAppendedId(CalendarContract.Calendars.CONTENT_URI, 15);
-        cr.update(update, v, null, null);
-
-
-        long startMillis = 0;
-        long endMillis = 0;
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(2024, 4, 14, 7, 30);
-        startMillis = beginTime.getTimeInMillis();
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(2024, 4, 14, 8, 45);
-        endMillis = endTime.getTimeInMillis();
-
-        ContentValues values = new ContentValues();
-        values.put(Events.DTSTART, 1713225600000L);
-        values.put(Events.DTEND, 1713312000000L);
-        values.put(Events.TITLE, "Jazzercise");
-        values.put(Events.DESCRIPTION, "Group workout");
-        values.put(Events.CALENDAR_ID, 15);
-        values.put(Events.EVENT_TIMEZONE, "UTC");
-        Uri result = cr.insert(asSyncAdapter(Events.CONTENT_URI), values);
-
-        Cursor c = cr.query(asSyncAdapter(Events.CONTENT_URI), new String[]{Events._ID, Events.TITLE}, Events.CALENDAR_ID + " = 15", null, null);
-        Log.e("SwissO", "Count: " + c.getCount());
-        if (c.getCount() > 0) {
-            c.moveToFirst();
-            Log.e("SwissO", "" + c.getLong(0) + c.getString(1));
-        }
-        c.close();
     }
 
     private Uri asSyncAdapter(@NonNull Uri uri) {
@@ -179,5 +119,82 @@ public class CalendarManager {
                 .appendQueryParameter(android.provider.CalendarContract.CALLER_IS_SYNCADAPTER, "true")
                 .appendQueryParameter(Calendars.ACCOUNT_NAME, account.name)
                 .appendQueryParameter(Calendars.ACCOUNT_TYPE, account.type).build();
+    }
+
+    public void updateEvents(ArrayList<Event> events) {
+        if (!updating) {
+            updating = true;
+            final Helper.ProcessedListener listener = successful -> handler.post(() -> {
+                if (successful) {
+                    updating = false;
+                }
+            });
+
+            Runnable background = () -> {
+                asyncUpdateEvents(events);
+                listener.onProcessed(true);
+            };
+
+            executor.execute(background);
+        }
+    }
+
+    public void updateFavEvent(Event event){
+        updateEvent(event, calIds[IDX_FAV_EVENTS]);
+    }
+
+    private void asyncUpdateEvents(ArrayList<Event> events){
+        if (calIds != null) {
+            ArrayList<String> checkedIds = new ArrayList<>();
+            ArrayList<String> checkedFavIds = new ArrayList<>();
+            for (Event event : events) {
+                updateEvent(event, calIds[IDX_ALL_EVENTS]);
+                checkedIds.add("" + event.getId());
+                if (event.isFavorit()) {
+                    updateEvent(event, calIds[IDX_FAV_EVENTS]);
+                    checkedFavIds.add("" + event.getId());
+                }
+            }
+            String[] ids = new String[2];
+            ids[IDX_ALL_EVENTS] = String.join(", ", checkedIds);
+            ids[IDX_FAV_EVENTS] = String.join(", ", checkedFavIds);
+            for(int i = 0; i < calIds.length; i++){
+                act.getContentResolver().delete(asSyncAdapter(Events.CONTENT_URI), Events.CALENDAR_ID + " = " + calIds[i] + " AND " + Events._SYNC_ID + " NOT IN (" + ids[i] + ")", null);
+            }
+        }
+    }
+
+    private void updateEvent(@NonNull Event event, long calId) {
+        ContentResolver cr = act.getContentResolver();
+        String selection = Events._SYNC_ID + " = " + event.getId() + " AND " + Events.CALENDAR_ID + " = " + calId;
+        Cursor c = cr.query(asSyncAdapter(Events.CONTENT_URI), new String[]{Events.TITLE, Events.DTSTART, Events.DTEND, Events.ALL_DAY, Events.EVENT_LOCATION, Events.DESCRIPTION}, selection, null, null);
+        if (c.getCount() == 0) {
+            ContentValues values = createUpdateEventCV(event);
+            values.put(Events.CALENDAR_ID, calId);
+            values.put(Events._SYNC_ID, event.getId());
+            cr.insert(asSyncAdapter(Events.CONTENT_URI), values);
+        } else {
+            c.moveToFirst();
+            boolean needsUpdate = event.calNeedsUpdate(c, act);
+            if (needsUpdate) {
+                cr.update(asSyncAdapter(Events.CONTENT_URI), createUpdateEventCV(event), selection, null);
+            }
+        }
+        c.close();
+    }
+
+    @NonNull
+    private ContentValues createUpdateEventCV(@NonNull Event event) {
+        ContentValues values = new ContentValues();
+        values.put(Events.TITLE, event.getName());
+        values.put(Events.DTSTART, event.getBeginDate().getTime());
+        values.put(Events.DTEND, (event.getEndDate() == null ? event.getBeginDate() : event.getEndDate()).getTime() + 86400000L);
+        values.put(Events.ALL_DAY, 1);
+        values.put(Events.EVENT_TIMEZONE, "UTC");
+        values.put(Events.DESCRIPTION, act.getString(R.string.open_in_swisso_app) + " " + event.getDeeplinkUrl());
+        if (event.getMap() != null) {
+            values.put(Events.EVENT_LOCATION, event.getMap());
+        }
+        return values;
     }
 }

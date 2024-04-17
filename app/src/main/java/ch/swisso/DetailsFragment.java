@@ -49,9 +49,11 @@ public class DetailsFragment extends EventFragment {
         int[] resources;
         Event.UriArt startliste = event.getUri(Event.UriArt.Startliste) != null ? Event.UriArt.Startliste : Event.UriArt.Teilnehmerliste;
         int startlistString = event.getUri(Event.UriArt.Startliste) != null ? R.string.startlist : R.string.teilnehmer;
+        Event.UriArt rangliste = event.getUri(Event.UriArt.Rangliste) != null ? Event.UriArt.Rangliste : Event.UriArt.Liveresultate;
+        int ranglistString = event.getUri(Event.UriArt.Rangliste) != null ? R.string.rangliste : R.string.liveresult;
 
-        uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, Event.UriArt.Weisungen, Event.UriArt.Anmeldung, startliste, Event.UriArt.Rangliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ, Event.UriArt.Mutation, Event.UriArt.Kalender};
-        resources = new int[]{R.string.ausschreibung, R.string.weisungen, R.string.anmeldung, startlistString, R.string.rangliste, R.string.liveresult, R.string.wkz, R.string.mutation, R.string.kalender};
+        uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, Event.UriArt.Weisungen, Event.UriArt.Anmeldung, startliste, rangliste, Event.UriArt.WKZ, Event.UriArt.Mutation, Event.UriArt.Kalender};
+        resources = new int[]{R.string.ausschreibung, R.string.weisungen, R.string.anmeldung, startlistString, ranglistString, R.string.wkz, R.string.mutation, R.string.kalender};
 
 
         OverviewButton[] buttons = new OverviewButton[8];

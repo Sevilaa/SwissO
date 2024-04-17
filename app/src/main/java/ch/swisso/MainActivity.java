@@ -49,7 +49,6 @@ public class MainActivity extends MyActivity {
         viewModel.setRefreshingEvents(true);
 
         parser.sendMessageRequest();
-        calManager = new CalendarManager(this);
     }
 
     public final void initEvents() {

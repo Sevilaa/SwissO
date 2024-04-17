@@ -51,25 +51,21 @@ public class OverviewLayout extends FrameLayout {
         Event.UriArt startliste = event.getUri(Event.UriArt.Startliste) != null ? Event.UriArt.Startliste : Event.UriArt.Teilnehmerliste;
         int startlistString = event.getUri(Event.UriArt.Startliste) != null ? R.string.startlist : R.string.teilnehmer;
         if (over) {
-            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, startliste, Event.UriArt.Rangliste, Event.UriArt.WKZ};
-            resources = new int[]{R.string.ausschreibung, startlistString, R.string.rangliste, R.string.wkz};
+            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, Event.UriArt.Rangliste};
+            resources = new int[]{R.string.ausschreibung, R.string.rangliste};
         } else if (deadlinePassed) {
-            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ, Event.UriArt.Kalender};
-            resources = new int[]{R.string.ausschreibung, startlistString, R.string.liveresult, R.string.wkz, R.string.kalender};
+            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ};
+            resources = new int[]{R.string.ausschreibung, startlistString, R.string.liveresult, R.string.wkz};
         } else {
-            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ, Event.UriArt.Kalender};
-            resources = new int[]{R.string.ausschreibung, startlistString, R.string.liveresult, R.string.wkz, R.string.kalender};
+            uris = new Event.UriArt[]{Event.UriArt.Ausschreibung, startliste, Event.UriArt.Liveresultate, Event.UriArt.WKZ};
+            resources = new int[]{R.string.ausschreibung, startlistString, R.string.liveresult, R.string.wkz};
         }
 
-        OverviewButton[] buttons = new OverviewButton[8];
+        OverviewButton[] buttons = new OverviewButton[4];
         buttons[0] = findViewById(R.id.overview_item_button1);
         buttons[1] = findViewById(R.id.overview_item_button2);
         buttons[2] = findViewById(R.id.overview_item_button3);
         buttons[3] = findViewById(R.id.overview_item_button4);
-        buttons[4] = findViewById(R.id.overview_item_button5);
-        buttons[5] = findViewById(R.id.overview_item_button6);
-        buttons[6] = findViewById(R.id.overview_item_button7);
-        buttons[7] = findViewById(R.id.overview_item_button8);
 
         int btni = 0;
         int conti = 0;
@@ -86,10 +82,7 @@ public class OverviewLayout extends FrameLayout {
         }
 
         OnClickListener favOnClickListener = v -> {
-            event.toggleFavorit();
-            ContentValues values = new ContentValues();
-            values.put(SQLiteHelper.COLUMN_FAVORIT, event.isFavorit() ? 1 : 0);
-            act.getDaten().updateEvent(values, event.getId());
+            act.toggleFav(event);
             findViewById(R.id.overview_item_fav_checkbox_enabled).setVisibility(event.isFavorit() ? VISIBLE : INVISIBLE);
             findViewById(R.id.overview_item_fav_checkbox_disabled).setVisibility(event.isFavorit() ? INVISIBLE : VISIBLE);
         };

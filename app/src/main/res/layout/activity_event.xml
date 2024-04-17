@@ -28,15 +28,40 @@
         android:id="@+id/event_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="?attr/colorOnBackground"
+        android:ellipsize="marquee"
         android:padding="8dp"
         android:singleLine="true"
-        android:ellipsize="marquee"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="?attr/colorOnBackground"
+        app:layout_constraintEnd_toStartOf="@id/details_fav_checkbox_enabled"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_internet_connection"
         tools:text="Säuliämtler OL" />
+
+    <ImageView
+        android:id="@+id/details_fav_checkbox_disabled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/set_fav"
+        app:layout_constraintBottom_toBottomOf="@id/event_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/event_title"
+        app:srcCompat="@drawable/ic_outline_star"
+        app:tint="?attr/colorOnSurfaceVariant" />
+
+    <ImageView
+        android:id="@+id/details_fav_checkbox_enabled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/remove_fav"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/event_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/event_title"
+        app:srcCompat="@drawable/ic_baseline_star"
+        app:tint="?attr/colorPrimary" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment_event"
@@ -64,7 +89,7 @@
         <ListView
             android:id="@+id/search_list_event"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </com.google.android.material.search.SearchView>
 </androidx.constraintlayout.widget.ConstraintLayout>

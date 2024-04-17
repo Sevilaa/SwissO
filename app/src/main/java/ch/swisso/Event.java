@@ -2,6 +2,7 @@ package ch.swisso;
 
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.CalendarContract.Events;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -65,10 +66,10 @@ public class Event {
         selectedStartlistUri = startliste == null && teilnehmerliste != null ? UriArt.Teilnehmerliste : UriArt.Startliste;
     }
 
-    public void initLists(@NonNull Daten daten){
+    public void initLists(@NonNull Daten daten) {
         ArrayList<List> lists = daten.createListsByEvent(this);
-        for (List l : lists){
-            switch (l.getListType()){
+        for (List l : lists) {
+            switch (l.getListType()) {
                 case Helper.ListType.START:
                     startlist = l;
                     break;
@@ -87,24 +88,24 @@ public class Event {
         }
     }
 
-    public int getRanglistTitle(){
+    public int getRanglistTitle() {
         return rangliste == null && liveresultate != null ? R.string.liveresult : R.string.rangliste;
     }
 
-    public int getStartlistTitle(){
+    public int getStartlistTitle() {
         return startliste == null && teilnehmerliste != null ? R.string.teilnehmer : R.string.startlist;
     }
 
-    public List getStartList(){
+    public List getStartList() {
         return startlist;
     }
 
-    public List getRangList(){
+    public List getRangList() {
         return ranglist;
     }
 
-    public Uri getSelectedUri(boolean isStartliste){
-        if(isStartliste)
+    public Uri getSelectedUri(boolean isStartliste) {
+        if (isStartliste)
             return getUri(selectedStartlistUri);
         else
             return getUri(selectedRanglistUri);
@@ -165,7 +166,7 @@ public class Event {
         return deadline;
     }
 
-    public final boolean isFavorit(){
+    public final boolean isFavorit() {
         return favorit;
     }
 
@@ -205,7 +206,7 @@ public class Event {
                     try {
                         return "https://maps.google.com/maps?q=" + koordn + "," + koorde + URLEncoder.encode("(WKZ " + name + ")", Charsets.UTF_8.name());
                     } catch (UnsupportedEncodingException e) {
-                        Log.e("SwissO", e.toString());
+                        Log.e("SwissO", "Google Maps encoding failed", e);
                         return "https://maps.google.com/maps?q=" + koordn + "," + koorde + "(WKZ " + name + ")";
                     }
                 case GoogleSat:
@@ -219,19 +220,20 @@ public class Event {
         return null;
     }
 
-    public String getCalenderLocation(Maps maps) {
-        String desc = "";
-        if (map != null) {
-            desc += map + " ";
-        }
-        String mapsURL = getMapsUrl(maps);
-        if (mapsURL != null) {
-            desc += getMapsUrl(maps);
-        }
-        return desc;
+    public String getDeeplinkUrl() {
+        return "https://app.swiss-o.ch/event_details?event_id=" + id;
     }
 
-    public void toggleFavorit(){
+    public boolean calNeedsUpdate(Cursor c, MyActivity act) {
+        return !(name.equals(Helper.getString(c, Events.TITLE))
+                && beginDate.getTime() == Helper.getLong(c, Events.DTSTART)
+                && (endDate == null || (endDate.getTime() + 86400000) == Helper.getLong(c, Events.DTEND))
+                && Helper.getInt(c, Events.ALL_DAY) == 1
+                && (act.getString(R.string.open_in_swisso_app) + " " + getDeeplinkUrl()).equals(Helper.getString(c, Events.DESCRIPTION))
+                && (map == null || map.equals(Helper.getString(c, Events.EVENT_LOCATION))));
+    }
+
+    public void toggleFavorit() {
         favorit = !favorit;
     }
 

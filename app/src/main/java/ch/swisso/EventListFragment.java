@@ -98,10 +98,12 @@ public abstract class EventListFragment extends MainFragment {
     }
 
     public void refresh() {
-        if (!act.getParser().sendEventRequest(() -> {
+        boolean hasInternet = act.getParser().sendEventRequest(() -> {
             act.initEvents();
             actViewModel.setRefreshingEvents(false);
-        })) {
+            act.getCalendarManager().updateEvents(act.getEvents());
+        });
+        if (!hasInternet) {
             actViewModel.setRefreshingEvents(false);
         }
     }

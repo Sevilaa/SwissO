@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -72,6 +73,17 @@ public class EventActivity extends MyActivity {
             navController.popBackStack();
             navController.navigate(navID);
         }
+
+        View.OnClickListener favOnClickListener = v -> {
+            toggleFav(event);
+            findViewById(R.id.details_fav_checkbox_enabled).setVisibility(event.isFavorit() ? View.VISIBLE : View.INVISIBLE);
+            findViewById(R.id.details_fav_checkbox_disabled).setVisibility(event.isFavorit() ? View.INVISIBLE : View.VISIBLE);
+        };
+
+        findViewById(R.id.details_fav_checkbox_enabled).setOnClickListener(favOnClickListener);
+        findViewById(R.id.details_fav_checkbox_disabled).setOnClickListener(favOnClickListener);
+        findViewById(R.id.details_fav_checkbox_enabled).setVisibility(event.isFavorit() ? View.VISIBLE : View.INVISIBLE);
+        findViewById(R.id.details_fav_checkbox_disabled).setVisibility(event.isFavorit() ? View.INVISIBLE : View.VISIBLE);
     }
 
     private void setupSearch(@NonNull EventViewModel viewModel) {

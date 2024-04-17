@@ -5,8 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -29,10 +27,6 @@ public class SwissOParser {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler(Looper.getMainLooper());
 
-    private interface ProcessedListener {
-        void onProcessed(boolean successful);
-    }
-
     public SwissOParser(MyActivity act) {
         this.act = act;
         httpClient = new MyHttpClient(act);
@@ -40,13 +34,8 @@ public class SwissOParser {
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) act.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-            return networkCapabilities != null;
-        } else {
-            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-            return activeNetwork != null && activeNetwork.isAvailable();
-        }
+        NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+        return networkCapabilities != null;
     }
 
     public void onResult(@NonNull MyHttpClient.RequestCodes requestCode, String result, OnParserResult onParserResult) {
@@ -84,7 +73,7 @@ public class SwissOParser {
     }
 
     private void loadEvents(String json, OnParserResult onParserResult) {
-        final ProcessedListener listener = successful -> handler.post(() -> {
+        final Helper.ProcessedListener listener = successful -> handler.post(() -> {
             if (successful) {
                 onParserResult.onParserResult();
             }
@@ -99,7 +88,7 @@ public class SwissOParser {
     }
 
     private void loadEventDetails(String json, OnParserResult onParserResult) {
-        final ProcessedListener listener = successful -> handler.post(() -> {
+        final Helper.ProcessedListener listener = successful -> handler.post(() -> {
             if (successful) {
                 onParserResult.onParserResult();
             }

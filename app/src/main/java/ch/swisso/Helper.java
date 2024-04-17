@@ -93,6 +93,10 @@ public abstract class Helper {
         return !cursor.isNull(index) && cursor.getInt(index) > 0;
     }
 
+    interface ProcessedListener {
+        void onProcessed(boolean successful);
+    }
+
     public interface Keys {
         String sorting_startlist_column = "sorting_startlist_column";
         String sorting_startlist_ascending = "sorting_startlist_ascending";

@@ -24,10 +24,10 @@
                 android:id="@+id/overview_item_title"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:ellipsize="marquee"
+                android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="?attr/colorOnSurface"
-                android:singleLine="true"
-                android:ellipsize="marquee"
                 app:layout_constraintEnd_toStartOf="@id/overview_item_fav_checkbox_enabled"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:text="Säuliämtler OL" />
@@ -130,58 +130,12 @@
                 app:layout_constraintTop_toTopOf="@id/overview_item_button3"
                 tools:text="Ausschreibung" />
 
-            <ch.swisso.OverviewButton
-                android:id="@+id/overview_item_button5"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                app:layout_constraintEnd_toStartOf="@id/overview_item_button6"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/overview_item_button3"
-                tools:text="Ausschreibung" />
-
-            <ch.swisso.OverviewButton
-                android:id="@+id/overview_item_button6"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:maxLines="1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/overview_item_button5"
-                app:layout_constraintTop_toTopOf="@id/overview_item_button5"
-                tools:text="Ausschreibung" />
-
-            <ch.swisso.OverviewButton
-                android:id="@+id/overview_item_button7"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                app:layout_constraintEnd_toStartOf="@id/overview_item_button8"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/overview_item_button5"
-                tools:text="Ausschreibung" />
-
-            <ch.swisso.OverviewButton
-                android:id="@+id/overview_item_button8"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:maxLines="1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/overview_item_button7"
-                app:layout_constraintTop_toTopOf="@id/overview_item_button7"
-                tools:text="Ausschreibung" />
-
             <ImageView
                 android:id="@+id/overview_item_fav_checkbox_disabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/set_fav"
-                app:layout_constraintBottom_toBottomOf="@+id/overview_item_title"
+                app:layout_constraintBottom_toBottomOf="@id/overview_item_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_outline_star"
@@ -191,9 +145,9 @@
                 android:id="@+id/overview_item_fav_checkbox_enabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
                 android:contentDescription="@string/remove_fav"
-                app:layout_constraintBottom_toBottomOf="@+id/overview_item_title"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/overview_item_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_star"
@@ -203,7 +157,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/open_details"
-                app:layout_constraintBottom_toBottomOf="@+id/overview_item_deadline"
+                app:layout_constraintBottom_toBottomOf="@id/overview_item_deadline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_chevron_right"
