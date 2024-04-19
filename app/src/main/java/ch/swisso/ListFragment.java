@@ -2,6 +2,7 @@ package ch.swisso;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -86,7 +87,7 @@ public abstract class ListFragment extends EventFragment {
                     return true;
                 }
                 if (id == R.id.menu_clearsearch) {
-                    eventViewModel.setSearchText("");
+                    eventViewModel.setSearchParams(Pair.create(null, null));
                     return true;
                 }
                 if (id == R.id.menu_refresh) {
@@ -99,8 +100,7 @@ public abstract class ListFragment extends EventFragment {
             @Override
             public void onPrepareMenu(@NonNull Menu menu) {
                 menu.findItem(R.id.menu_browser).setVisible(getUri() != null);
-                CharSequence cs = act.getSearchBar().getText();
-                menu.findItem(R.id.menu_clearsearch).setVisible(!cs.toString().isEmpty());
+                menu.findItem(R.id.menu_clearsearch).setVisible(!eventViewModel.isSearchTextEmpty());
             }
         };
         act.addMenuProvider(menuProvider);

@@ -2,6 +2,7 @@ package ch.swisso;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,14 +58,14 @@ public abstract class EventListFragment extends MainFragment {
             }
         });
 
-        actViewModel.getSearchText().observe(act, s -> showList());
+        actViewModel.getSearchParams().observe(act, s -> showList());
 
         if (!act.getEvents().isEmpty()) {
             showList();
         }
 
-        act.getSearchBar().setHint(this instanceof FavEventListFragment ? R.string.favorites : R.string.all_events);
-        act.setOnlyFav(this instanceof FavEventListFragment);
+        act.getSearchManager().setHint(this instanceof FavEventListFragment ? R.string.favorites : R.string.all_events);
+        act.getSearchManager().setSearchContent(this instanceof FavEventListFragment);
     }
 
     private void setupMenu() {
@@ -76,8 +77,7 @@ public abstract class EventListFragment extends MainFragment {
 
             @Override
             public void onPrepareMenu(@NonNull Menu menu) {
-                CharSequence cs = act.getSearchBar().getText();
-                menu.findItem(R.id.menu_clearsearch).setVisible(!cs.toString().isEmpty());
+                menu.findItem(R.id.menu_clearsearch).setVisible(!actViewModel.isSearchTextEmpty());
             }
 
             @Override
@@ -88,7 +88,7 @@ public abstract class EventListFragment extends MainFragment {
                     return true;
                 }
                 if (id == R.id.menu_clearsearch) {
-                    actViewModel.setSearchText("");
+                    actViewModel.setSearchParams(Pair.create(null, null));
                     return true;
                 }
                 return false;
@@ -111,10 +111,9 @@ public abstract class EventListFragment extends MainFragment {
     public void showList() {
         if (getView() != null) {
             ArrayList<Event> events;
-            String searchText = actViewModel.getSearchText().getValue();
-            if (this instanceof FavEventListFragment || searchText != null && !searchText.isEmpty()) {
+            if (this instanceof FavEventListFragment || !actViewModel.isSearchTextEmpty()) {
                 events = new ArrayList<>();
-                Cursor cursor = act.getDaten().getEvents(searchText, this instanceof FavEventListFragment);
+                Cursor cursor = act.getDaten().getEvents(actViewModel.getSearchParams().getValue(), this instanceof FavEventListFragment);
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
                     events.add(new Event(cursor));

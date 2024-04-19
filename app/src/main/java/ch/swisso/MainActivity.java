@@ -3,34 +3,26 @@ package ch.swisso;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.widget.EditText;
-import android.widget.ListView;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.search.SearchBar;
-import com.google.android.material.search.SearchView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import ch.swisso.SearchManager.EventSearchManager;
 
 public class MainActivity extends MyActivity {
 
-    private CalendarManager calManager;
     private final ArrayList<Event> events = new ArrayList<>();
     private Event selectedEvent;
-    private SearchBar searchBar;
-    private boolean onlyFav;
+    private EventSearchManager searchManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +30,7 @@ public class MainActivity extends MyActivity {
         setContentView(R.layout.activity_main);
         MainViewModel viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-        setupSearch(viewModel);
+        searchManager = new EventSearchManager(this, viewModel);
         initEvents();
 
         BottomNavigationView navigation = findViewById(R.id.bottom_navigation);
@@ -76,50 +68,6 @@ public class MainActivity extends MyActivity {
         if (selectedEvent == null && !events.isEmpty()) {
             selectedEvent = events.get(events.size() - 1);
         }
-    }
-
-    private void setupSearch(@NonNull MainViewModel viewModel) {
-        searchBar = findViewById(R.id.search_bar_main);
-        setSupportActionBar(searchBar);
-
-        viewModel.getSearchText().observe(this, s -> {
-            searchBar.setText(s);
-            invalidateOptionsMenu();
-        });
-
-        SearchView searchView = findViewById(R.id.search_view_main);
-        searchView.setupWithSearchBar(searchBar);
-
-        EditText editText = searchView.getEditText();
-        editText.setOnEditorActionListener((v, actionId, event) -> {
-            viewModel.setSearchText(searchView.getText().toString());
-            searchView.hide();
-            return false;
-        });
-
-        ListView listView = findViewById(R.id.search_list_main);
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            String text = (String) listView.getAdapter().getItem(position);
-            viewModel.setSearchText(text);
-            searchView.hide();
-        });
-        MainActivity that = this;
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String search = s.toString();
-                HashMap<String, String> suggestions = search.isEmpty() ? new HashMap<>() : daten.getEventSeachSuggestions(search, onlyFav);
-                listView.setAdapter(new SearchListAdapter(that, suggestions));
-            }
-        });
     }
 
     public Event getSelectedEvent() {
@@ -184,32 +132,19 @@ public class MainActivity extends MyActivity {
         }
     }
 
-    public SearchBar getSearchBar() {
-        return searchBar;
+    public EventSearchManager getSearchManager() {
+        return searchManager;
     }
 
-    public void setOnlyFav(boolean onlyFav) {
-        this.onlyFav = onlyFav;
-    }
-
-    public static class MainViewModel extends ViewModel {
+    public static class MainViewModel extends MyViewModel {
         private final MutableLiveData<Boolean> refreshingEvents = new MutableLiveData<>();
-        private final MutableLiveData<String> searchText = new MutableLiveData<>();
 
         public void setRefreshingEvents(boolean b) {
             refreshingEvents.setValue(b);
         }
 
-        public void setSearchText(String text) {
-            searchText.setValue(text);
-        }
-
         public MutableLiveData<Boolean> getRefreshingEvents() {
             return refreshingEvents;
-        }
-
-        public MutableLiveData<String> getSearchText() {
-            return searchText;
         }
     }
 }

@@ -3,33 +3,27 @@ package ch.swisso;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.search.SearchBar;
-import com.google.android.material.search.SearchView;
 
-import java.util.HashMap;
 import java.util.Objects;
+
+import ch.swisso.SearchManager.RunnerSearchManager;
 
 public class EventActivity extends MyActivity {
 
     private Event event;
     private BottomNavigationView navigation;
-    private SearchBar searchBar;
+    private RunnerSearchManager searchManager;
     private EventViewModel viewModel;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +45,12 @@ public class EventActivity extends MyActivity {
 
         event = daten.createEventById(eventID);
 
+        TextView eventTitle = findViewById(R.id.event_title);
+        eventTitle.setText(event.getName());
+        eventTitle.setOnClickListener(v -> eventTitle.setSelected(!eventTitle.isSelected()));
+
         viewModel = new ViewModelProvider(this).get(EventViewModel.class);
-        setupSearch(viewModel);
+
         viewModel.getRefreshing().observe(this, refreshing -> {
             if (refreshing) {
                 refresh();
@@ -63,6 +61,8 @@ public class EventActivity extends MyActivity {
             navigation.getMenu().findItem(R.id.startlistFragment).setTitle(event.getStartlistTitle());
         });
         viewModel.setRefreshing(true);
+
+        searchManager = new RunnerSearchManager(this, viewModel);
 
         navigation = findViewById(R.id.bottom_navigation_event);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_event);
@@ -84,53 +84,6 @@ public class EventActivity extends MyActivity {
         findViewById(R.id.details_fav_checkbox_disabled).setOnClickListener(favOnClickListener);
         findViewById(R.id.details_fav_checkbox_enabled).setVisibility(event.isFavorit() ? View.VISIBLE : View.INVISIBLE);
         findViewById(R.id.details_fav_checkbox_disabled).setVisibility(event.isFavorit() ? View.INVISIBLE : View.VISIBLE);
-    }
-
-    private void setupSearch(@NonNull EventViewModel viewModel) {
-        searchBar = findViewById(R.id.search_bar_event);
-        setSupportActionBar(searchBar);
-        TextView eventTitle = findViewById(R.id.event_title);
-        eventTitle.setText(event.getName());
-        eventTitle.setOnClickListener(v -> eventTitle.setSelected(!eventTitle.isSelected()));
-
-        viewModel.getSearchText().observe(this, s -> {
-            searchBar.setText(s);
-            invalidateOptionsMenu();
-        });
-
-        SearchView searchView = findViewById(R.id.search_view_event);
-        searchView.setupWithSearchBar(searchBar);
-
-        EditText editText = searchView.getEditText();
-        editText.setOnEditorActionListener((v, actionId, event) -> {
-            viewModel.setSearchText(searchView.getText().toString());
-            searchView.hide();
-            return false;
-        });
-
-        ListView listView = findViewById(R.id.search_list_event);
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            String text = (String) listView.getAdapter().getItem(position);
-            viewModel.setSearchText(text);
-            searchView.hide();
-        });
-        EventActivity that = this;
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String search = s.toString();
-                HashMap<String, String> suggestions = search.isEmpty() ? new HashMap<>() : daten.getLaeuferSeachSuggestions(search, event.getId());
-                listView.setAdapter(new SearchListAdapter(that, suggestions));
-            }
-        });
     }
 
     public Event getEvent() {
@@ -174,22 +127,13 @@ public class EventActivity extends MyActivity {
         }
     }
 
-    public SearchBar getSearchBar() {
-        return searchBar;
+    public RunnerSearchManager getSearchManager() {
+        return searchManager;
     }
 
-    public static class EventViewModel extends ViewModel {
-        private final MutableLiveData<String> searchText = new MutableLiveData<>();
+    public static class EventViewModel extends MyViewModel {
         private final MutableLiveData<Boolean> triggerSingleList = new MutableLiveData<>();
         private final MutableLiveData<Boolean> refreshing = new MutableLiveData<>();
-
-        public void setSearchText(String s) {
-            searchText.setValue(s);
-        }
-
-        public MutableLiveData<String> getSearchText() {
-            return searchText;
-        }
 
         public void setRefreshing(boolean b) {
             if (!Objects.equals(refreshing.getValue(), b)) {

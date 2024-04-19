@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
@@ -151,9 +152,9 @@ public class Daten {
         return true;
     }
 
-    public Cursor getFilteredRunnersByList(int listId, String content, String filter, String order) {
+    public Cursor getFilteredRunnersByList(int listId, String content, Pair<String, String> filter, String order) {
         String where = SQLiteHelper.COLUMN_LIST + " = " + listId;
-        if (filter != null && !filter.trim().isEmpty()) {
+        if (filter != null && filter.first != null && !filter.first.isEmpty()) {
             where += " AND (" + getFilterString(filter, laeuferSearchColumns) + ")";
         }
         if (content.equals(Helper.SingleListTab.tabFreunde) || content.equals(Helper.SingleListTab.tabClub)) {
@@ -278,8 +279,8 @@ public class Daten {
         return event;
     }
 
-    public Cursor getEvents(String filter, boolean onlyFavs) {
-        if (filter != null && !filter.isEmpty()) {
+    public Cursor getEvents(Pair<String, String> filter, boolean onlyFavs) {
+        if (filter != null && filter.first != null && !filter.first.isEmpty()) {
             return database.query(SQLiteHelper.TABLE_Events, null, "(" + getFilterString(filter, eventSearchColumns) + ")" + (onlyFavs ? " AND " + SQLiteHelper.COLUMN_FAVORIT + " = 1" : ""), null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
         } else {
             return database.query(SQLiteHelper.TABLE_Events, null, onlyFavs ? SQLiteHelper.COLUMN_FAVORIT + " = 1" : null, null, null, null, SQLiteHelper.COLUMN_BEGIN_DATE + " ASC;");
@@ -287,13 +288,17 @@ public class Daten {
     }
 
     @NonNull
-    private String getFilterString(String filter, @NonNull String[] columns) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(columns[0]).append(" LIKE '%").append(filter).append("%'");
-        for (int i = 1; i < columns.length; i++) {
-            builder.append(" OR ").append(columns[i]).append(" LIKE '%").append(filter).append("%'");
+    private String getFilterString(@NonNull Pair<String, String> filter, @NonNull String[] columns) {
+        if (filter.second != null) {
+            return filter.second + " LIKE '%" + filter.first + "%'";
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append(columns[0]).append(" LIKE '%").append(filter.first).append("%'");
+            for (int i = 1; i < columns.length; i++) {
+                builder.append(" OR ").append(columns[i]).append(" LIKE '%").append(filter.first).append("%'");
+            }
+            return builder.toString();
         }
-        return builder.toString();
     }
 
     public HashMap<String, String> getEventSeachSuggestions(String search, boolean fav) {

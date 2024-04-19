@@ -1,5 +1,6 @@
 package ch.swisso;
 
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,9 @@ public class SearchListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
-        return searchSuggestions.keySet().toArray()[position];
+    public Pair<String, String> getItem(int position) {
+        String key = (String) searchSuggestions.keySet().toArray()[position];
+        return Pair.create(key, searchSuggestions.get(key));
     }
 
     @Override

@@ -57,8 +57,11 @@ public class SingleListFragment extends Fragment {
                 refreshLayout.setRefreshing(refreshing);
             }
         });
-        eventViewModel.getSearchText().observe(act, s -> loadList());
-        eventViewModel.getTriggerSingleList().observe(listFragment.getViewLifecycleOwner(), trigger -> loadList());
+        eventViewModel.getSearchParams().observe(act, s -> loadList());
+        eventViewModel.getTriggerSingleList().observe(listFragment.getViewLifecycleOwner(), trigger -> {
+            loadList();
+            act.getSearchManager().setSeachContent(listFragment.getList());
+        });
 
         MaterialButton openInBrowser = view.findViewById(R.id.openWebBrowser);
         openInBrowser.setOnClickListener(view1 -> act.openWebBrowser(listFragment.getUri()));
@@ -83,7 +86,7 @@ public class SingleListFragment extends Fragment {
                     noList.setText(listContent.equals(Helper.SingleListTab.tabFreunde) ? R.string.no_friends : listContent.equals(Helper.SingleListTab.tabClub) ? R.string.no_clubs : R.string.no_kat);
 
                 }
-            } else{
+            } else {
                 boolean hasUri = listFragment.getUri() != null;
                 listView.setVisibility(View.GONE);
                 noList.setVisibility(View.VISIBLE);
@@ -120,8 +123,7 @@ public class SingleListFragment extends Fragment {
             }
         }
 
-        String filter = eventViewModel.getSearchText().getValue();
-        Cursor cursor = act.getDaten().getFilteredRunnersByList(listFragment.getList().getId(), listContent, filter, order);
+        Cursor cursor = act.getDaten().getFilteredRunnersByList(listFragment.getList().getId(), listContent, eventViewModel.getSearchParams().getValue(), order);
         ArrayList<Laeufer> laeuferList = new ArrayList<>();
         if (cursor != null) {
             ArrayList<Laeufer> nullList = new ArrayList<>();

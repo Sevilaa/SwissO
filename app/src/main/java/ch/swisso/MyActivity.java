@@ -6,10 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 public abstract class MyActivity extends AppCompatActivity {
 
@@ -74,4 +77,21 @@ public abstract class MyActivity extends AppCompatActivity {
     }
 
     public abstract void openEventDetails(@NonNull Event e, @NonNull Event.UriArt uriArt);
+
+    public abstract static class MyViewModel extends ViewModel {
+        private final MutableLiveData<Pair<String, String>> searchParams = new MutableLiveData<>();
+
+        public void setSearchParams(Pair<String, String> s) {
+            searchParams.setValue(s);
+        }
+
+        public boolean isSearchTextEmpty() {
+            Pair<String, String> v = searchParams.getValue();
+            return v == null || v.first == null || v.first.isEmpty();
+        }
+
+        public MutableLiveData<Pair<String, String>> getSearchParams() {
+            return searchParams;
+        }
+    }
 }
