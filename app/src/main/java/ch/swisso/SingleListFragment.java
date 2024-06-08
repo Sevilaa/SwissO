@@ -18,6 +18,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.button.MaterialButton;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.ArrayList;
 
 public class SingleListFragment extends Fragment {
@@ -27,6 +29,7 @@ public class SingleListFragment extends Fragment {
     private ListFragment listFragment;
     private String listContent;
     private SwipeRefreshLayout refreshLayout;
+    private ArrayList<Integer> checkedRunnerIds = new ArrayList<>();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,12 +76,12 @@ public class SingleListFragment extends Fragment {
             MaterialButton openInBrowser = getView().findViewById(R.id.openWebBrowser);
             ListView listView = getView().findViewById(R.id.listView_list);
             if (listFragment.getList() != null) {
-                ArrayList<Laeufer> laeufer = getFilteredLaeufer();
+                ArrayList<Runner> runners = getFilteredLaeufer();
                 openInBrowser.setVisibility(View.GONE);
-                if (!laeufer.isEmpty()) {
+                if (!runners.isEmpty()) {
                     listView.setVisibility(View.VISIBLE);
                     noList.setVisibility(View.GONE);
-                    LaeuferAdapter adapter = new LaeuferAdapter(getContext(), listFragment.getList().getListType(), laeufer);
+                    RunnerAdapter adapter = new RunnerAdapter(getContext(), createConfig(runners), runners);
                     listView.setAdapter(adapter);
                 } else {
                     listView.setVisibility(View.GONE);
@@ -97,7 +100,26 @@ public class SingleListFragment extends Fragment {
     }
 
     @NonNull
-    private ArrayList<Laeufer> getFilteredLaeufer() {
+    @Contract("_ -> new")
+    private Config createConfig(ArrayList<Runner> runners) {
+        boolean cl = getBoolPref(Helper.Keys.show_club_and_location, Helper.Defaults.show_club_and_location);
+        int listType = listFragment.getList().getListType();
+        if (Helper.isStartliste(listType)) {
+            boolean number = false;
+            for (int i = 0; i < runners.size() && !number; i++) {
+                if (runners.get(i).getStartNumber() != Helper.intnull) {
+                    number = true;
+                }
+            }
+            return new Config(listType, cl, number, null);
+        } else {
+            return new Config(listType, cl, true, (r, b) -> checkedRunnerIds.add(r.getId()));
+        }
+
+    }
+
+    @NonNull
+    private ArrayList<Runner> getFilteredLaeufer() {
         String column;
         String order;
         boolean ascending;
@@ -124,21 +146,21 @@ public class SingleListFragment extends Fragment {
         }
 
         Cursor cursor = act.getDaten().getFilteredRunnersByList(listFragment.getList().getId(), listContent, eventViewModel.getSearchParams().getValue(), order);
-        ArrayList<Laeufer> laeuferList = new ArrayList<>();
+        ArrayList<Runner> runnerList = new ArrayList<>();
         if (cursor != null) {
-            ArrayList<Laeufer> nullList = new ArrayList<>();
+            ArrayList<Runner> nullList = new ArrayList<>();
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 if (Helper.isNull(cursor, column)) {
-                    nullList.add(new Laeufer(cursor));
+                    nullList.add(new Runner(cursor));
                 } else {
-                    laeuferList.add(new Laeufer(cursor));
+                    runnerList.add(new Runner(cursor));
                 }
                 cursor.moveToNext();
             }
-            laeuferList.addAll(nullList);
+            runnerList.addAll(nullList);
         }
-        return laeuferList;
+        return runnerList;
     }
 
     public final boolean getBoolPref(String key, boolean def) {
@@ -166,5 +188,20 @@ public class SingleListFragment extends Fragment {
             this.vmListContent = listContent;
         }
 
+    }
+
+    public static class Config {
+
+        public int listType;
+        public boolean clubAndLocationVisible;
+        public boolean numberVisible;
+        public SingleRunnerLayout.OnRunnerCheckChangeListener runnerCheckChangeListener;
+
+        public Config(int listType, boolean clubAndLocationVisible, boolean numberVisible, SingleRunnerLayout.OnRunnerCheckChangeListener runnerCheckChangeListener) {
+            this.listType = listType;
+            this.clubAndLocationVisible = clubAndLocationVisible;
+            this.numberVisible = numberVisible;
+            this.runnerCheckChangeListener = runnerCheckChangeListener;
+        }
     }
 }

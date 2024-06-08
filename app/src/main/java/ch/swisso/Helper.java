@@ -102,6 +102,7 @@ public abstract class Helper {
         String sorting_startlist_ascending = "sorting_startlist_ascending";
         String sorting_ranglist_column = "sorting_ranglist_column";
         String sorting_ranglist_ascending = "sorting_ranglist_ascending";
+        String show_club_and_location = "show_club_and_location";
         String intent_event = "event_id";
         String intent_navID = "nav_id";
         String query_event_details = "event_id";
@@ -112,6 +113,7 @@ public abstract class Helper {
         boolean sorting_startlist_ascending = true;
         String sorting_ranglist_column = SQLiteHelper.COLUMN_KATEGORIE;
         boolean sorting_ranglist_ascending = true;
+        boolean show_club_and_location = true;
     }
 
     public interface Disqet {

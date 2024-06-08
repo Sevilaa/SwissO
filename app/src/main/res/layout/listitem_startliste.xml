@@ -1,47 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.swisso.SingleRunnerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="2dp"
-    android:paddingEnd="5dp"
-    android:paddingBottom="2dp">
+    android:layout_height="48dp">
 
     <TextView
-        android:id="@+id/sl_startnummer"
+        android:id="@+id/sl_startnumber"
         android:layout_width="45dp"
-        android:layout_height="wrap_content"
-        android:gravity="end"
+        android:layout_height="0dp"
+        android:gravity="center_vertical|end"
+        android:textColor="?attr/colorOnSurface"
         app:layout_constraintEnd_toStartOf="@id/sl_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="1432" />
 
     <TextView
         android:id="@+id/sl_name"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="5dp"
-        app:layout_constraintEnd_toStartOf="@id/sl_kat"
-        app:layout_constraintStart_toEndOf="@id/sl_startnummer"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingStart="10dp"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintBottom_toTopOf="@id/sl_club"
+        app:layout_constraintEnd_toStartOf="@id/sl_cat"
+        app:layout_constraintStart_toEndOf="@id/sl_startnumber"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Maxine Musterfrau" />
 
     <TextView
-        android:id="@+id/sl_kat"
+        android:id="@+id/sl_cat"
         android:layout_width="70dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
         android:paddingStart="5dp"
+        android:textColor="?attr/colorOnSurfaceVariant"
         app:layout_constraintEnd_toStartOf="@id/sl_starttime"
         app:layout_constraintStart_toEndOf="@id/sl_name"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/sl_name"
+        tools:text="sCool" />
 
     <TextView
         android:id="@+id/sl_starttime"
         android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:gravity="end"
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical|end"
         android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:textColor="?attr/colorOnSurfaceVariant"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/sl_kat"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/sl_cat"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/sl_name"
+        tools:text="14:41" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/sl_club"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingStart="20dp"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/sl_location"
+        app:layout_constraintStart_toEndOf="@id/sl_startnumber"
+        app:layout_constraintTop_toBottomOf="@id/sl_name"
+        tools:text="OLG Musterort" />
+
+    <TextView
+        android:id="@+id/sl_location"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingStart="5dp"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        app:layout_constraintBottom_toBottomOf="@id/sl_club"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sl_club"
+        app:layout_constraintTop_toTopOf="@id/sl_club"
+        tools:text="Musterstetten am Musterberg" />
+
+
+</ch.swisso.SingleRunnerLayout>
