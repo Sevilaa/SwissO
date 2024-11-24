@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,10 +22,30 @@ public class DetailsFragment extends EventFragment {
         return inflater.inflate(R.layout.fragment_details, container, false);
     }
 
-    @SuppressLint("SetTextI18n")
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        EventActivity.EventViewModel eventViewModel = new ViewModelProvider(act).get(EventActivity.EventViewModel.class);
+        SwipeRefreshLayout refreshLayout = view.findViewById(R.id.refreshLayout_details);
+        refreshLayout.setOnRefreshListener(() -> {
+            eventViewModel.setRefreshing(true);
+        });
+
+        eventViewModel.getRefreshing().observe(getViewLifecycleOwner(), refreshing -> {
+            if (refreshing != refreshLayout.isRefreshing()) {
+                refreshLayout.setRefreshing(refreshing);
+            }
+            if (!refreshing) {
+                updateDetails(view);
+            }
+        });
+
+        updateDetails(view);
+
+
+    }
+    @SuppressLint("SetTextI18n")
+    private void updateDetails(@NonNull View view){
         Event event = act.getEvent();
         TextView tvdate = view.findViewById(R.id.details_item_date);
         TextView tvmap = view.findViewById(R.id.details_item_map);

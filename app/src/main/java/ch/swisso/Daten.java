@@ -108,10 +108,22 @@ public class Daten {
         database.insert(SQLiteHelper.TABLE_Runners, null, contentValues);
     }
 
-    public boolean updateRunnersFromJson(String event_details) {
+    public boolean updateEventAndRunners(String eventDetails) {
         database.beginTransaction();
         try {
-            JSONObject event = new JSONObject(event_details);
+            // Update Event
+            JSONObject event = new JSONObject(eventDetails);
+            ContentValues eventValues = eventJsonToContentValues(event);
+            int eventID = event.getInt(SQLiteHelper.COLUMN_ID);
+            Cursor cursor_event = database.query(SQLiteHelper.TABLE_Events, null, SQLiteHelper.COLUMN_ID + " = " + eventID, null, null, null, null);
+            if (cursor_event.getCount() == 0){
+                Log.e("Swisso", "Event of EventDetails request does not exist");
+            }
+            else{
+                updateEvent(eventValues, eventID);
+            }
+            cursor_event.close();
+            // Update lists
             JSONArray lists = event.getJSONArray("lists");
             for (int i = 0; i < lists.length(); i++) {
                 JSONObject list = lists.getJSONObject(i);
@@ -221,27 +233,8 @@ public class Daten {
             d.close();
             for (int i = 0; i < array.length(); i++) {
                 JSONObject jsonEvent = array.getJSONObject(i);
-                ContentValues contentValues = new ContentValues();
+                ContentValues contentValues = eventJsonToContentValues(jsonEvent);
                 int id = jsonEvent.getInt(SQLiteHelper.COLUMN_ID);
-                contentValues.put(SQLiteHelper.COLUMN_ID, id);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_NAME);
-                json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_BEGIN_DATE);
-                json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_END_DATE);
-                json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_DEADLINE);
-                json2cvInt(jsonEvent, contentValues, SQLiteHelper.COLUMN_KIND);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_REGION);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_CLUB);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_MAP);
-                json2cvDouble(jsonEvent, contentValues, SQLiteHelper.COLUMN_INT_NORD);
-                json2cvDouble(jsonEvent, contentValues, SQLiteHelper.COLUMN_INT_EAST);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_AUSSCHREIBUNG);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_WEISUNGEN);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_RANGLISTE);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_LIVE_RESULTATE);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_STARTLISTE);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_ANMELDUNG);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_MUTATION);
-                json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_TEILNEHMERLISTE);
                 if (ids.contains(id)) {
                     updateEvent(contentValues, id);
                     ids.remove((Integer) id);
@@ -261,6 +254,32 @@ public class Daten {
             database.endTransaction();
         }
         return true;
+    }
+
+    @NonNull
+    private ContentValues eventJsonToContentValues(@NonNull JSONObject jsonEvent) throws JSONException {
+        ContentValues contentValues = new ContentValues();
+        int id = jsonEvent.getInt(SQLiteHelper.COLUMN_ID);
+        contentValues.put(SQLiteHelper.COLUMN_ID, id);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_NAME);
+        json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_BEGIN_DATE);
+        json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_END_DATE);
+        json2cvLong(jsonEvent, contentValues, SQLiteHelper.COLUMN_DEADLINE);
+        json2cvInt(jsonEvent, contentValues, SQLiteHelper.COLUMN_KIND);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_REGION);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_CLUB);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_MAP);
+        json2cvDouble(jsonEvent, contentValues, SQLiteHelper.COLUMN_INT_NORD);
+        json2cvDouble(jsonEvent, contentValues, SQLiteHelper.COLUMN_INT_EAST);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_AUSSCHREIBUNG);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_WEISUNGEN);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_RANGLISTE);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_LIVE_RESULTATE);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_STARTLISTE);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_ANMELDUNG);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_MUTATION);
+        json2cvString(jsonEvent, contentValues, SQLiteHelper.COLUMN_TEILNEHMERLISTE);
+        return contentValues;
     }
 
     public void deleteEvent(int id) {

@@ -101,7 +101,7 @@ public class SwissOParser {
 
         Runnable background = () -> {
             if(act.getDaten().isOpen()) {
-                boolean result = act.getDaten().updateRunnersFromJson(json);
+                boolean result = act.getDaten().updateEventAndRunners(json);
                 listener.onProcessed(result);
             }
             else{
